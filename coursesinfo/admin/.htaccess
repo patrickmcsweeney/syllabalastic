@@ -1,6 +1,0 @@
-PerlSetVar GroupFile /var/ecsweb/var/htaccess/htgroup
-PerlAuthenHandler ECS::Auth::authen
-PerlAuthzHandler ECS::Auth::authz
-AuthType Basic
-AuthName "ECS Files Restricted to Staff"
-require group staff-all fpas-staff syllabus-extras

@@ -11,6 +11,7 @@ if (count($argv) < 2)
 $file = fopen( $argv[1], "r" ) or die("file does not exist");
 $info = array();
 
+#should use readline_csv
 $headings = explode("|",fgets($file)); # chuck the headings away
 
 print_r($headings);
