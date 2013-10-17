@@ -1,0 +1,56 @@
+<?php
+
+require_once('include.php');
+
+
+
+$current_user = $_SERVER["REMOTE_USER"];
+
+if( $_SERVER["REQUEST_METHOD"] == "POST" )
+{
+	$id = $_POST["syllabus_id"];
+	$syllabus = new UoS_Syllabus( $id );
+	if( !isset( $syllabus ) ) { exit_error( "Syllabus not found" ); }
+
+	$syllabus->fromForm();
+	$issues = $syllabus->issues();
+	if( sizeof($errors ))
+	{
+		renderHeader();
+		print "<div class='issues'>Some issues exist:<ul><li>".join( "</li><li>", $issues )."</div>";
+		print $syllabus->renderForm();
+		renderFooter();
+		exit;
+	}	
+
+	# OK, let's save it then.
+	$errors = $syllabus->save();
+	if( $errors ) 
+	{
+		renderHeader();
+		print "Something bad happened!<ul><li>".join( "</li><li>", $errors )."</li></ul>";
+		print $syllabus->renderForm();
+		renderFooter();
+	}
+	else
+	{
+		header( "Location: syl-view.php?id=$id" );
+	}
+
+	#print dumper( $syllabus );
+
+}
+else
+{
+	$id = preg_replace( '/[^0-9]/', '', $_GET["id"] );
+	$syllabus = new UoS_Syllabus( $id );
+	if( !isset( $syllabus ) ) { exit_error( "Syllabus not found" ); }
+
+	renderHeader();
+	print $syllabus->renderForm();
+	renderFooter();
+}
+
+
+exit;
+

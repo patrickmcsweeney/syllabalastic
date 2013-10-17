@@ -1,0 +1,51 @@
+<?php
+
+require_once('ECS/new-syllabus.php');
+require_once('FloraForm/lib/FloraForm.php');
+
+ECS_OpenCoreDB();
+
+function renderHeader()
+{
+?>
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" href="FloraForm/resources/ff.css"></link>
+<title>Syllabus Editor</title>
+<style>
+body { 
+	margin-left: 5em;
+	margin-right: 5em;
+	margin-bottom: 5em;
+	font-family: sans-serif;
+}
+#textbooks_changed_container {
+	margin-top: 1em;
+}
+</style>
+
+  <script type="text/javascript" src='FloraForm/resources/ff.js' ></script>
+  <script type="text/javascript" src='/js/jquery-ui/js/jquery-1.7.2.min.js'></script>
+  <script type="text/javascript" src='/js/jquery-ui/js/jquery-ui-1.8.20.custom.min.js'></script>
+  <script language='javascript' type='text/javascript' src='/tinymce/tiny_mce/tiny_mce.js'></script>
+<script>
+ff_init();
+</script>
+</head>
+<body>
+<?
+}
+
+function renderFooter()
+{
+?>
+</body>
+</html>
+<?php
+}
+
+
+
+
+

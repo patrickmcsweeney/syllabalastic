@@ -1,0 +1,19 @@
+<p>
+<form action="/report/usage" method="GET">Show syllabuses approved between <input name="report_start" type="text" value="<?php echo (F3::get('ESCAPE')?F3::htmlencode(($_report_start=F3::get('report_start'))):($_report_start=F3::get('report_start'))); ?>" size="10"/> and <input name="report_end" type="text" value="<?php echo (F3::get('ESCAPE')?F3::htmlencode(($_report_end=F3::get('report_end'))):($_report_end=F3::get('report_end'))); ?>" size="10"/> <input type="submit" value="Show"></p></form>
+
+<p><?php echo count((F3::get('ESCAPE')?F3::htmlencode(($_syllabuses=F3::get('syllabuses'))):($_syllabuses=F3::get('syllabuses')))); ?> syllabus(es) have been approved between <?php echo $_report_start; ?> and <?php echo $_report_end; ?>.
+<ul>
+	<?php if (is_array($_syllabuses)):foreach (($_syllabuses?:array()) as $_syllabus):?>
+		<?php if ($_syllabus->module): ?>
+			<li><strong><a href="/view/syllabus/<?php echo $_syllabus->id; ?>"><?php echo $_syllabus->module->code; ?></a></strong>
+			<?php if ($_syllabus->approvalnote): ?>
+			 - Reason:<?php echo $_syllabus->approvalnote; ?> 
+			<?php endif; ?>
+
+			<?php if ($_syllabus->approvedby): ?>
+				- <?php echo $_syllabus->approvedby; ?></li>
+			<?php endif; ?>
+			- <?php echo date("Y-m-d",$_syllabus->timeapproved); ?>
+		<?php endif; ?>
+	<?php endforeach;endif;?>
+</ul>

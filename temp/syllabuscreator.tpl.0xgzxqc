@@ -1,0 +1,3 @@
+<div class="page-heading">
+	<h2><?php echo (F3::get('ESCAPE')?F3::htmlencode(($_title=F3::get('title'))):($_title=F3::get('title'))); ?></h2>
+</div>

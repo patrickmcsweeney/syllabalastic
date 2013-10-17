@@ -1,0 +1,18 @@
+<div class="provisional notice">
+	<p>This syllabus is provisional, it can not be made live until it has been reviewed.</p>
+	<?php if ((F3::get('ESCAPE')?F3::htmlencode(F3::get('syllabus->isunderreview')):F3::get('syllabus->isunderreview'))): ?>
+		
+			<p>This syllabus is currently awaiting review.</p>
+		
+		<?php else: ?>
+			<form method="GET" action="/toreview/syllabus/<?php echo (F3::get('ESCAPE')?F3::htmlencode(F3::get('syllabus->id')):F3::get('syllabus->id')); ?>">
+				<p>Submit this syllabus for review: 
+					<input type="submit" value="Submit for review" />
+				</p>
+			</form>
+
+			
+		
+	<?php endif; ?>
+	<p><a href="/">Return to module list</a></p>
+</div>

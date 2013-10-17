@@ -1,0 +1,120 @@
+  <div class="uos_tabArea">
+    <div class="uos_tabBar">
+      <ul>
+        <li class="uos_tabCurrent" id="tab_overview"><a href="#overview">Module Overview</a></li>
+
+        <li id="tab_aims"><a href="#aims">Aims and Objectives</a></li>
+
+        <li id="tab_syllabus"><a href="#syllabus">Syllabus</a></li>
+
+        <li id='tab_learning'><a href='#learning'>Learning &amp; Teaching</a></li>
+
+        <li id='tab_assessment'><a href='#assessment'>Assessment</a></li>
+
+        <li id='tab_resources'><a href='#resources'>Resources</a></li>
+      </ul>
+    </div>
+
+    <h2 class='uos_tab_pane_title'>Overview</h2>
+
+    <div class='uos_tab' id='tab_pane_overview'>
+	{{@syllabus->introduction}}
+	<h4>Module Details</h4>
+	<p class="col1"><strong>Title:</strong> {{@module->title}}<br><strong>Code:</strong> {{@module->code}}<br></p>
+	<p class="col2"><strong>Credits:</strong> {{@module->credits}}<br><strong>Taught in:</strong> {{@module->semestername}}<br></p>
+    </div>
+
+    <h2 class='uos_tab_pane_title'>Aims and Objectives</h2>
+
+    <div class='uos_tab' id='tab_pane_aims'>
+	{{@syllabus->learningoutcomes}}
+    </div>
+
+    <h2 class='uos_tab_pane_title'>Syllabus</h2>
+
+    <div class='uos_tab' id='tab_pane_syllabus'>
+	{{@syllabus->topics}}
+    </div>
+
+    <h2 class='uos_tab_pane_title'>Learning and Teaching</h2>
+
+    <div class='uos_tab' id='tab_pane_learning'>
+      <ul style='font-size:130%'>
+<F3:repeat group="{{@syllabus->ownRegularteaching}}" value="{{@activity}}">
+        <li style='margin-bottom:0.5em'>{{@getConstant(@syllabus, @activity->activitytype)}} - {{@activity->studenthours}} hours per term</li>
+</F3:repeat>
+      </ul>
+    </div>
+
+    <h2 class='uos_tab_pane_title'>Assessment</h2>
+
+    <div class='uos_tab' id='tab_pane_assessment'>
+      <ul style='font-size:130%'>
+<F3:check if="{{count(@syllabus->ownContinuousassessment) > 0}}">
+        <F3:true>
+		<F3:repeat group="{{@syllabus->ownContinuousassessment}}" value="{{@assessment}}">
+        		<li style='margin-bottom:0.5em'>{{@assessment->percent}}% - {{@assessment->description}}. Frequency: {{@assessment->frequency}}</li>
+		</F3:repeat>
+        </F3:true>
+</F3:check>
+<F3:check if="{{count(@syllabus->ownExam) > 0}}">
+        <F3:true>
+		<F3:repeat group="{{@syllabus->ownExam}}" value="{{@assessment}}">
+			<li style='margin-bottom:0.5em'>{{@assessment->percent}}% - Exam, {{@assessment->examduration}} hour(s)</li>
+		</F3:repeat>
+        </F3:true>
+</F3:check>
+      </ul>
+
+      <p><strong>Referral policy:</strong> {{@getConstant(@syllabus, @syllabus->referral)}} </p>
+
+      <div style='clear:both'></div>
+    </div>
+
+    <h2 class='uos_tab_pane_title'>Resources</h2>
+
+    <div class='uos_tab' id='tab_pane_resources'>
+        <strong>Core textbooks</strong>
+          <div>
+	      <F3:repeat group="{{@syllabus->ownResources}}" value="{{@resource}}">
+			<F3:check if="{{@resource->type == 'core'}}">
+				<div class="resource">
+					<div class="type"><span class="label">Resource type:</span> {{@getConstant(@syllabus, @resource->type)}}</div>
+					<F3:check if="{{@syllabus->isbn}}">
+						<div class="isbn"><span class="label">ISBN:</span> {{@resource->isbn}}</div>
+					</F3:check>
+					<div class="details">{{@resource->details}}</div>
+				</div>
+			</F3:check>
+		</F3:repeat>
+          </div>
+        <strong>Other resource requirements:</strong>
+          <div>
+	      <F3:repeat group="{{@syllabus->ownResources}}" value="{{@resource}}">
+			<F3:check if="{{@resource->type != 'core'}}">
+				<div class="resource">
+					<div class="type"><span class="label">Resource type:</span> {{@getConstant(@syllabus, @resource->type)}}</div>
+					<F3:check if="{{@syllabus->isbn}}">
+						<div class="isbn"><span class="label">ISBN:</span> {{@resource->isbn}}</div>
+					</F3:check>
+					<div class="details">{{@resource->details}}</div>
+				</div>
+			</F3:check>
+		</F3:repeat>
+
+          </div>
+    </div>
+  </div>
+
+  <div style='font-size:200%'></div><script type="text/javascript">
+//<![CDATA[
+  uos_bindTabs( [
+        { "fragment": "overview", "tab": "tab_overview", "pane": "tab_pane_overview", "selected": true },
+        { "fragment": "aims", "tab": "tab_aims", "pane": "tab_pane_aims" },
+        { "fragment": "syllabus", "tab": "tab_syllabus", "pane": "tab_pane_syllabus" },
+        { "fragment": "learning", "tab": "tab_learning", "pane": "tab_pane_learning" },
+        { "fragment": "assessment", "tab": "tab_assessment", "pane": "tab_pane_assessment" },
+        { "fragment": "resources", "tab": "tab_resources", "pane": "tab_pane_resources" }
+  ] );
+  //]]>
+  </script>

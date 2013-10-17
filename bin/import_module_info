@@ -1,0 +1,136 @@
+#!/usr/bin/php
+<?php
+
+require_once(__DIR__.'/../lib/includes.php');
+includes(array("debug"=>1));
+#R::freeze( true );
+if (count($argv) < 2)
+{
+	echo "you must specifiy a file to import\n";
+	exit;
+}
+$file = fopen( $argv[1], "r" ) or die("file does not exist");
+$info = array();
+
+fgets($file); # chuck the headings away
+
+while( $line = fgets($file) )
+{
+	$line = explode("|", $line);
+	if(!is_array($line)){ print("Something is wrong this line has no data"); continue; }
+	####### TODO, reading the data file should be abstracted, this is blatently something which will change
+	$info[$line[0]][$line[10]]["title"] = $line[16];
+	$info[$line[0]][$line[10]]["facultycode"] = $line[4];
+	$info[$line[0]][$line[10]]["facultyname"] = $line[5];
+	$info[$line[0]][$line[10]]["semestercode"] = $line[17];
+	$info[$line[0]][$line[10]]["semestername"] = $line[18];
+	$info[$line[0]][$line[10]]["credits"] = $line[19];
+	if($staff_id = trim($line[29]))
+	{
+		$info[$line[0]][$line[10]]["people"][$staff_id] = 1;
+		$people[$staff_id]["first_name"] = trim($line[31]);
+		$people[$staff_id]["last_name"] = trim($line[30]);
+	}
+
+	if($program_code = trim($line[36]))
+	{
+		$programs[$program_code]["title"] = $line[37];
+		$programs[$program_code]["majors"][$line[38]] = 1;
+	}
+	if($module_code = trim($line[38]))
+	{
+		$majors[$module_code]["title"] = $line[39];
+		$majors[$module_code]["modules"][$line[40]][$line[10]] = 1;
+	}
+}
+
+print "People import\n";
+foreach( $people as $staff_id => $people_properties )
+{
+	$person = R::findOne("person", "staffid = ?", array( $staff_id ) );
+	if(!isset($person))
+	{
+		$person = R::dispense("person");
+		$person->staffid = $staff_id;
+	}
+#always update staff name for cases of name change in data. This could be optimized if necessary.
+	$person->firstname = $people[$staff_id]["first_name"];
+	$person->lastname = $people[$staff_id]["last_name"];
+	
+	R::store($person);
+}
+
+print "Modules import\n";
+foreach( $info as $year => $modules)
+{
+	foreach($modules as $module_code => $properties )
+	{
+		$module = R::findOne("module", "session = ? AND code = ?", array( $year, $module_code ) );
+		
+		if(!isset($module)){
+			$module = R::dispense('module');
+			$module->code = $module_code;
+			$module->session = $year;
+		}
+
+		$module->title = $properties["title"];
+		$module->facultycode = $properties["facultycode"];
+		$module->facultyname = $properties["facultyname"];
+		$module->semestercode = $properties["semestercode"];
+		$module->semestername = $properties["semestername"];
+		$module->credits = $properties["credits"];
+		if( !empty($properties["people"]) )
+		{	
+			$people = array_keys($properties["people"]);
+			$module->sharedPerson = R::find('person', ' staffid IN ('.R::genSlots($people).') ', $people);
+		}
+		R::store($module);
+	}
+	
+}
+
+print "Majors import\n";
+foreach( $majors as $major_code => $major_properties )
+{
+	$major = R::findOne("major", "code = ?", array($major_code ) );
+
+	if(!isset($major))
+	{
+		$major = R::dispense('major');
+		$major->code = $major_code;
+	}
+
+	$major->title = $major_properties["title"];
+
+	if( !empty($major_properties["modules"]) )
+	{
+		$modules = array_keys($major_properties["modules"]);
+		$major->sharedModule = R::find('module', ' code IN ('.R::genSlots($modules).') ', $modules);
+	}
+	
+	R::store($major);
+}
+
+print "Programs import\n";
+foreach($programs as $program_code => $program_properties){
+
+	$program = R::findOne("program", "code = ?", array($program_code ) );
+	
+	if(!isset($program))
+	{
+		$program = R::dispense('program');	
+		$program->code = $program_code;
+	}
+
+	$program->title = $program_properties["title"];
+
+	if( !empty($program_properties["majors"]) )
+	{
+		$majors = array_keys($program_properties["majors"]);
+		$program->sharedMajor = R::find('major', ' code IN ('.R::genSlots($majors).') ', $majors);
+	}
+
+	R::store($program);
+}
+
+?>

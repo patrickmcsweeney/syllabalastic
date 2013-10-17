@@ -1,0 +1,50 @@
+
+Notice: Undefined index: web in /home/pm5/Dropbox/syllabuscreator2/lib/includes.php on line 11
+Array
+(
+    [0] => TERM_CODE
+    [1] => CAMPUS_CODE
+    [2] => CRN
+    [3] => COURSE_EFF_TERM_CODE
+    [4] => COLL_CODE
+    [5] => COLL_DESC
+    [6] => DEPT_CODE
+    [7] => DEPT_DESC
+    [8] => SUBJ_CODE
+    [9] => CRSE_NUMBER
+    [10] => COURSE_CODE
+    [11] => CSTA_CODE
+    [12] => CSTA_DESC
+    [13] => SSTS_CODE
+    [14] => SSTS_DESC
+    [15] => SECTION_TITLE
+    [16] => COURSE_TITLE
+    [17] => PTRM_CODE
+    [18] => PTRM_DESC
+    [19] => CREDIT_HOURS
+    [20] => GRADABLE_IND
+    [21] => GRADE_SCALE
+    [22] => GRADE_SCALE_DESC
+    [23] => BEST_OF_COMP
+    [24] => SUBSET_OF_COMP
+    [25] => MODULE_TOTAL_WEIGHT
+    [26] => MODULE_NONREFERAL_WEIGHT
+    [27] => MODULE_REFERAL_WEIGHT
+    [28] => PROBABLE_RATIO
+    [29] => INSTRUCTOR1_ID
+    [30] => INSTRUCTOR1_LAST_NAME
+    [31] => INSTRUCTOR1_FIRST_NAME
+    [32] => INSTRUCTOR1_MIDDLE_NAME
+    [33] => HAS_COMPONENTS
+    [34] => CURRENT_TERM
+    [35] => LEVEL_CODE
+    [36] => PROGRAMME
+    [37] => PROGRAMME_DESC
+    [38] => MAJOR_CODE
+    [39] => MAJOR_DESC
+    [40] => YEAR_OF_STUDY
+    [41] => AREA
+    [42] => CAMPUS_DESC
+    [43] => MODULE_TYPE
+
+)

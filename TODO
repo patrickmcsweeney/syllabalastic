@@ -1,0 +1,63 @@
+* Add teaching staff to the list "Basic Information on the edit page"
+
+* Add a note in basic information that says how to edit the information (Banner)
+
+TICKET WITH BANNER * change bin script to import multiple instructors onto a module
+
+* Make sure we are doing something sensible with old syllabuses
+
+DONE * organise the front page by faculty
+
+DONE * create user records with faculty information
+
+DONE * make it so only staff can log in
+
+* link to guidence in the quality handbook must point to something
+
+* add facilities for FEE and ECS to have different workflows
+
+* add a search to the modules page using jquery
+
+DONE * simplify review process
+
+DONE * remove all the edit details 
+
+DONE * break exams and coursework into two input fields
+
+DONE * sort out the frequency box to be sensible.
+
+DONE * import ecs data
+
+* work out FEE import
+
+* Add theme information
+
+* Add program information
+
+* Add loading information for academics on modules
+
+* Modules you are listed as teaching on at the top then all modules below
+
+* Add JSON export
+
+DONE * test on LAMP stack
+
+* make the list of years dynamic for the both the years.htm template and the create provisional module 
+
+* Add a second submit button on the work flow to submit for review
+
+DONE * make sure all pages have <title> tags
+
+DONE * Add a message to the top of provisional syllabus to say its provisional and you can edit it or submit it for review
+
+DONE * test up to date import
+
+DONE * prettify a syllabus page
+
+DONE * change import to import exams and coursework seperately
+
+* IE8 Testing
+
+DONE * Sort out the # links in the code
+
+DONE * make jquery and tinyMCE and JSDiff native

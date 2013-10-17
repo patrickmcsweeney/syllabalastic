@@ -1,0 +1,40 @@
+#!/usr/bin/php
+<?php
+
+require_once(__DIR__.'/../lib/includes.php');
+includes(array("debug"=>1));
+R::freeze( true );
+if (count($argv) < 2)
+{
+	echo "you must specifiy a file to import\n";
+	exit;
+}
+$syllabuses = json_decode(file_get_contents($argv[1]));
+
+foreach($syllabuses as $object)
+{	
+	$syllabus = $object->data;
+	$module = $object->module;
+	if(!isset($module)){continue;}
+	if(!(isset($module->session) && isset($module->code))  )
+	{
+		# we dont have the information link this to an existing module so chuck it
+		continue;	
+	}
+	if($module->code == "COMP1216")
+	{
+		echo(clean_up($syllabus->introduction));
+#		echo($syllabus->learning_outcomes);
+#		echo($syllabus->topics);
+	}
+
+}
+
+function clean_up($data)
+{
+
+	$data = preg_replace('/<[^\\/^p][^>]*>/i', '', $data);
+	$data = preg_replace('/<\\/[^p][^>]*>/i', '', $data);
+	return preg_replace('/<p[^>]*>/i', '<p>', $data);
+
+}

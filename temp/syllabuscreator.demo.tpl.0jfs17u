@@ -1,0 +1,20 @@
+<div class="module-search">
+	Search for a module: <input type="text" id="search-string" onkeyup="doSearch()" />
+	<ul id="search-results" class="syllabus-list">
+	</ul>
+	<script type="text/javascript">
+		function doSearch()
+		{
+			var searchString = $("#search-string").val();
+
+			if(searchString.length < 3)
+			{
+				$('#search-results').empty();
+				return;
+			}
+
+			$('#search-results').empty();
+			$('.syllabus-list li:icontains('+searchString+')').clone().appendTo('#search-results');
+		}
+	</script>
+</div>

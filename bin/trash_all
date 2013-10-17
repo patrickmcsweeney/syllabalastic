@@ -1,0 +1,12 @@
+#!/usr/bin/php
+<?php
+
+require_once(__DIR__.'/../lib/includes.php');
+includes(array("debug"=>1));
+#R::freeze( true );
+
+R::nuke();
+#R::wipe('person');
+#R::wipe('module');
+#R::wipe('major');
+#R::wipe('program');

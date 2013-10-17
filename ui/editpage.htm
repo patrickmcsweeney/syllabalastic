@@ -1,0 +1,45 @@
+<article>
+	<p>{{@module->code}} - {{@module->session}}</p>
+
+	<p>This module has not yet been assigned a code in our database. Provisional information:</p>
+	<table class='uos_syl_datagrid'>
+		<tr><th>Provisional Code:</th><td>{{htmlentities(@module->provisional_code)}}</td></tr>
+		<tr><th>Provisional Session:</th><td>{{htmlentities(@module->provisional_session)}}</td></tr>
+		<tr><th>Provisional Title:</th><td>{{htmlentities(@module->provisional_title)}}</td></tr>
+		<tr><th>Provisional Semester:</th><td>{{htmlentities(@module->provisional_semester)}}</td></tr>
+		<tr><th>Comments:</th><td>{{htmlentities(@module->provisional_notes)}}</td></tr>
+	</table>
+
+	<h2>Introduction</h2>
+	<div class="introduction">{{@module->introduction}}</div>
+	
+	<h2>Learning Outcomes</h2>
+	<div class="learning_outcomes">{{@module->learning_outcomes}}</div>
+
+	<h2>Teaching</h2>
+	<ul>
+		<F3:repeat group="{{@module->ownTeachingActivities}}" value="{{@teaching}}">	
+			<li>foo</li>
+		</F3:repeat>
+	</ul>
+
+	<h2>Assessment Notes</h2>
+	<div class="assessment_notes">{{@module->assessment_notes}}</div>
+
+	<ul>
+		<F3:repeat group="{{@module->ownAssessment}}" value="{{@assessment}}">            
+                        <li>bar</li>
+                </F3:repeat>
+	</ul>
+
+	<h2>Referral</h2>
+	<p>On referral, this unit will be assessed: <strong>{{@module->referral}}</strong></p>
+
+	<h2>Resources</h2>
+	<ul>
+		<F3:repeat group="{{@module->ownLeaningResources}}" value="{{@resource}}">            
+                        <li>baz</li>
+                </F3:repeat>
+	</ul>
+</article>
+

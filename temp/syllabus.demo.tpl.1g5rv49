@@ -1,0 +1,11 @@
+
+<h2>Syllabuses awaiting review</h2>
+<p><?php echo (F3::get('ESCAPE')?F3::htmlencode(($_review_count=F3::get('review_count'))):($_review_count=F3::get('review_count'))); ?> syllabuses are awaiting review</p>
+<ul class="syllabus-list">
+	<?php echo (F3::get('ESCAPE')?F3::htmlencode(($_modules_to_review=F3::get('modules_to_review'))):($_modules_to_review=F3::get('modules_to_review'))); ?>
+</ul>
+<h2>Syllabuses awaiting submission</h2>
+<p><?php echo (F3::get('ESCAPE')?F3::htmlencode(($_submit_count=F3::get('submit_count'))):($_submit_count=F3::get('submit_count'))); ?> syllabuses have been edited but not submitted to review</p>
+<ul class="syllabus-list">
+	<?php echo (F3::get('ESCAPE')?F3::htmlencode(($_modules_to_submit=F3::get('modules_to_submit'))):($_modules_to_submit=F3::get('modules_to_submit'))); ?>
+</ul>

@@ -1,0 +1,16 @@
+#!/usr/bin/php
+<?php
+
+require_once(__DIR__.'/../lib/includes.php');
+includes(array("debug"=>1));
+if (count($argv) < 2)
+{
+	echo "you must specifiy a file to import\n";
+	exit;
+}
+$file = fopen( $argv[1], "r" ) or die("file does not exist");
+$info = array();
+
+$headings = explode("|",fgets($file)); # chuck the headings away
+
+print_r($headings);

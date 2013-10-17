@@ -1,0 +1,47 @@
+Array
+(
+    [0] => TERM_CODE
+    [1] => CRN
+    [2] => COURSE_EFF_TERM_CODE
+    [3] => COLL_CODE
+    [4] => COLL_DESC
+    [5] => DEPT_CODE
+    [6] => DEPT_DESC
+    [7] => SUBJ_CODE
+    [8] => CRSE_NUMBER
+    [9] => COURSE_CODE
+    [10] => CSTA_CODE
+    [11] => CSTA_DESC
+    [12] => SSTS_CODE
+    [13] => SSTS_DESC
+    [14] => SECTION_TITLE
+    [15] => COURSE_TITLE
+    [16] => PTRM_CODE
+    [17] => PTRM_DESC
+    [18] => CREDIT_HOURS
+    [19] => GRADABLE_IND
+    [20] => GRADE_SCALE
+    [21] => GRADE_SCALE_DESC
+    [22] => BEST_OF_COMP
+    [23] => SUBSET_OF_COMP
+    [24] => MODULE_TOTAL_WEIGHT
+    [25] => MODULE_NONREFERAL_WEIGHT
+    [26] => MODULE_REFERAL_WEIGHT
+    [27] => PROBABLE_RATIO
+    [28] => INSTRUCTOR1_ID
+    [29] => INSTRUCTOR1_LAST_NAME
+    [30] => INSTRUCTOR1_FIRST_NAME
+    [31] => INSTRUCTOR1_MIDDLE_NAME
+    [32] => HAS_COMPONENTS
+    [33] => CURRENT_TERM
+    [34] => LEVEL
+    [35] => PROG CODE
+    [36] => PROGRAMME
+    [37] => MJR CODE
+    [38] => MAJOR
+    [39] => YR OF STUDY
+    [40] => AREA
+    [41] => CAMP CODE
+    [42] => CAMPUS
+    [43] => TYPE
+)

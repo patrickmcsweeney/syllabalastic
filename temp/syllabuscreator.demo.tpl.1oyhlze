@@ -1,0 +1,46 @@
+<ul class="syllabus-list">
+
+	<?php if (is_array((F3::get('ESCAPE')?F3::htmlencode(($_modules=F3::get('modules'))):($_modules=F3::get('modules'))))):foreach (((F3::get('ESCAPE')?F3::htmlencode(($_modules=F3::get('modules'))):($_modules=F3::get('modules')))?:array()) as $_module):?>
+		<li><?php echo $_module->code; ?>: <?php echo $_module->title; ?> 
+			<div class="syllabus-tools">- 
+				<?php if ($_module->ownSyllabus): ?>
+					
+						<form method="GET" action="/view/syllabus/<?php echo reset($_module->ownSyllabus)->id; ?>">
+							<input type="submit" value="View current syllabus" />
+						</form>
+					
+				<?php endif; ?>
+				<?php if ($_module->fetchAs('syllabus')->provisionalsyllabus): ?>
+					
+						<form method="GET" action="/view/syllabus/<?php echo $_module->fetchAs('syllabus')->provisionalsyllabus->id; ?>">
+							<input type="submit" value="View provisional syllabus" />
+						</form>
+						<?php if ($_module->fetchAs('syllabus')->provisionalsyllabus->isunderreview): ?>
+							
+								<form method="GET" action="/review/syllabus/<?php echo $_module->fetchAs('syllabus')->provisionalsyllabus->id; ?>">
+									<input type="submit" value="Review provisonal syllabus" />
+								</form>
+							
+							<?php else: ?>
+								<form method="GET" action="/edit/syllabus/<?php echo $_module->fetchAs('syllabus')->provisionalsyllabus->id; ?>">
+									<input type="submit" value="Edit provisonal syllabus" />
+								</form>
+								<form method="GET" action="/toreview/syllabus/<?php echo $_module->fetchAs('syllabus')->provisionalsyllabus->id; ?>">
+									<input type="submit" value="Submit for review" />
+								</form>
+							
+						<?php endif; ?>
+					
+					<?php else: ?>
+						<form method="POST" action="/create/syllabus">
+							<input type="hidden" name="modulecode" value="<?php echo $_module->code; ?>" />
+							<input type="hidden" name="session" value="<?php echo $_module->session; ?>" />
+							<input type="submit" value="Create provisional syllabus" />
+						</form>
+					
+				<?php endif; ?>
+			</div>
+		</li>
+	<?php endforeach;endif;?>
+
+</ul>

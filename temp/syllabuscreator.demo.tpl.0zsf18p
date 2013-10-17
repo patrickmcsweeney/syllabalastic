@@ -1,0 +1,19 @@
+			<li><span class="module-code"><?php echo (F3::get('ESCAPE')?F3::htmlencode(F3::get('module->code')):F3::get('module->code')); ?></span>: <?php echo (F3::get('ESCAPE')?F3::htmlencode(F3::get('module->title')):F3::get('module->title')); ?> 
+				<span class="syllabus-tools">- 
+					<form method="GET" action="/view/syllabus/<?php echo (F3::get('ESCAPE')?F3::htmlencode(F3::get('syllabus->id')):F3::get('syllabus->id')); ?>">
+						<input type="submit" value="View provisional syllabus" />
+					</form>
+					<?php if ((F3::get('ESCAPE')?F3::htmlencode(F3::get('syllabus->isunderreview')):F3::get('syllabus->isunderreview'))): ?>
+						
+							<form method="GET" action="/review/syllabus/<?php echo (F3::get('ESCAPE')?F3::htmlencode(F3::get('syllabus->id')):F3::get('syllabus->id')); ?>">
+								<input type="submit" value="Review provisonal syllabus" />
+							</form>
+						
+						<?php else: ?>
+							<form method="GET" action="/toreview/syllabus/<?php echo (F3::get('ESCAPE')?F3::htmlencode(F3::get('syllabus->id')):F3::get('syllabus->id')); ?>">
+								<input type="submit" value="Submit for review" />
+							</form>
+						
+					<?php endif; ?>
+				</span>
+			</li>

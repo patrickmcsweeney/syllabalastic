@@ -1,0 +1,104 @@
+  <div class="uos_tabArea">
+    <div class="uos_tabBar">
+      <ul>
+        <li class="uos_tabCurrent" id="tab_overview"><a href="#overview">Module Overview</a></li>
+
+        <li id="tab_aims"><a href="#aims">Aims and Objectives</a></li>
+
+        <li id="tab_syllabus"><a href="#syllabus">Syllabus</a></li>
+
+        <li id='tab_learning'><a href='#learning'>Learning &amp; Teaching</a></li>
+
+        <li id='tab_assessment'><a href='#assessment'>Assessment</a></li>
+
+        <li id='tab_resources'><a href='#resources'>Resources</a></li>
+      </ul>
+    </div>
+
+    <h2 class='uos_tab_pane_title'>Overview</h2>
+
+    <div class='uos_tab' id='tab_pane_overview'>
+	<?php echo (F3::get('ESCAPE')?F3::htmlencode(F3::get('syllabus->introduction')):F3::get('syllabus->introduction')); ?>
+	<h4>Module Details</h4>
+	<p class="col1"><strong>Title:</strong> <?php echo (F3::get('ESCAPE')?F3::htmlencode(F3::get('module->title')):F3::get('module->title')); ?><br><strong>Code:</strong> <?php echo (F3::get('ESCAPE')?F3::htmlencode(F3::get('module->code')):F3::get('module->code')); ?><br></p>
+	<p class="col2"><strong>Credits:</strong> <?php echo (F3::get('ESCAPE')?F3::htmlencode(F3::get('module->credits')):F3::get('module->credits')); ?><br><strong>Taught in:</strong> <?php echo (F3::get('ESCAPE')?F3::htmlencode(F3::get('module->semestername')):F3::get('module->semestername')); ?><br></p>
+    </div>
+
+    <h2 class='uos_tab_pane_title'>Aims and Objectives</h2>
+
+    <div class='uos_tab' id='tab_pane_aims'>
+	<?php echo (F3::get('ESCAPE')?F3::htmlencode(F3::get('syllabus->learningoutcomes')):F3::get('syllabus->learningoutcomes')); ?>
+    </div>
+
+    <h2 class='uos_tab_pane_title'>Syllabus</h2>
+
+    <div class='uos_tab' id='tab_pane_syllabus'>
+	<?php echo (F3::get('ESCAPE')?F3::htmlencode(F3::get('syllabus->topics')):F3::get('syllabus->topics')); ?>
+    </div>
+
+    <h2 class='uos_tab_pane_title'>Learning and Teaching</h2>
+
+    <div class='uos_tab' id='tab_pane_learning'>
+      <ul style='font-size:130%'>
+<?php if (is_array((F3::get('ESCAPE')?F3::htmlencode(F3::get('syllabus->ownRegularteaching')):F3::get('syllabus->ownRegularteaching')))):foreach (((F3::get('ESCAPE')?F3::htmlencode(F3::get('syllabus->ownRegularteaching')):F3::get('syllabus->ownRegularteaching'))?:array()) as $_activity):?>
+        <li style='margin-bottom:0.5em'><?php echo (F3::get('ESCAPE')?F3::htmlencode(call_user_func_array($_getConstant=F3::get('getConstant'),array((F3::get('ESCAPE')?F3::htmlencode(($_syllabus=F3::get('syllabus'))):($_syllabus=F3::get('syllabus'))),$_activity->activitytype))):call_user_func_array($_getConstant=F3::get('getConstant'),array((F3::get('ESCAPE')?F3::htmlencode(($_syllabus=F3::get('syllabus'))):($_syllabus=F3::get('syllabus'))),$_activity->activitytype))); ?> - <?php echo $_activity->studenthours; ?> hours per term</li>
+<?php endforeach;endif;?>
+      </ul>
+    </div>
+
+    <h2 class='uos_tab_pane_title'>Assessment</h2>
+
+    <div class='uos_tab' id='tab_pane_assessment'>
+      <ul style='font-size:130%'>
+<?php if (count((F3::get('ESCAPE')?F3::htmlencode(F3::get('syllabus->ownContinuousassessment')):F3::get('syllabus->ownContinuousassessment'))) > 0): ?>
+        
+		<?php if (is_array((F3::get('ESCAPE')?F3::htmlencode(F3::get('syllabus->ownContinuousassessment')):F3::get('syllabus->ownContinuousassessment')))):foreach (((F3::get('ESCAPE')?F3::htmlencode(F3::get('syllabus->ownContinuousassessment')):F3::get('syllabus->ownContinuousassessment'))?:array()) as $_assessment):?>
+        		<li style='margin-bottom:0.5em'><?php echo $_assessment->percent; ?>% - <?php echo $_assessment->description; ?>, <?php echo $_assessment->frequency; ?> hour(s)</li>
+		<?php endforeach;endif;?>
+        
+<?php endif; ?>
+<?php if (count((F3::get('ESCAPE')?F3::htmlencode(F3::get('syllabus->ownExam')):F3::get('syllabus->ownExam'))) > 0): ?>
+        
+		<?php if (is_array((F3::get('ESCAPE')?F3::htmlencode(F3::get('syllabus->ownExam')):F3::get('syllabus->ownExam')))):foreach (((F3::get('ESCAPE')?F3::htmlencode(F3::get('syllabus->ownExam')):F3::get('syllabus->ownExam'))?:array()) as $_assessment):?>
+			<li style='margin-bottom:0.5em'><?php echo $_assessment->percent; ?>% - Exam, <?php echo $_assessment->examduration; ?> hour(s)</li>
+		<?php endforeach;endif;?>
+        
+<?php endif; ?>
+      </ul>
+
+      <p><strong>Referral policy:</strong> <?php echo (F3::get('ESCAPE')?F3::htmlencode(call_user_func_array($_getConstant=F3::get('getConstant'),array((F3::get('ESCAPE')?F3::htmlencode(($_syllabus=F3::get('syllabus'))):($_syllabus=F3::get('syllabus'))),$_syllabus->referral))):call_user_func_array($_getConstant=F3::get('getConstant'),array((F3::get('ESCAPE')?F3::htmlencode(($_syllabus=F3::get('syllabus'))):($_syllabus=F3::get('syllabus'))),$_syllabus->referral))); ?> </p>
+
+      <div style='clear:both'></div>
+    </div>
+
+    <h2 class='uos_tab_pane_title'>Resources</h2>
+
+    <div class='uos_tab' id='tab_pane_resources'>
+        <strong>Other resource requirements:</strong>
+          <div>
+	      <?php if (is_array($_syllabus->ownResources)):foreach (($_syllabus->ownResources?:array()) as $_resource):?>
+			<div class="resource">
+				<div class="type"><span class="label">Resource type:</span> <?php echo $_getConstant($_syllabus, $_resource->type); ?></div>
+				<?php if ($_syllabus->isbn): ?>
+					<div class="isbn"><span class="label">ISBN:</span> <?php echo $_resource->isbn; ?></div>
+				<?php endif; ?>
+				<div class="details"><?php echo $_resource->details; ?></div>
+			</div>
+		<?php endforeach;endif;?>
+
+          </div>
+    </div>
+  </div>
+
+  <div style='font-size:200%'></div><script type="text/javascript">
+//<![CDATA[
+  uos_bindTabs( [
+        { "fragment": "overview", "tab": "tab_overview", "pane": "tab_pane_overview", "selected": true },
+        { "fragment": "aims", "tab": "tab_aims", "pane": "tab_pane_aims" },
+        { "fragment": "syllabus", "tab": "tab_syllabus", "pane": "tab_pane_syllabus" },
+        { "fragment": "learning", "tab": "tab_learning", "pane": "tab_pane_learning" },
+        { "fragment": "assessment", "tab": "tab_assessment", "pane": "tab_pane_assessment" },
+        { "fragment": "resources", "tab": "tab_resources", "pane": "tab_pane_resources" }
+  ] );
+  //]]>
+  </script>

@@ -1,0 +1,137 @@
+<article>
+
+<F3:check if="{{count(@module->sharedPerson) > 0}}">
+	<F3:true>
+		<div class="people">
+			<h2>Teaching Staff</h2>
+
+			<ul>
+				<F3:repeat group="{{@module->sharedPerson}}" value="{{@person}}">
+					<li><span class="first-name">{{@person->firstname}}</span> <span class="last-name">{{@person->lastname}}</span></li>
+				</F3:repeat>
+			</ul>
+		</div>
+	</F3:true>
+</F3:check>
+
+<F3:check if="{{@syllabus->introduction}}">
+	<F3:true>
+		<div class="overview">
+			<h2>Overview</h2>
+			{{@syllabus->introduction}}
+		</div>
+	</F3:true>
+</F3:check>
+
+
+<F3:check if="{{@syllabus->learningoutcomes}}">
+	<F3:true>
+		<div class="learning-outcomes">
+			<h2>Learning Outcomes</h2>
+			{{@syllabus->learningoutcomes}}
+		</div>
+	</F3:true>
+</F3:check>
+
+<F3:check if="{{@syllabus->topics}}">
+	<F3:true>
+		<div class="topics-covered">
+			<h2>Topics Covered</h2>
+			{{@syllabus->topics}}
+		</div>
+	</F3:true>
+</F3:check>
+
+<F3:check if="{{count(@syllabus->ownRegularteaching) > 0}}">
+	<F3:true>
+		<div class="teaching-activities">
+			<h2>Teaching Activities</h2>
+
+			<F3:repeat group="{{@syllabus->ownRegularteaching}}" value="{{@activity}}">
+				<div class="teaching-activity">
+					<div class="type"><span class="label">Type:</span> {{@getConstant(@syllabus, @activity->activitytype)}}</div>
+					<div class="duration"><span class="label">Hours per semester:</span> {{@activity->studenthours}}</div>
+					<div class="group-size"><span class="label">Group Size:</span> {{@activity->groupsize}}</div>
+					<div class="teaching-description"><span class="label">Description:</span> {{@activity->teachingdescription}}</div>
+
+				</div>
+			</F3:repeat>
+		</div>
+	</F3:true>
+</F3:check>
+
+<F3:check if="{{count(@syllabus->ownExam) > 0}}">
+	<F3:true>
+		<div class="exams">
+			<h2>Examination</h2>
+
+			<F3:repeat group="{{@syllabus->ownExam}}" value="{{@assessment}}">
+				<div class="assessment">
+					<div class="description"><span class="label">Description:</span> Exam</div>
+					<div class="percentage"><span class="label">Mark Percentage:</span> {{@assessment->percent}}</div>
+					<div class="duration"><span class="label">Exam Duration:</span> {{@assessment->examduration}} hour(s)</div>
+				</div>
+			</F3:repeat>
+		</div>
+	</F3:true>
+</F3:check>
+
+<F3:check if="{{count(@syllabus->ownContinuousassessment) > 0}}">
+	<F3:true>
+		<div class="assessments">
+			<h2>Continuous Assessment</h2>
+
+			<F3:repeat group="{{@syllabus->ownContinuousassessment}}" value="{{@assessment}}">
+				<div class="assessment">
+					<div class="description"><span class="label">Description:</span> {{@assessment->description}}</div>
+					<div class="frequency"><span class="label">Frequency:</span> {{@assessment->frequency}} hour(s)</div>
+					<div class="percentage"><span class="label">Mark Percentage:</span> {{@assessment->percent}}</div>
+					<div class="type"><span class="label">Assessment Type:</span> {{@getConstant(@syllabus,@assessment->type)}}</div>
+					<div class="week-nos"><span class="label">Weeks carried out:</span> {{@assessment->weeknos}}</div>
+					<div class="feedback"><span class="label">Feedback:</span> {{@assessment->feedback}}</div>
+				</div>
+			</F3:repeat>
+		</div>
+	</F3:true>
+</F3:check>
+
+<F3:check if="{{@syllabus->referral}}">
+	<F3:true>
+		<div class="referral-policy">
+			<h2>Referral Policy</h2>
+			<p>{{@getConstant(@syllabus, @syllabus->referral)}}</p>
+		</div>
+	</F3:true>
+</F3:check>
+
+<F3:check if="{{@syllabus->assessmentnotes}}">
+	<F3:true>
+		<div class="assessment-notes">
+			<h2>Assessment notes</h2>
+			{{@syllabus->assessmentnotes}}
+		</div>
+	</F3:true>
+</F3:check>
+
+<!-- Timetable notes should not be shown here, students dont see it -->
+
+<F3:check if="{{count(@syllabus->ownResources) > 0}}">
+	<F3:true>
+		<div class="learning-resources">
+			<h2>Learning Resources</h2>
+
+			<F3:repeat group="{{@syllabus->ownResources}}" value="{{@resource}}">
+				<div class="resource">
+					<div class="type"><span class="label">Resource type:</span> {{@getConstant(@syllabus, @resource->type)}}</div>
+					<F3:check if="{{@syllabus->isbn}}">
+						<div class="isbn"><span class="label">ISBN:</span> {{@resource->isbn}}</div>
+					</F3:check>
+					<div class="details">{{@resource->details}}</div>
+				</div>
+			</F3:repeat>
+		</div>
+	</F3:true>
+</F3:check>
+
+<!-- Change information will not be shown here -->
+</article>

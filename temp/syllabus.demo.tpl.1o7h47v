@@ -1,0 +1,24 @@
+<form action="<?php echo (F3::get('ESCAPE')?F3::htmlencode(($_pass_through=F3::get('pass_through'))):($_pass_through=F3::get('pass_through'))); ?>" method="POST">
+	<table class="login">
+		<tbody>
+			<tr>
+				<td>Username: </td><td><input type="text" name="username" /></td>
+			</tr>
+			<tr>
+				<td>Password: </td><td><input type="password" name="password" /></td>
+			</tr>
+			<tr>
+				<td colspan="2" class="login-container">
+					<input type="hidden" value="<?php echo $_pass_through; ?>" name="pass_through" />
+					<?php if (is_array((F3::get('ESCAPE')?F3::htmlencode(F3::get('REQUEST')):F3::get('REQUEST')))):foreach (((F3::get('ESCAPE')?F3::htmlencode(F3::get('REQUEST')):F3::get('REQUEST'))?:array()) as $_name=>$_value):?>
+						<?php if ($_name!='username' && $_name != 'password'): ?>
+							<input type="hidden" value="<?php echo $_value; ?>" name="<?php echo  $_name ; ?>" />
+						<?php endif; ?>
+					<?php endforeach;endif;?>
+					<input type="submit" value="Login" />
+				</td>
+			</tr>
+		<tbody>
+	</table>
+
+</form>

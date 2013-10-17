@@ -1,0 +1,115 @@
+#!/usr/bin/php
+<?php
+
+require_once(__DIR__.'/../lib/includes.php');
+includes(array("debug"=>1, "web"=>false));
+#R::freeze( true );
+if (count($argv) < 2)
+{
+	echo "you must specifiy a file to import\n";
+	exit;
+}
+$syllabuses = json_decode(file_get_contents($argv[1]));
+
+foreach($syllabuses as $object)
+{	
+	$syllabus = $object;
+	$module = $object->module;
+	$module->session = 201213;
+	if(!isset($module)) {continue;}
+	if( !(isset($module->session) && isset($module->code))  )
+	{
+		# we dont have the information link this to an existing module so chuck it
+		continue;	
+	}
+
+	$existing_module = R::findOne("module", "session = ? AND code = ?", array( $module->session, $module->code ) );
+
+        if(!isset($existing_module))
+        {
+		echo "there is no module ",$module->code," in ",$module->session,"\n";
+		continue;
+	}
+
+	$newsyll = R::dispense("syllabus");
+	$newsyll->module = $existing_module;
+	$newsyll->isprovisional = false;
+	$newsyll->introduction = clean_up($syllabus->introduction);
+	$newsyll->learningoutcomes = clean_up($syllabus->learningoutcomes);
+	$newsyll->topics = clean_up($syllabus->topics);
+	$newsyll->referral = $syllabus->referral;
+	$newsyll->assessmentnotes = clean_up($syllabus->assessment_notes);
+	$newsyll->timetablenotes = clean_up($syllabus->timetable_notes);
+
+	$teachings = array();
+	foreach($syllabus->regular_teaching as $teaching)
+	{
+		$newteac = R::dispense('regularteaching');
+		$newteac->activitytype = $teaching->activity_type;
+		$newteac->duration = $teaching->duration;
+		$newteac->frequency = $teaching->frequency;
+		$teachings[] = $newteac;
+	}
+	$newsyll->ownTeaching = $teachings;
+
+	$continuousassessment = array();
+	$exams = array();
+
+	foreach($syllabus->exam as $assess)
+	{
+			$exam = R::dispense('exam');
+			$exam->examduration = $assess->examduration;
+			$exam->percent = $assess->percent;
+			$exams[] = $exam;
+
+	}
+	foreach($syllabus->continuousassessment as $assess)
+	{
+		if($assess->type === "exam")
+		{
+			$exam = R::dispense('exam');
+			$exam->examduration = $assess->exam_duration;
+			$exam->percent = $assess->percent;
+			$exams[] = $exam;
+		}else{
+			$newass = R::dispense('continuousassessment');
+			$newass->description = $assess->description;
+			$newass->frequency = $assess->frequency;
+			$newass->percent = $assess->percent;
+			$newass->type = $assess->type;
+			$newass->weeknos = $assess->weeknos;
+			$newass->feedback = $assess->feedback;
+			$continuousassessment[] = $newass;
+		}
+	}
+	$newsyll->ownContinuousassessment = $continuousassessment;
+	$newsyll->ownExam = $exams;
+
+	$resources = array();
+	foreach($syllabus->resources as $resource)
+	{
+		$newres = R::dispense('resources');
+		$newres->details = clean_up($resource->details);
+		$newres->type = $resource->type;
+		$newres->isbn = $resource->isbn;
+		$resources[] = $newres;
+	}
+	$newsyll->ownResources = $resources;
+	print("imported ".$module->code." ".$module->session."\n");
+	R::store($newsyll);
+	$existing_module->ownSyllabus = array( $newsyll );
+	#unset($existing_module->provisionalsyllabus);
+	R::store($existing_module);
+
+}
+
+function clean_up($data)
+{
+
+        $data = preg_replace('/<[^\\/^p][^>]*>/i', '', $data);
+        $data = preg_replace('/<\\/[^p][^>]*>/i', '', $data);
+        $data = preg_replace('/<p[^>]*>/i', '<p>', $data);
+	return trim($data);
+
+}
+
