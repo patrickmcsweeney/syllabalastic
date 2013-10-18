@@ -107,19 +107,6 @@ class Model_Syllabus extends RedBean_SimpleModel {
 		return true;
 	}
 
-	public function renderReviewTools()
-	{
-		if(!$this->isprovisional)
-		{
-			return "This syllabus is no longer provisional and can not be reviewed";
-		}
-
-		F3::set("syllabus", $this);
-
-		return Template::serve("reviewtools.htm");
-		
-	}
-
 	public function renderForm($flags=array())
 	{
 		$form = $this->getForm($flags);

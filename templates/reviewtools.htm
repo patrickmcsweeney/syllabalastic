@@ -1,36 +1,21 @@
 <div class="review_tools">
-<F3:exclude>	<F3:check if="{{ !@syllabus->quinquenialreviewed }}">
-		<form action="/approve/syllabus/{{@syllabus->id}}" method="POST">
-			<input type="hidden" name="reviewtype" value="quinquenial" />
-			<input type="submit" value="Approve quinqennial review"/>
-
-		</form>
-	</F3:check>
-	<F3:check if="{{ !@syllabus->courseleaderreviewed }}">
-		<form action="/approve/syllabus/{{@syllabus->id}}" method="POST">
-			<input type="hidden" name="reviewtype" value="courseleader" />
-			<input type="submit" value="Approve course leader review"/>
-
-		</form>
-	</F3:check>
-	<F3:check if="{{ !@syllabus->educationboardreviewed }}">
-		<form action="/approve/syllabus/{{@syllabus->id}}" method="POST">
-			<input type="hidden" name="reviewtype" value="educationboard" />
-			<input type="submit" value="Approve education board"/>
-
-		</form>
-	</F3:check></F3:exclude>
-	<F3:check if="{{ !@syllabus->cqareviewed }}">
-		<form action="/approve/syllabus/{{@syllabus->id}}" method="POST">
-			<input type="hidden" name="reviewtype" value="cqa" />
-			<div class="review-note">
-			<p>Please leave a note explaining your reason for approval. For example: "Less than 20% of the module has changed."</p>
-			<textarea id="approval-note" name="approvalnote"> </textarea>
-			<script type="text/javascript">
-				$("#approval-note").focus();
-			</script>
-			<input type="submit" value="Approve syllabus"/>
-
-		</form>
-	</F3:check>
+	<check if="{{ @syllabus->isprovisional===true }}">
+		<true>
+			<p>This syllabus is no longer provisional and can not be reviewed</p>
+		</true>
+		<false>
+			<check if="{{ !@syllabus->cqareviewed }}">
+				<form action="/approve/syllabus/{{@syllabus->id}}" method="POST">
+				<input type="hidden" name="reviewtype" value="cqa" />
+				<div class="review-note">
+				<p>Please leave a note explaining your reason for approval. For example: "Less than 20% of the module has changed."</p>
+				<textarea id="approval-note" name="approvalnote"> </textarea>
+				<script type="text/javascript">
+					$("#approval-note").focus();
+				</script>
+				<input type="submit" value="Approve syllabus"/>
+				</form>
+			</check>
+		</false>
+	</check>
 </div>

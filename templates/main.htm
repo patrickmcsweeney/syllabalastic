@@ -1,21 +1,24 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<link rel="stylesheet" href="/ui/resources/ff.css" />
-		<link rel="stylesheet" href="/ui/style.css" />
-		<script type="text/javascript" src="/ui/tiny_mce/tiny_mce.js"></script>
-		<script type="text/javascript" src="/ui/jquery-1.8.3.js"></script>
-		<script type="text/javascript" src="/ui/jquery-ui-1.8.20.custom.min.js"></script>
+		<link rel="stylesheet" href="/html_assets/floraform/resources/ff.css" />
+		<script type="text/javascript" src="/html_assets/floraform/resources/ff.js"> </script>
 
-		<script type="text/javascript" src="/ui/resources/ff.js"> </script>
+		<link rel="stylesheet" href="/html_assets/style.css" />
+		<script type="text/javascript" src="/html_assets/floraform/tiny_mce/tiny_mce.js"></script>
+		<script type="text/javascript" src="/html_assets/js/jquery-1.8.3.js"></script>
+		<script type="text/javascript" src="/html_assets/js/jquery-ui-1.8.20.custom.min.js"></script>
+
 		<script type="text/javascript">
 			//this creates the :icontains() selector in jQuery 
 			//is the same as contains but case insensitive
-			$.expr[":"].icontains = $.expr.createPseudo(function(arg) {
-    return function( elem ) {
-        return $(elem).text().toUpperCase().indexOf(arg.toUpperCase()) >= 0;
-    };
-});
+			$.expr[":"].icontains = $.expr.createPseudo(function(arg)
+			{
+				return function( elem )
+				{
+					return $(elem).text().toUpperCase().indexOf(arg.toUpperCase()) >= 0;
+				};
+			});
 		</script>
 		<title>{{@title}} - Syllabus creator</title>
 	</head>
@@ -32,9 +35,9 @@
 				</ul>
 			</div>	
 			<div class="main-content">
-
-				{{@content}}
-
+				<repeat group="{{ @templates }}" value="{{ @template__ }}">
+				<include href="{{ @template__ }}"/>
+				</repeat>
 			</div>
 			<div class="clearer"> </div>
 			<div class="footer"><a href="/contact">Contact Us</a></div> 

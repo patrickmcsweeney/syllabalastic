@@ -9,6 +9,36 @@ function error($message){
 	exit;
 }
 
+function syllabuses_awaiting_submission()
+{
+	global $REVIEWERS;
+	$user = current_user();
+	$session = key(date_as_session(time()+365*24*60*60)); //we review for next years modules not this years
+
+	$params = $REVIEWERS[$user->username];
+	array_unshift($params, $session);
+
+	$sql = "select distinct syllabus.* from syllabus, module where isprovisional=1 and (isunderreview!=1 or isunderreview is null ) and module.session=? and module.facultycode IN (".R::genSlots($REVIEWERS[$user->username]).") order by module.code";
+	$syllabuses = R::convertToBeans("syllabus", R::getAll( $sql, $params));
+
+	return $syllabuses;
+}
+
+function syllabuses_awaiting_review()
+{
+	global $REVIEWERS;
+	$user = current_user();
+	$session = key(date_as_session(time()+365*24*60*60)); //we review for next years modules not this years
+
+	$params = $REVIEWERS[$user->username];
+	array_unshift($params, $session);
+
+	$sql = "select distinct syllabus.* from syllabus, module where isunderreview=1 and module.session=? and module.facultycode IN (".R::genSlots($REVIEWERS[$user->username]).") order by module.code";
+	$syllabuses = R::convertToBeans("syllabus", R::getAll( $sql, $params));
+
+	return $syllabuses;
+}
+
 function authenticate($pass_through)
 	{
 	
@@ -33,9 +63,9 @@ function authenticate($pass_through)
 		F3::set("title","Login");
 		F3::set("pass_through", $pass_through);
 		F3::set("REQUEST", $_REQUEST);
-		F3::set("content", Template::serve("login.htm"));
+		F3::set("templates", array("login.htm"));
 		
-		echo Template::serve("main.htm");
+		echo Template::instance()->render("main.htm");
 		exit;
 	}
 
@@ -43,7 +73,7 @@ function authenticate($pass_through)
 	// LDAP extension required
 	if (!extension_loaded('ldap')) {
 		// Unable to continue
-		error('LDAP module is not installed');
+		$f3->error( 500,'LDAP module is not installed');
 		return;
 	}
 	$domain_address = "ldaps://nlbldap.soton.ac.uk/";
@@ -67,7 +97,8 @@ function authenticate($pass_through)
 	if (ldap_count_entries($dc,$result)==0)
 	{
 		// Didn't return a single record
-		error("<p>Unrecognised username</p>".Template::serve("login.htm"));
+//TODO prompt for login
+		$f3->error( 500,"<p>Unrecognised username</p>");
 		return FALSE;
 	}
 	// Bind using credentials
@@ -75,23 +106,23 @@ function authenticate($pass_through)
 	if (!@ldap_bind($dc,$info[0]['dn'],$_POST["password"]))
 	{
 		// Bind failed
-		error("<p>Unrecognised password</p>".Template::serve("login.htm"));
+		$f3->error( 500,"<p>Unrecognised password</p>");
 	}
 	@ldap_unbind($dc);
 
 	if(!array_key_exists("extensionattribute10",$info[0]) || $info[0]['extensionattribute10'][0]!='Active')
 	{
-		error("Your account appears to be expired. Contact serviceline on x25656.");
+		$f3->error( 500,"Your account appears to be expired. Contact serviceline on x25656.");
 	}
 
 	if(!array_key_exists("extensionattribute9",$info[0]) || $info[0]['extensionattribute9'][0]!='staff')
 	{
-		error("Only staff may log into this service");
+		$f3->error( 500,"Only staff may log into this service");
 	}
 
 	if($info[0]['cn'][0]!=$_POST["username"])
 	{
-		error("Unexpected login failure. This should never happen.");
+		$f3->error( 500,"Unexpected login failure. This should never happen.");
 		return FALSE;
 	}
 

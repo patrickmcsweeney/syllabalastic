@@ -1,8 +1,8 @@
 <div class="diffoutput"> </div>
-<div class="toggle-current"><a id="current-syllabus" href="#current-syllabus" onclick="$('.current-syllabus').toggle();">Show/hide current syllabus</a></div>
-<div class="current-syllabus">{{@current_syllabus}}</div>
-<div class="toggle-provisional"><a id="provisional-syllabus" onclick="$('.provisional-syllabus').toggle();" href="#provisional-syllabus">Show/hide provisional syllabus</a></div>
-<div class="provisional-syllabus">{{@provisional_syllabus}}</div>
+<repeat group="{{@syllabuses}}" key="{{@syllabus_status}}" value="{{@syllabus}}">
+	<div class="toggle-{{@syllabus_status}}"><a id="{{@syllabus_status}}-syllabus" href="#{{@syllabus_status}}-syllabus" onclick="$('.{{@syllabus_status}}-syllabus').toggle();">Show/hide {{@syllabus_status}} syllabus</a></div>
+	<div class="{@syllabus_status}}-syllabus"><include href="syllabus.htm" /></div>
+</repeat>
 <script type="text/javascript" src="/ui/diffview.js"></script>
 <link rel="stylesheet" type="text/css" href="/ui/diffview.css"/>
 <script type="text/javascript" src="/ui/difflib.js"></script>
