@@ -30,7 +30,8 @@ function modules_by_year($f3)
 	echo Template::instance()->render("main.htm");
 }
 
-function themes($f3) {
+function themes($f3) 
+{
 	#TODO this should be dynamic based on the date
 	#$programs = R::find('program', "session = ?", array( "201213" ));
 	$programs = R::find('program');
@@ -43,7 +44,8 @@ function themes($f3) {
 	echo Template::instance()->render("main.htm");
 }
 
-function create_module($f3) {
+function create_module($f3) 
+{
 	authenticate($f3->get("PARAMS.0"));
 
 	$input = $f3->scrub($_POST);
@@ -66,7 +68,8 @@ function create_module($f3) {
 	header("Location: /"); 
 }
 
-function create_specification($f3) {
+function create_specification($f3) 
+{
 	authenticate($f3->get("PARAMS.0"));
 
 	$input = $f3->scrub($_POST);
@@ -92,7 +95,8 @@ function create_specification($f3) {
 	header("Location: /edit/specification/$specification_id"); 
 }
 
-function create_syllabus($f3) {
+function create_syllabus($f3) 
+{
 	authenticate($f3->get("PARAMS.0"));
 
 	$input = $f3->scrub($_POST);
@@ -155,7 +159,8 @@ function create_syllabus($f3) {
 	header("Location: /edit/syllabus/$syllabus_id"); 
 }
 
-function view_syllabus($f3) {
+function view_syllabus($f3) 
+{
 	$syllabus = R::load("syllabus", $f3->get('PARAMS["syllabus_id"]'));
 	if(!$syllabus->id)
 	{
@@ -178,7 +183,8 @@ function view_syllabus($f3) {
 	echo Template::instance()->render("main.htm");
 }
 
-function json_syllabus($f3) {
+function json_syllabus($f3) 
+{
 	$syllabus = R::load("syllabus", $f3->get('PARAMS["syllabus_id"]'));
 	if(!$syllabus->id)
 	{
@@ -189,7 +195,8 @@ function json_syllabus($f3) {
 	echo json_encode($module);
 }
 
-function ecs_syllabus($f3) {
+function ecs_syllabus($f3) 
+{
 	$existing_module = R::findOne("module", "session = ? AND code = ?", array( $f3->get("PARAMS.session"), $f3->get("PARAMS.modulecode") ) );
 	if(!isset($existing_module))
 	{
@@ -217,7 +224,8 @@ function ecs_syllabus($f3) {
 	echo json_encode($module);
 }
 
-function php_module($f3) {
+function php_module($f3) 
+{
 	$existing_module = R::findOne("module", "session = ? AND code = ?", array( $f3->get("PARAMS.session"), $f3->get("PARAMS.modulecode") ) );
 
 	if(!isset($existing_module))
@@ -242,7 +250,8 @@ function php_module($f3) {
 	echo serialize($module);
 }
 
-function edit_syllabus($f3) {
+function edit_syllabus($f3) 
+{
 	global $API_KEYS;
 	
 	authenticate($f3->get("PARAMS.0"));
@@ -270,7 +279,8 @@ function edit_syllabus($f3) {
 	echo Template::instance()->render("main.htm");
 }
 
-function save_syllabus($f3){
+function save_syllabus($f3)
+{
 	authenticate($f3->get("PARAMS.0"));
 	$syllabus = R::load("syllabus", $f3->get('PARAMS["syllabus_id"]'));
 
@@ -290,7 +300,8 @@ function save_syllabus($f3){
 }
 
 
-function toreview_syllabus($f3){
+function toreview_syllabus($f3)
+{
 	authenticate($f3->get("PARAMS.0"));
 	$syllabus = R::load("syllabus", $f3->get('PARAMS["syllabus_id"]'));
 	if(!$syllabus->id)
@@ -313,7 +324,8 @@ function toreview_syllabus($f3){
 }
 
 
-function review_syllabus($f3){
+function review_syllabus($f3)
+{
 	authenticate($f3->get("PARAMS.0"));
 	$syllabus = R::load("syllabus", $f3->get('PARAMS["syllabus_id"]'));
 	if(!$syllabus->id)
@@ -362,7 +374,8 @@ function review_syllabus($f3){
 	echo Template::instance()->render("main.htm");
 }
 
-function approve_syllabus($f3){
+function approve_syllabus($f3)
+{
 	authenticate($f3->get("PARAMS.0"));
 	$syllabus = R::load("syllabus", $f3->get('PARAMS["syllabus_id"]'));
 	if(!$syllabus->id)
@@ -419,22 +432,23 @@ function approve_syllabus($f3){
 
 }
 
-function review_dashboard($f3){
-	global $REVIEWERS;
+function review_dashboard($f3)
+{
 	authenticate($f3->get("PARAMS.0"));
 
 	$user = current_user();
-	if(empty($REVIEWERS[$user->username]))
+
+	$rg = $user->review_groups();
+	if ( empty($rg))
 	{
 		$f3->error( 500, "You are not registered as a module reviewer");
 	}
 
-	$syllabuses = syllabuses_awaiting_review();
+	$syllabuses = $user->syllabuses_awaiting_review();
 	$f3->set('syllabuses_awaiting_review', $syllabuses);
 	$f3->set('syllabuses_awaiting_review_count', count($syllabuses));
 
-
-	$syllabuses = syllabuses_awaiting_submission();
+	$syllabuses = $user->syllabuses_awaiting_submission();
 	$f3->set('syllabuses_awaiting_submission', $syllabuses);
 	$f3->set('syllabuses_awaiting_submission_count', count($syllabuses));
 
@@ -444,15 +458,18 @@ function review_dashboard($f3){
 	echo Template::instance()->render("main.htm");
 }
 
-function login($f3){
+function login($f3)
+{
 }
 
-function logout($f3){
+function logout($f3)
+{
 	$f3->set("SESSION.authenticated", false);
 	header("Location: /");
 }
 
-function report_usage($f3) {
+function report_usage($f3) 
+{
 	$report_start = strtotime("-1 month");	
 	$report_end = time();
 	if($f3->exists("REQUEST.report_start")){

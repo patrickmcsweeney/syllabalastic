@@ -14,6 +14,7 @@ $includes = array
 	'http_routes.php',
 	'lib/redbean/rb.php',
 	'syllabus.php',
+	'user.php',
 	'lib/floraform/FloraForm.php'
 );
 foreach ($includes as $file)
