@@ -352,7 +352,6 @@ function review_syllabus($f3)
 	# if there is only 1 ownSyllabus that is the provisional one
 	if(count($module->ownSyllabus) > 1)
 	{
-		print_r(count($module->ownSyllabus));
 		$previous_syllabus = array_shift($module->ownSyllabus);
 	}
 	$f3->set("title", "Reviewing ".$module->code.": ".$module->title." (".$module->session.") ");

@@ -3,13 +3,17 @@
 <p>{{@syllabuses_awaiting_review_count}} syllabuses are awaiting review</p>
 <ul class="syllabus-list">
 <repeat group="{{ @syllabuses_awaiting_review }}" value="{{ @syllabus }}">
-	<include href="reviewmodulelistitem.htm"/>
+	<check if="{{ @syllabus->module }}">
+		<include href="reviewmodulelistitem.htm"/>
+	</check>
 </repeat>
 </ul>
 <h2>Syllabuses awaiting submission</h2>
 <p>{{@syllabuses_awaiting_submission_count}} syllabuses have been edited but not submitted to review</p>
 <ul class="syllabus-list">
 <repeat group="{{ @syllabuses_awaiting_submission }}" value="{{ @syllabus }}">
-	<include href="reviewmodulelistitem.htm"/>
+	<check if="{{ @syllabus->module }}">
+		<include href="reviewmodulelistitem.htm"/>
+	</check>
 </repeat>
 </ul>
