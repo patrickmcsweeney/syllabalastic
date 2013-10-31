@@ -146,6 +146,15 @@ function valid_api_key($key)
 	return false;
 }
 
+function create_secret($api_key)
+{
+	$secret = R::dispense("secretkey");
+	$secret->secret = md5("9b49a808af453e5cde8d9bbec9fe4385".$api_key.time());
+	$secret->issuetime = time();
+	R::store($secret);
+
+}
+
 function valid_secret($secret)
 {
 	$secret_key = R::findOne('secretkey','secret=?',array($secret));

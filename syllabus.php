@@ -190,7 +190,14 @@ class Model_Syllabus extends RedBean_SimpleModel {
 	public function getForm( $flags = array() )
 	{
 		$params =  array( "heading"=>1, "resourcesURL"=>"/ui/resources", ); 
-		$params["action"] = "/save/syllabus/".$this->id;
+		
+		$action = "http";
+		if(isset($_SERVER['HTTPS']))
+		{
+			$action .= "s";
+		}
+		$action .= "://".$_SERVER['HTTP_HOST']."/save/syllabus/".$this->id;
+		$params["action"] = $action;
 		$form = new FloraForm($params);
 
 		if(array_key_exists('passback', $flags))

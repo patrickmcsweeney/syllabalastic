@@ -271,7 +271,13 @@ function edit_syllabus($f3)
 
 	$module = $syllabus->module;
 
-	R::store($module);
+	if(valid_api_key(F3::get("REQUEST.apikey")))
+	{
+		$secret = create_secret(F3::get("REQUEST.apikey"));
+		echo serialize( $syllabus->renderForm(array("secret"=>$secret, "passback"=>F3::get("REQUEST.passback"))));
+		return;
+	}
+
 	$f3->set('title', "Editing ".$module->code.": ".$module->title );
 
 	$f3->set('rendered_html_content', $syllabus->renderForm());
