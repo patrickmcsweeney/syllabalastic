@@ -133,5 +133,13 @@
 	</F3:true>
 </F3:check>
 
+<h2>Prerequisite information</h2>
+<p>This information comes from banner and can not be edited throught this sytem.</p>
+
+<check if="{{ file_exists('templates/prerequisites/'. @module->code .'.html') }}">
+	<include href="{{'prerequisites/'.@module->code.'.html'}}" />
+</check>
+
+
 <!-- Change information will not be shown here -->
 </article>
