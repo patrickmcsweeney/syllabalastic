@@ -18,6 +18,9 @@ $REVIEWERS = array(
         "phc1" => array("F7"),
         "chdg" => array("F7"),
         "rwe" => array("F7"),
+        "dm3" => array("F2"),
+        "bl2" => array("F2"),
+        "cqafee" => array("F2"),
         "cqafshs" => array("F8"),
         "alexfurr" => array("F8")
 );
