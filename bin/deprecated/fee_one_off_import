@@ -1,9 +1,20 @@
 #!/usr/bin/php
 <?php
+$path_to_base_dir = "../../";
+require_once($path_to_base_dir."includes.php");
 
-require_once(__DIR__.'/../lib/includes.php');
-includes(array("debug"=>1, "web"=>false));
-#R::freeze( true );
+$f3->set('getConstant',function($syllabus, $key){
+        return $syllabus->getConstant("$key");
+});
+
+$db_name = $f3->get('db_name');
+$db_password = $f3->get('db_password');
+$db_user = $f3->get('db_user');
+$db_host = $f3->get('db_host');
+
+R::setup("mysql:host=$db_host;dbname=$db_name",$db_user,$db_password);
+
+
 if (count($argv) < 2)
 {
 	echo "you must specifiy a file to import\n";
@@ -15,7 +26,7 @@ foreach($syllabuses as $object)
 {	
 	$syllabus = $object;
 	$module = $object->module;
-	$module->session = 201213;
+	$module->session = 201314;
 	if(!isset($module)) {continue;}
 	if( !(isset($module->session) && isset($module->code))  )
 	{
@@ -34,65 +45,75 @@ foreach($syllabuses as $object)
 	$newsyll = R::dispense("syllabus");
 	$newsyll->module = $existing_module;
 	$newsyll->isprovisional = false;
-	$newsyll->introduction = clean_up($syllabus->introduction);
-	$newsyll->learningoutcomes = clean_up($syllabus->learningoutcomes);
-	$newsyll->topics = clean_up($syllabus->topics);
-	$newsyll->referral = $syllabus->referral;
-	$newsyll->assessmentnotes = clean_up($syllabus->assessment_notes);
-	$newsyll->timetablenotes = clean_up($syllabus->timetable_notes);
+	$newsyll->introduction = clean_up(@$syllabus->introduction);
+	$newsyll->learningoutcomes = clean_up(@$syllabus->learningoutcomes);
+	$newsyll->topics = clean_up(@$syllabus->topics);
+       	$newsyll->referral = $syllabus->referral;
+	$newsyll->assessmentnotes = clean_up(@$syllabus->assessment_notes);
+	$newsyll->timetablenotes = clean_up(@$syllabus->timetable_notes);
 
 	$teachings = array();
-	foreach($syllabus->regular_teaching as $teaching)
+	if(@$syllabus->regular_teaching)
 	{
-		$newteac = R::dispense('regularteaching');
-		$newteac->activitytype = $teaching->activity_type;
-		$newteac->duration = $teaching->duration;
-		$newteac->frequency = $teaching->frequency;
-		$teachings[] = $newteac;
+		foreach($syllabus->regular_teaching as $teaching)
+		{
+			$newteac = R::dispense('regularteaching');
+			$newteac->activitytype = @$teaching->activity_type;
+			$newteac->duration = @$teaching->duration;
+			$newteac->frequency = @$teaching->frequency;
+			$teachings[] = $newteac;
+		}
+		$newsyll->ownTeaching = $teachings;
 	}
-	$newsyll->ownTeaching = $teachings;
-
 	$continuousassessment = array();
 	$exams = array();
-
-	foreach($syllabus->exam as $assess)
+	if(@$syllabus->exam)
 	{
-			$exam = R::dispense('exam');
-			$exam->examduration = $assess->examduration;
-			$exam->percent = $assess->percent;
-			$exams[] = $exam;
-
-	}
-	foreach($syllabus->continuousassessment as $assess)
-	{
-		if($assess->type === "exam")
+		foreach($syllabus->exam as $assess)
 		{
-			$exam = R::dispense('exam');
-			$exam->examduration = $assess->exam_duration;
-			$exam->percent = $assess->percent;
-			$exams[] = $exam;
-		}else{
-			$newass = R::dispense('continuousassessment');
-			$newass->description = $assess->description;
-			$newass->frequency = $assess->frequency;
-			$newass->percent = $assess->percent;
-			$newass->type = $assess->type;
-			$newass->weeknos = $assess->weeknos;
-			$newass->feedback = $assess->feedback;
-			$continuousassessment[] = $newass;
+				$exam = R::dispense('exam');
+				$exam->examduration = @$assess->examduration;
+				$exam->percent = @$assess->percent;
+				$exams[] = $exam;
+
+		}
+	}
+	if(@$syllabus->continuousassessment)
+	{
+		foreach($syllabus->continuousassessment as $assess)
+		{
+			if(@$assess->type === "exam")
+			{
+				$exam = R::dispense('exam');
+				$exam->examduration = @$assess->exam_duration;
+				$exam->percent = @$assess->percent;
+				$exams[] = $exam;
+			}else{
+				$newass = R::dispense('continuousassessment');
+				$newass->description = @$assess->description;
+				$newass->frequency = @$assess->frequency;
+				$newass->percent = @$assess->percent;
+				$newass->type = @$assess->type;
+				$newass->weeknos = @$assess->weeknos;
+				$newass->feedback = @$assess->feedback;
+				$continuousassessment[] = $newass;
+			}
 		}
 	}
 	$newsyll->ownContinuousassessment = $continuousassessment;
 	$newsyll->ownExam = $exams;
 
 	$resources = array();
-	foreach($syllabus->resources as $resource)
+	if(@$syllabus->resources)
 	{
-		$newres = R::dispense('resources');
-		$newres->details = clean_up($resource->details);
-		$newres->type = $resource->type;
-		$newres->isbn = $resource->isbn;
-		$resources[] = $newres;
+		foreach($syllabus->resources as $resource)
+		{
+			$newres = R::dispense('resources');
+			$newres->details = clean_up($resource->details);
+			$newres->type = $resource->type;
+			$newres->isbn = $resource->isbn;
+			$resources[] = $newres;
+		}
 	}
 	$newsyll->ownResources = $resources;
 	print("imported ".$module->code." ".$module->session."\n");
@@ -105,11 +126,6 @@ foreach($syllabuses as $object)
 
 function clean_up($data)
 {
-
-        $data = preg_replace('/<[^\\/^p][^>]*>/i', '', $data);
-        $data = preg_replace('/<\\/[^p][^>]*>/i', '', $data);
-        $data = preg_replace('/<p[^>]*>/i', '<p>', $data);
-	return trim($data);
-
+	return preg_replace('/<([^\s>]+)[^>]*>/i', '<$1>', $data);
 }
 
