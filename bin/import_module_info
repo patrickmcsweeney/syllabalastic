@@ -1,9 +1,8 @@
 #!/usr/bin/php
 <?php
+$path_to_base_dir = "../"; 
+require_once($path_to_base_dir.'includes.php');
 
-require_once(__DIR__.'/../lib/includes.php');
-includes(array("debug"=>1));
-#R::freeze( true );
 if (count($argv) < 2)
 {
 	echo "you must specifiy a file to import\n";
@@ -17,9 +16,9 @@ fgets($file); # chuck the headings away
 while( $line = fgets($file) )
 {
 	$line = explode("|", $line);
-	if(!is_array($line)){ print("Something is wrong this line has no data"); continue; }
+	if(!is_array($line) or count($line) < 10){ print("Something is wrong this line has no data"); continue; }
 	####### TODO, reading the data file should be abstracted, this is blatently something which will change
-	$info[$line[0]][$line[10]]["title"] = $line[16];
+	$info[$line[0]][$line[10]]["title"] = $line[44];
 	$info[$line[0]][$line[10]]["facultycode"] = $line[4];
 	$info[$line[0]][$line[10]]["facultyname"] = $line[5];
 	$info[$line[0]][$line[10]]["semestercode"] = $line[17];

@@ -1,4 +1,35 @@
 <?php
+
+$f3=require($path_to_base_dir.'lib/fatfree-master/lib/base.php');
+$f3->config($path_to_base_dir.'config.ini');
+
+#Note on first installation, you will need to fill in
+#and rename passwords.ini.template to passwords.ini
+$f3->config($path_to_base_dir.'passwords.ini');
+
+$includes = array
+(
+        'functions.php',
+        'http_routes.php',
+        'lib/redbean/rb.php',
+        'syllabus.php',
+        'user.php',
+        'lib/floraform/FloraForm.php'
+);
+foreach ($includes as $file)
+{
+#path_to_base_dir should be set by the script which does the include
+        require_once($path_to_base_dir.$file);
+}
+
+
+$db_name = $f3->get('db_name');
+$db_password = $f3->get('db_password');
+$db_user = $f3->get('db_user');
+$db_host = $f3->get('db_host');
+
+R::setup("mysql:host=$db_host;dbname=$db_name",$db_user,$db_password);
+
 $API_KEYS = array($f3->get('api_key'));
 $REVIEWERS = array(  
         "pm5c08" => array("F7"),
@@ -25,25 +56,4 @@ $REVIEWERS = array(
         "alexfurr" => array("F8")
 );
 
-#function includes($params = array())
-#{
-#	ini_set('memory_limit', '-1');
-#	if($params["debug"])
-#	{
-#		ini_set('display_errors',1);
-#		error_reporting(E_ALL);
-#	}
-#	
-#	if($params["web"])
-#	{
-#		require __DIR__.'/base.php';
-#		F3::set('CACHE',FALSE); #TODO remove this at the end
-#		F3::set('UI','ui/');
-#		if($params["debug"])
-#		{
-#			F3::set('DEBUG',1); 
-#		}
-#
-#	}
-#}
 
