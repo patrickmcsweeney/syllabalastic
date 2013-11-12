@@ -30,6 +30,29 @@ function modules_by_year($f3)
 	echo Template::instance()->render("main.htm");
 }
 
+function ecs_overviews($f3)
+{
+	$modules = R::find('module', "session = ? ORDER BY code", array($f3->get('PARAMS["session"]')));
+	
+	$modules_by_faculty = array();
+	header("Content-type: text/plain" );
+	foreach($modules as $module)
+	{
+		$syl = reset($module->ownSyllabus);
+		if( $syl ) 
+		{
+			$modules_by_faculty[$module->facultycode][$module->code] = array( 
+				"code" => $module->code,
+				"title" => $module->title,
+				"introduction" => $syl->introduction );
+		}
+	}
+
+	header("Content-type: text/plain" );
+	echo json_encode($modules_by_faculty);
+}
+
+
 function themes($f3) 
 {
 	#TODO this should be dynamic based on the date
