@@ -11,7 +11,9 @@
 
         <li id='tab_assessment'><a href='#assessment'>Assessment</a></li>
 
-        <li id='tab_resources'><a href='#resources'>Resources</a></li>
+	<check if="{{@syllabus->hascore || @syllabus->hasother}}">
+        	<li id='tab_resources'><a href='#resources'>Resources</a></li>
+	</check>
       </ul>
     </div>
 
@@ -88,9 +90,10 @@
     <h2 class='uos_tab_pane_title'>Resources</h2>
 
     <div class='uos_tab' id='tab_pane_resources'>
-        <strong>Core textbooks</strong>
-          <div>
-	      <F3:repeat group="{{@syllabus->ownResources}}" value="{{@resource}}">
+	<check if="{{@syllabus->hascore}}">
+		<strong>Core textbooks</strong>
+		<div>
+		    <F3:repeat group="{{@syllabus->ownResources}}" value="{{@resource}}">
 			<F3:check if="{{@resource->type == 'core'}}">
 				<div class="resource">
 					<div class="type"><span class="label">Resource type:</span> {{@getConstant(@syllabus, @resource->type)}}</div>
@@ -100,11 +103,13 @@
 					<div class="details">{{@resource->details}}</div>
 				</div>
 			</F3:check>
-		</F3:repeat>
-          </div>
-        <strong>Other resource requirements:</strong>
-          <div>
-	      <F3:repeat group="{{@syllabus->ownResources}}" value="{{@resource}}">
+		      </F3:repeat>
+		</div>
+	</check>	
+	<check if="{{@syllabus->hascore}}">
+        	<strong>Other resource requirements:</strong>
+		<div>
+		    <F3:repeat group="{{@syllabus->ownResources}}" value="{{@resource}}">
 			<F3:check if="{{@resource->type != 'core'}}">
 				<div class="resource">
 					<div class="type"><span class="label">Resource type:</span> {{@getConstant(@syllabus, @resource->type)}}</div>
@@ -114,9 +119,10 @@
 					<div class="details">{{@resource->details}}</div>
 				</div>
 			</F3:check>
-		</F3:repeat>
+		      </F3:repeat>
 
-          </div>
+		</div>
+	</check>
     </div>
   </div>
 
