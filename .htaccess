@@ -10,26 +10,26 @@ RewriteEngine On
 RewriteCond %{REQUEST_URI} \.ini$
 RewriteRule \.ini$ - [R=404]
 
-RewriteCond %{REQUEST_FILENAME} bin.*$
-RewriteRule bin.*$ - [R=404]
+RewriteCond %{REQUEST_FILENAME} bin/.*$
+RewriteRule bin/.*$ - [R=404]
 
-RewriteCond %{REQUEST_FILENAME} cache.*$
-RewriteRule cache.*$ - [R=404]
+RewriteCond %{REQUEST_FILENAME} cache/.*$
+RewriteRule cache/.*$ - [R=404]
 
-RewriteCond %{REQUEST_FILENAME} tmp.*$
-RewriteRule tmp.*$ - [R=404]
+RewriteCond %{REQUEST_FILENAME} tmp/.*$
+RewriteRule tmp/.*$ - [R=404]
 
-RewriteCond %{REQUEST_FILENAME} bin.*$
-RewriteRule bin.*$ - [R=404]
+RewriteCond %{REQUEST_FILENAME} bin/.*$
+RewriteRule bin/.*$ - [R=404]
 
-RewriteCond %{REQUEST_FILENAME} etc.*$
-RewriteRule etc.*$ - [R=404]
+RewriteCond %{REQUEST_FILENAME} etc/.*$
+RewriteRule etc/.*$ - [R=404]
 
-RewriteCond %{REQUEST_FILENAME} var.*$
-RewriteRule var.*$ - [R=404]
+RewriteCond %{REQUEST_FILENAME} var/.*$
+RewriteRule var/.*$ - [R=404]
 
-RewriteCond %{REQUEST_FILENAME} lib.*$
-RewriteRule lib.*$ - [R=404]
+RewriteCond %{REQUEST_FILENAME} lib/.*$
+RewriteRule lib/.*$ - [R=404]
 
 RewriteCond %{REQUEST_URI} \.html?$
 RewriteRule \.html?$ - [R=404]

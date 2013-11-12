@@ -386,9 +386,10 @@ function review_syllabus($f3)
 	$f3->set("title", "Reviewing ".$module->code.": ".$module->title." (".$module->session.") ");
 	$f3->set("module", $module);
 
+	$f3->set("syllabus", $syllabus);
+	
 	$templates = array();
 	if(!isset($previous_syllabus)){
-		$f3->set("syllabus", $syllabus);
 		$content .= Template::instance()->render("syllabus.htm");
 		$templates[] = 'syllabus.htm';
 	}else{
