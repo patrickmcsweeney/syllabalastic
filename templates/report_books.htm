@@ -1,0 +1,29 @@
+Text books for the current session 
+
+<h2>Core Reading</h2>
+<ul>
+	<repeat group="{{@syllabuses}}" value="{{@syllabus}}">
+		<check if="{{@syllabus->module}}">
+			<repeat group="{{@syllabus->ownResources}}" value="{{@resource}}">
+				<check if="{{@resource->type == 'core'}}">
+					<li><strong><a href="/view/syllabus/{{@syllabus->id}}">{{@syllabus->module->code}}</a></strong> - {{@resource->details}}</li>
+					
+				</check>
+			</repeat>
+		</check>
+	</repeat>
+</ul>
+
+<h2>Background Reading</h2>
+<ul>
+	<repeat group="{{@syllabuses}}" value="{{@syllabus}}">
+		<check if="{{@syllabus->module}}">
+			<repeat group="{{@syllabus->ownResources}}" value="{{@resource}}">
+				<check if="{{@resource->type == 'core'}}">
+					<li><strong><a href="/view/syllabus/{{@syllabus->id}}">{{@syllabus->module->code}}</a></strong> - {{@resource->details}}</li>
+					
+				</check>
+			</repeat>
+		</check>
+	</repeat>
+</ul>

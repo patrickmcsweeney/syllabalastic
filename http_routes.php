@@ -496,4 +496,23 @@ function report_usage($f3)
 	echo Template::instance()->render("main.htm");
 }
 
+function report_books($f3)
+{
+	$faculty_code = $f3->get("PARAMS.faculty");
+	$session = key(date_as_session());
+
+	$sql = "select distinct syllabus.* from syllabus, module where syllabus.module_id = module.id and syllabus.isprovisional != 1 and module.session=? and module.facultycode = ? order by module.code";
+
+
+	$params = array($session, $faculty_code);
+	$syllabuses = R::convertToBeans("syllabus", R::getAll( $sql, $params));
+
+	$f3->set("syllabuses", $syllabuses);	
+	$f3->set("title", "Text book usage");	
+	$f3->set('templates', array('report_books.htm'));
+
+	echo Template::instance()->render("main.htm");
+
+}
+
 ?>
