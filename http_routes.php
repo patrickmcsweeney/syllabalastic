@@ -101,13 +101,13 @@ function create_syllabus($f3)
 
 	$input = $f3->scrub($_POST);
 	
-	if(!($input["session"] > key(date_as_session())))
-	{
-		#TODO MUST BE UNCOMMENTED 
-		$f3->error( 500, "You cannot create syllabuses for the current or past sessions");
-		return;
-	
-	}
+#	if(!($input["session"] > key(date_as_session())))
+#	{
+#		#TODO MUST BE UNCOMMENTED 
+#		$f3->error( 500, "You cannot create syllabuses for the current or past sessions");
+#		return;
+#	
+#	}
 
 	$existing_module = R::findOne("module", "session = ? AND code = ?", array( $input["session"], $input["modulecode"] ) );
 	
@@ -214,6 +214,15 @@ function ecs_syllabus($f3)
 	{
 		$f3->error( 500, "This syllabus id does not exist");
 		return;
+	}
+	foreach($syllabus->ownResource as $resource)
+	{
+		if($resource->type == "core")
+		{
+			$syllabus->hascore = true;
+		}else{
+			$syllabus->hasother = true;
+		}
 	}
 	$f3->set("syllabus", $syllabus);
 	$f3->set("module", $existing_module);
