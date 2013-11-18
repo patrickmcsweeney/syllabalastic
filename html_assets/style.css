@@ -157,4 +157,6 @@ table.login .login-container {
 	text-align: left;
 }
 
-
+.module-title input {
+	width: 60%;
+}

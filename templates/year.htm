@@ -1,5 +1,12 @@
 <div class="years">
-	<a href="/view/modules/201213">2012-13</a></strong> - 
-	<strong><a href="/view/modules/201314">2013-14</a></strong> - 
-	<a href="/view/modules/201415">2014-15</a>
+	-
+	<repeat group="{{@years}}" key="{{@year_code}}" value="{{@year_render}}"> 
+		<check if="{{@year_code == @selected_year}}">
+			<true>
+				<strong><a href="/view/modules/{{@year_code}}">{{@year_render}}</a></strong> -
+			</true>
+			<false>
+				<a href="/view/modules/{{@year_code}}">{{@year_render}}</a> -
+			</false>
+	</repeat>
 </div>

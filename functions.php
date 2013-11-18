@@ -90,12 +90,6 @@ function authenticate($pass_through)
 		$f3->error( 500,"Only staff may log into this service");
 	}
 
-	if($info[0]['cn'][0]!=$_POST["username"])
-	{
-		$f3->error( 500,"Unexpected login failure. This should never happen.");
-		return FALSE;
-	}
-
 	$user = R::findOne('user', ' username = ?', array($_POST["username"]));
 
 	if(!isset($user))

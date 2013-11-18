@@ -2,14 +2,23 @@
 
 function front_page($f3)
 {
-	header("Location: /view/modules/201314");
+	#syllabuses work one academic year ahead 
+	# this will probably blow everyones mind :-(
+	$session_array = date_as_session(strtotime("+1 year"));
+	$next_year = key($session_array);
+	header("Location: /view/modules/$next_year");
 }
 
 function modules_by_year($f3)
 {
+	$current_year = date_as_session();
+	$next_year = date_as_session(strtotime("+1 year"));
+	$year_after = date_as_session(strtotime("+2 years"));
+	$years = $current_year + $next_year + $year_after; 
+	$f3->set("years", $years);
+	$f3->set("selected_year", $f3->get("PARAMS.session"));
 
-	#TODO this should be dynamic based on the date
-	$modules = R::find('module', "session = ? ORDER BY code", array($f3->get('PARAMS["session"]')));
+	$modules = R::find('module', "session = ? ORDER BY code", array($f3->get('PARAMS.session')));
 	
 	$modules_by_faculty = array();
 	foreach($modules as $module)
@@ -25,7 +34,16 @@ function modules_by_year($f3)
 	$f3->set('title', 'Module list by course code');
 	$f3->set('modules', $modules_by_faculty);
 	$f3->set('userfacultycode', current_user()->facultycode);
-	$f3->set('templates', array('year.htm','createmodule.htm','modulesearch.htm','modulelist.htm'));
+	
+	$templates = array('year.htm');
+	
+	if($f3->get("PARAMS.session") > key($current_year)){
+		array_push( $templates, 'createmodule.htm');
+	}
+
+	array_push( $templates, 'modulesearch.htm');
+	array_push( $templates, 'modulelist.htm');
+	$f3->set('templates', $templates); 
 	
 	echo Template::instance()->render("main.htm");
 }
@@ -73,17 +91,24 @@ function create_module($f3)
 
 	$input = $f3->scrub($_POST);
 
-	$existing_module = R::findOne("module", "session = ? AND code = ?", array( $input["session"], $input["modulecode"] ) );
-	
-	if(isset($existing_module)){
-		$f3->error( 500, "A module with this code already exists");
-		return;
-	}
+	$user = current_user();
+	$faculty_code = current_user()->facultycode;
 
+	$next_create_code = $faculty_code."Provisional000001";
+
+	$last_created_module = R::findOne("module", "session = ? AND facultycode = ? order by code", array( $input["session"], $faculty_code ) );
+
+	if(isset($last_created_module)){
+		$next_create_code = $last_created_module->code;
+		$next_create_code++; 
+	}
+	
 	$new_module = R::dispense("module");
-	$new_module->code = $input["modulecode"];
+	$new_module->code = $next_create_code; 
 	$new_module->session = $input["session"];
 	$new_module->title = $input["moduletitle"];
+	$new_module->facultycode = $faculty_code;
+	$new_module->facultyname = $user->facultyname;
 	
 	
 	R::store($new_module);
@@ -126,7 +151,6 @@ function create_syllabus($f3)
 	
 #	if(!($input["session"] > key(date_as_session())))
 #	{
-#		#TODO MUST BE UNCOMMENTED 
 #		$f3->error( 500, "You cannot create syllabuses for the current or past sessions");
 #		return;
 #	
