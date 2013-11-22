@@ -33,7 +33,7 @@ function modules_by_year($f3)
 
 	$f3->set('title', 'Module list by course code');
 	$f3->set('modules', $modules_by_faculty);
-	$f3->set('userfacultycode', current_user()->facultycode);
+	$f3->set('userfacultycode', current_user($f3)->facultycode);
 	
 	$templates = array('year.htm');
 	
@@ -87,12 +87,12 @@ function themes($f3)
 
 function create_module($f3) 
 {
-	authenticate($f3->get("PARAMS.0"));
+	authenticate($f3);
 
 	$input = $f3->scrub($_POST);
 
-	$user = current_user();
-	$faculty_code = current_user()->facultycode;
+	$user = current_user($f3);
+	$faculty_code = $user->facultycode;
 
 	$next_create_code = $faculty_code."Provisional000001";
 
@@ -118,7 +118,7 @@ function create_module($f3)
 
 function create_specification($f3) 
 {
-	authenticate($f3->get("PARAMS.0"));
+	authenticate($f3);
 
 	$input = $f3->scrub($_POST);
 
@@ -145,7 +145,7 @@ function create_specification($f3)
 
 function create_syllabus($f3) 
 {
-	authenticate($f3->get("PARAMS.0"));
+	authenticate($f3);
 
 	$input = $f3->scrub($_POST);
 	
@@ -310,7 +310,7 @@ function edit_syllabus($f3)
 {
 	global $API_KEYS;
 	
-	authenticate($f3->get("PARAMS.0"));
+	authenticate($f3);
 
 	$syllabus = R::load("syllabus", $f3->get('PARAMS["syllabus_id"]'));
 	if(!$syllabus->id)
@@ -343,7 +343,7 @@ function edit_syllabus($f3)
 
 function save_syllabus($f3)
 {
-	authenticate($f3->get("PARAMS.0"));
+	authenticate($f3);
 	$syllabus = R::load("syllabus", $f3->get('PARAMS["syllabus_id"]'));
 
 	if(!$syllabus->id)
@@ -364,7 +364,7 @@ function save_syllabus($f3)
 
 function toreview_syllabus($f3)
 {
-	authenticate($f3->get("PARAMS.0"));
+	authenticate($f3);
 	$syllabus = R::load("syllabus", $f3->get('PARAMS["syllabus_id"]'));
 	if(!$syllabus->id)
 	{
@@ -388,7 +388,7 @@ function toreview_syllabus($f3)
 
 function review_syllabus($f3)
 {
-	authenticate($f3->get("PARAMS.0"));
+	authenticate($f3);
 	$syllabus = R::load("syllabus", $f3->get('PARAMS["syllabus_id"]'));
 	if(!$syllabus->id)
 	{
@@ -402,7 +402,7 @@ function review_syllabus($f3)
 		return;
 	}
 	
-	$user = current_user();
+	$user = current_user($f3);
 	if(!$syllabus->canBeReviewedBy($user))
 	{
 		$f3->error( 500, "You are not a reviewer for this syllabus");	
@@ -438,7 +438,7 @@ function review_syllabus($f3)
 
 function approve_syllabus($f3)
 {
-	authenticate($f3->get("PARAMS.0"));
+	authenticate($f3);
 	$syllabus = R::load("syllabus", $f3->get('PARAMS["syllabus_id"]'));
 	if(!$syllabus->id)
 	{
@@ -474,7 +474,7 @@ function approve_syllabus($f3)
 	#if($syllabus->quinquenialreviewed && $syllabus->courseleaderreviewed && $syllabus->cqareviewed && $syllabus->educationboardreviewed) 
 	if($syllabus->cqareviewed) 
 	{
-		$user = current_user();
+		$user = current_user($f3);
 		$syllabus->isprovisional = 0;
 		$syllabus->isunderreview = 0;
 		$syllabus->timeapproved = time();
@@ -496,9 +496,9 @@ function approve_syllabus($f3)
 
 function review_dashboard($f3)
 {
-	authenticate($f3->get("PARAMS.0"));
+	authenticate($f3);
 
-	$user = current_user();
+	$user = current_user($f3);
 
 	$rg = $user->review_groups();
 	if ( empty($rg))

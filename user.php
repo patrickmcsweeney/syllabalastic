@@ -28,7 +28,7 @@ class Model_User extends RedBean_SimpleModel {
 	function syllabuses_awaiting_review()
 	{
 		global $REVIEWERS;
-		$user = current_user();
+		$user = current_user($f3);
 		$session = key(date_as_session(time()+365*24*60*60)); //we review for next years modules not this years
 
 		$params = $REVIEWERS[$user->username];
