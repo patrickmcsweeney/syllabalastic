@@ -108,9 +108,44 @@ function current_user($f3)
 	return R::load('user', $f3->get('SESSION.userid'));
 }
 
+#returns an array keyed on sessions as stored in the database (e.g. 201516)
+#with values as sessions as displayed (e.g. 2015-16)
+#$date -- the earliest date in the array
+#$n --  param defines how may consecutive sessions will be in the array
+function dates_as_sessions($date=null, $n=1)
+{
+	if($date === null){
+		$date = time();
+	}
+
+	$year = date('Y', $date);
+	$year--;
+	$next_year = date('y', $date);
+	if (date('n') > 10)
+	{
+		$year++;
+		$next_year++;
+	}
+
+	$sessions = array();
+	for ($i = 0; $i < $n; $i++)
+	{
+		$k = "$year$next_year";
+		$v = "$year-$next_year";
+		$sessions[$k] = $v;
+		$year++;
+		$next_year++;
+	}
+
+	return $sessions;
+}
+
+
 # $date should be a unix time as provided by time() or strtotime
 function date_as_session($date=null)
 {
+	return dates_as_sessions($date);
+
 	if($date === null){
 		$date = time();
 	}

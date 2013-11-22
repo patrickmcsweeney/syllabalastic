@@ -4,7 +4,7 @@ function front_page($f3)
 {
 	#syllabuses work one academic year ahead 
 	# this will probably blow everyones mind :-(
-	$session_array = date_as_session(strtotime("+1 year"));
+	$session_array = dates_as_sessions(strtotime("+1 year"));
 	$next_year = key($session_array);
 	header("Location: /view/modules/$next_year");
 }
@@ -12,11 +12,8 @@ function front_page($f3)
 
 function modules_by_year($f3)
 {
-	$current_year = date_as_session();
-	$next_year = date_as_session(strtotime("+1 year"));
-	$year_after = date_as_session(strtotime("+2 years"));
-	$years = $current_year + $next_year + $year_after; 
-	$f3->set("years", $years);
+
+	$f3->set("years", dates_as_sessions(null,3)); #null defaults to this year
 	$f3->set("selected_year", $f3->get("PARAMS.session"));
 
 	$modules = R::find('module', "session = ? ORDER BY code", array($f3->get('PARAMS.session')));
@@ -37,7 +34,9 @@ function modules_by_year($f3)
 	$f3->set('userfacultycode', current_user($f3)->facultycode);
 	
 	$templates = array('year.htm');
-	
+
+	#we can't create modules in the past!	
+	$current_year = dates_as_sessions();
 	if($f3->get("PARAMS.session") > key($current_year)){
 		array_push( $templates, 'createmodule.htm');
 	}
@@ -150,7 +149,7 @@ function create_syllabus($f3)
 
 	$input = $f3->scrub($_POST);
 	
-#	if(!($input["session"] > key(date_as_session())))
+#	if(!($input["session"] > key(dates_as_sessions())))
 #	{
 #		$f3->error( 500, "You cannot create syllabuses for the current or past sessions");
 #		return;
@@ -499,7 +498,15 @@ function review_dashboard($f3)
 {
 	authenticate($f3);
 
+	if (!$f3->exists("PARAMS.session"))
+	{
+		$default_date = dates_as_sessions(strtotime("+1 year"));
+		$f3->reroute($f3->get('PARAMS.0') . '/' . key($default_date));
+		return;
+	}
+	
 	$user = current_user($f3);
+	$session = $f3->get('PARAMS.session');
 
 	if (!$user->is_reviewer())
 	{
@@ -507,16 +514,19 @@ print_r($rg);
 		$f3->error( 500, "You are not registered as a module reviewer");
 	}
 
-	$syllabuses = $user->syllabuses_awaiting_review();
+	$f3->set("years", dates_as_sessions(null,3)); #null defaults to this year
+	$f3->set("selected_year", $session);
+
+	$syllabuses = $user->syllabuses_awaiting_review($session);
 	$f3->set('syllabuses_awaiting_review', $syllabuses);
 	$f3->set('syllabuses_awaiting_review_count', count($syllabuses));
 
-	$syllabuses = $user->syllabuses_awaiting_submission();
+	$syllabuses = $user->syllabuses_awaiting_submission($session);
 	$f3->set('syllabuses_awaiting_submission', $syllabuses);
 	$f3->set('syllabuses_awaiting_submission_count', count($syllabuses));
 
 	$f3->set("title", "Your Review Dashboard");
-	$f3->set('templates', array('reviewdashboard.htm')); 
+	$f3->set('templates', array('year.htm','reviewdashboard.htm')); 
 
 	echo Template::instance()->render("main.htm");
 }
@@ -562,7 +572,7 @@ function report_usage($f3)
 function report_books($f3)
 {
 	$faculty_code = $f3->get("PARAMS.faculty");
-	$session = key(date_as_session());
+	$session = key(dates_as_sessions());
 
 	$sql = "select distinct syllabus.* from syllabus, module where syllabus.module_id = module.id and syllabus.isprovisional != 1 and module.session=? and module.facultycode = ? order by module.code";
 

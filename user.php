@@ -81,8 +81,13 @@ class Model_User extends RedBean_SimpleModel {
 	}
 
 
-	function syllabuses_awaiting_submission()
+	function syllabuses_awaiting_submission($session=null)
 	{
+		if ($session == null)
+		{
+			$session = dates_as_sessions(strtotime("+1 year"));
+			$session = key($session); #we only want the internal represesntation
+		}
 
 		$review_groups = $this->review_groups_query();
 
@@ -100,7 +105,7 @@ class Model_User extends RedBean_SimpleModel {
 				module.code";
 
 		$values = array();
-		$values[] = key(date_as_session(time()+365*24*60*60)); //we review for next years modules not this years
+		$values[] = $session; 
 		$values = array_merge($values, $review_groups['values']);
 
 		$syllabuses = R::convertToBeans("syllabus", R::getAll( $sql, $values));
@@ -108,8 +113,14 @@ class Model_User extends RedBean_SimpleModel {
 		return $syllabuses;
 	}
 
-	function syllabuses_awaiting_review()
+	function syllabuses_awaiting_review($session = null)
 	{
+		if ($session == null)
+		{
+			$session = dates_as_sessions(strtotime("+1 year"));
+			$session = key($session); #we only want the internal represesntation
+		}
+
 		$review_groups = $this->review_groups_query();
 
 		$sql = "SELECT
@@ -126,7 +137,7 @@ class Model_User extends RedBean_SimpleModel {
 
 
 		$values = array();
-		$values[] = key(date_as_session(time()+365*24*60*60)); //we review for next years modules not this years
+		$values[] = $session; //we review for next years modules not this years
 		$values = array_merge($values, $review_groups['values']);
 
 
