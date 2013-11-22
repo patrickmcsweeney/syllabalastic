@@ -95,17 +95,11 @@ function authenticate($f3, $pass_through = null)
 		$user = R::dispense("user");
 	}
 
-	$user->staffid = $info[0]['employeenumber'][0];
-	$user->username = $info[0]['name'][0];
-	$bits = explode(',',$info[0]['dn']);
-	$faculty_bits = explode("OU=", $bits[2]);
-	$user->facultycode = $faculty_bits[1];
-	$user->facultyname = $info[0]['department'][0];
-		
-	$userid = R::store($user);
+	$user->update_from_ldap_data($info);
 
 	$f3->set("SESSION.authenticated", true);
-	$f3->set("SESSION.userid", $userid );
+	$f3->set("SESSION.userid", $user->id );
+	$f3->set("SESSION.user", $user );
 
 }
 

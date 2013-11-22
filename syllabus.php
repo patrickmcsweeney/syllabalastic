@@ -90,21 +90,7 @@ class Model_Syllabus extends RedBean_SimpleModel {
 	
 	public function canBeReviewedBy($user)
 	{
-		global $REVIEWERS;
-		if(!array_key_exists($user->username, $REVIEWERS))
-		{
-			return false;
-		}
-
-		$can_review = $REVIEWERS[$user->username];
-		$faculty_code = $this->module->facultycode;
-
-		if(!in_array($faculty_code, $can_review))
-		{
-			return false;
-		}
-
-		return true;
+		return $user->can_review($this);
 	}
 
 	public function renderForm($flags=array())

@@ -9,6 +9,7 @@ function front_page($f3)
 	header("Location: /view/modules/$next_year");
 }
 
+
 function modules_by_year($f3)
 {
 	$current_year = date_as_session();
@@ -500,9 +501,9 @@ function review_dashboard($f3)
 
 	$user = current_user($f3);
 
-	$rg = $user->review_groups();
-	if ( empty($rg))
+	if (!$user->is_reviewer())
 	{
+print_r($rg);
 		$f3->error( 500, "You are not registered as a module reviewer");
 	}
 
@@ -522,11 +523,16 @@ function review_dashboard($f3)
 
 function login($f3)
 {
+	authenticate($f3);
+
+	header("Location: /");
 }
 
 function logout($f3)
 {
 	$f3->set("SESSION.authenticated", false);
+	$f3->set("SESSION.userid", null);
+	$f3->set("SESSION.user", null);
 	header("Location: /");
 }
 

@@ -31,7 +31,16 @@
 					<li><a href="/" >Modules</a></li>
 					<li><a href="/#" >Programs</a></li>
 					<li><a href="/#" >Program themes</a></li>
-					<li><a href="/review/dashboard" >Review Dashboard</a></li>
+					<li><a href="/review/dashboard" >Review dashboard</a></li>
+<check if="{{ @SESSION.authenticated }}">
+<true>
+					<li>Logged in as {{ @SESSION.user.username }}</li>
+					<li><a href="/logout" >Logout</a></li>
+</true>
+<false>
+					<li><a href="/login" >Login</a></li>
+</false>
+</check>
 				</ul>
 			</div>	
 			<div class="main-content">
