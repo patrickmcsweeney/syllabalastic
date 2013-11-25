@@ -2,6 +2,22 @@
 	<a class="show-create" href="#" onclick="$('.create-syllabus form').toggle();false">Create a provisional module</a> - this should only be done for modules not yet in banner
 	<form method="POST" action="/create/module">
 			<div class="module-title">Module title: <input type="text" name="moduletitle" /></div> 
+			<div class="module-details">
+				Module prefix: 
+				<select name="moduleprefix">
+					<option value="COMP">COMP</option>
+					<option value="ELEC">ELEC</option>
+					<option value="WEBS">WEBS</option>
+				</select>
+				Module part: 
+				<select name="modulepart">
+					<option value="1">Part 1</option>
+					<option value="2">Part 2</option>
+					<option value="3">Part 3</option>
+					<option value="6">Part 6</option>
+					<option value="8">Part 8</option>
+				</select>
+			</div> 
 			<input type="hidden" name="session" value="{{@selected_year}}">
 			<div class="create-button"><input type="submit" value="Create!" /></div>
 	</form>

@@ -2,27 +2,25 @@
 
 ##RENAME THIS FILE
 
-function error($message){
-	F3::set("title","Error");
-	F3::set("content", $message);
-	echo Template::serve("main.htm");
-	exit;
-}
+function authenticate($f3, $pass_through = null)
+{
 
-function authenticate($pass_through)
+	if ($pass_through === null)
 	{
+		$pass_through = $f3->get('PARAMS.0');
+	}
 	
 	#already authenticated
-	if(F3::get("SESSION.authenticated") == true)
+	if($f3->get("SESSION.authenticated") == true)
 	{
 		return true;
 	}
 
-	if(valid_api_key(F3::get("REQUEST.apikey")))
+	if(valid_api_key($f3->get("REQUEST.apikey")))
 	{
 		return true;
 	} 
-	if(valid_secret(F3::get("REQUEST.secret")))
+	if(valid_secret($f3->get("REQUEST.secret")))
 	{
 		return true;
 	}
@@ -30,10 +28,10 @@ function authenticate($pass_through)
 	#not yet been asked to authenticate
 	if(!(array_key_exists("username",$_POST) && array_key_exists("password", $_POST)))
 	{
-		F3::set("title","Login");
-		F3::set("pass_through", $pass_through);
-		F3::set("REQUEST", $_REQUEST);
-		F3::set("templates", array("login.htm"));
+		$f3->set("title","Login");
+		$f3->set("pass_through", $pass_through);
+		$f3->set("REQUEST", $_REQUEST);
+		$f3->set("templates", array("login.htm"));
 		
 		echo Template::instance()->render("main.htm");
 		exit;
@@ -97,28 +95,57 @@ function authenticate($pass_through)
 		$user = R::dispense("user");
 	}
 
-	$user->staffid = $info[0]['employeenumber'][0];
-	$user->username = $info[0]['name'][0];
-	$bits = explode(',',$info[0]['dn']);
-	$faculty_bits = explode("OU=", $bits[2]);
-	$user->facultycode = $faculty_bits[1];
-	$user->facultyname = $info[0]['department'][0];
-		
-	$userid = R::store($user);
+	$user->update_from_ldap_data($info);
 
-	F3::set("SESSION.authenticated", true);
-	F3::set("SESSION.userid", $userid );
+	$f3->set("SESSION.authenticated", true);
+	$f3->set("SESSION.userid", $user->id );
+	$f3->set("SESSION.user", $user );
 
 }
 
-function current_user()
+function current_user($f3)
 {
-	return R::load('user', F3::get('SESSION.userid'));
+	return R::load('user', $f3->get('SESSION.userid'));
 }
+
+#returns an array keyed on sessions as stored in the database (e.g. 201516)
+#with values as sessions as displayed (e.g. 2015-16)
+#$date -- the earliest date in the array
+#$n --  param defines how may consecutive sessions will be in the array
+function dates_as_sessions($date=null, $n=1)
+{
+	if($date === null){
+		$date = time();
+	}
+
+	$year = date('Y', $date);
+	$year--;
+	$next_year = date('y', $date);
+	if (date('n') > 10)
+	{
+		$year++;
+		$next_year++;
+	}
+
+	$sessions = array();
+	for ($i = 0; $i < $n; $i++)
+	{
+		$k = "$year$next_year";
+		$v = "$year-$next_year";
+		$sessions[$k] = $v;
+		$year++;
+		$next_year++;
+	}
+
+	return $sessions;
+}
+
 
 # $date should be a unix time as provided by time() or strtotime
 function date_as_session($date=null)
 {
+	return dates_as_sessions($date);
+
 	if($date === null){
 		$date = time();
 	}

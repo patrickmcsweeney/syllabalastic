@@ -32,28 +32,123 @@ R::setup("mysql:host=$db_host;dbname=$db_name",$db_user,$db_password);
 
 $API_KEYS = array($f3->get('api_key'));
 $REVIEWERS = array(  
-        "pm5c08" => array("F7"),
-        "bjc1f08" => array("F7"),
-        "ms1r10" => array("F7"),
-        "mjw7" => array("F7"),
-        "nmg" => array("F7"),
-        "mcf" => array("F7"),
-        "asw1v08" => array("F7"),
-        "fenglian" => array("F7"),
-        "gbw" => array("F7"),
-        "dan1" => array("F7"),
-        "srg" => array("F7"),
-        "gravell" => array("F7"),
-        "mz1" => array("F7"),
-        "ck7" => array("F7"),
-        "phc1" => array("F7"),
-        "chdg" => array("F7"),
-        "rwe" => array("F7"),
-        "dm3" => array("F2"),
-        "bl2" => array("F2"),
-        "cqafee" => array("F2"),
-        "cqafshs" => array("F8"),
-        "alexfurr" => array("F8")
+        "pm5c08" => array(
+		'module' => array(
+			'facultycode' => array("F7")
+#			'themecode' => array(),
+#			'code' => array()
+		)
+	),
+        "bjc1f08" => array(
+		'module' => array(
+			'facultycode' => array("F7")
+		)
+	),
+        "ms1r10" => array(
+		'module' => array(
+			'facultycode' => array("F7")
+		)
+	),
+        "mjw7" => array(
+		'module' => array(
+			'facultycode' => array("F7")
+		)
+	),
+        "nmg" => array(
+		'module' => array(
+			'facultycode' => array("F7")
+		)
+	),
+        "mcf" => array(
+		'module' => array(
+			'facultycode' => array("F7")
+		)
+	),
+        "asw1v08" => array(
+		'module' => array(
+			'facultycode' => array("F7")
+		)
+	),
+        "fenglian" => array(
+		'module' => array(
+			'facultycode' => array("F7")
+		)
+	),
+        "gbw" => array(
+		'module' => array(
+			'facultycode' => array("F7")
+		)
+	),
+        "dan1" => array(
+		'module' => array(
+			'facultycode' => array("F7")
+		)
+	),
+        "srg" => array(
+		'module' => array(
+			'facultycode' => array("F7")
+		)
+	),
+        "gravell" => array(
+		'module' => array(
+			'facultycode' => array("F7")
+		)
+	),
+        "mz1" => array(
+		'module' => array(
+			'facultycode' => array("F7")
+		)
+	),
+        "ck7" => array(
+		'module' => array(
+			'facultycode' => array("F7")
+		)
+	),
+        "phc1" => array(
+		'module' => array(
+			'facultycode' => array("F7")
+		)
+	),
+        "chdg" => array(
+		'module' => array(
+			'facultycode' => array("F7")
+		)
+	),
+        "rwe" => array(
+		'module' => array(
+			'facultycode' => array("F7")
+		)
+	),
+        "dm3" => array(
+		'module' => array(
+			'facultycode' => array("F2")
+		)
+	),
+        "bl2" => array(
+		'module' => array(
+			'facultycode' => array("F2")
+		)
+	),
+        "cqafee" => array(
+		'module' => array(
+			'facultycode' => array("F2")
+		)
+	),
+        "cqafshs" => array(
+		'module' => array(
+			'facultycode' => array("F8")
+		)
+	),
+        "alexfurr" => array(
+		'module' => array(
+			'facultycode' => array("F8")
+		)
+	),
+        "af05v" => array(
+		'module' => array(
+			'facultycode' => array("F7")
+		)
+	)
 );
 
 
