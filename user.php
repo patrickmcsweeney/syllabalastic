@@ -58,7 +58,7 @@ class Model_User extends RedBean_SimpleModel {
 				AND ". $review_groups["sql"]; 
 
 		$values = array();
-		$values[] = key(date_as_session(time()+365*24*60*60)); //we review for next years modules not this years
+		$values[] = $syllabus->module->session; 
 		$values[] = $syllabus->id;
 		$values = array_merge($values, $review_groups['values']);
 
