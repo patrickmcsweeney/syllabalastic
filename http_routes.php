@@ -102,6 +102,8 @@ function create_module($f3)
 		$next_create_code = $last_created_module->code;
 		$next_create_code++; 
 	}
+
+	$next_create_code = $input["moduleprefix"].$input["modulepart"]."-".$next_create_code;
 	
 	$new_module = R::dispense("module");
 	$new_module->code = $next_create_code; 
@@ -510,7 +512,6 @@ function review_dashboard($f3)
 
 	if (!$user->is_reviewer())
 	{
-print_r($rg);
 		$f3->error( 500, "You are not registered as a module reviewer");
 	}
 
