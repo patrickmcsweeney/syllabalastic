@@ -106,7 +106,7 @@
 		      </F3:repeat>
 		</div>
 	</check>	
-	<check if="{{@syllabus->hascore}}">
+	<check if="{{isset(@syllabus->hasother)}}">
         	<strong>Other resource requirements:</strong>
 		<div>
 		    <F3:repeat group="{{@syllabus->ownResources}}" value="{{@resource}}">

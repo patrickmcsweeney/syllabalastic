@@ -144,6 +144,11 @@ $REVIEWERS = array(
 			'facultycode' => array("F8")
 		)
 	),
+        "cs1m12" => array(
+		'module' => array(
+			'facultycode' => array("F8")
+		)
+	),
         "af05v" => array(
 		'module' => array(
 			'facultycode' => array("F7")

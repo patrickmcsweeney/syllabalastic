@@ -264,7 +264,7 @@ function ecs_syllabus($f3)
 		$f3->error( 500, "This syllabus id does not exist");
 		return;
 	}
-	foreach($syllabus->ownResource as $resource)
+	foreach($syllabus->ownResources as $resource)
 	{
 		if($resource->type == "core")
 		{
