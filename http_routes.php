@@ -103,12 +103,12 @@ function create_module($f3)
 		$next_create_code++; 
 	}
 
-	$next_create_code = $input["moduleprefix"].$input["modulepart"]."-".$next_create_code;
+	$next_create_code = $next_create_code;
 	
 	$new_module = R::dispense("module");
 	$new_module->code = $next_create_code; 
 	$new_module->session = $input["session"];
-	$new_module->title = $input["moduletitle"];
+	$new_module->title = $input["moduleprefix"].$input["modulepart"]." - ".$input["moduletitle"];
 	$new_module->facultycode = $faculty_code;
 	$new_module->facultyname = $user->facultyname;
 	
