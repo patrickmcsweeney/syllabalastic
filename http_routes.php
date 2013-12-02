@@ -96,7 +96,7 @@ function create_module($f3)
 
 	$next_create_code = $faculty_code."Provisional000001";
 
-	$last_created_module = R::findOne("module", "session = ? AND facultycode = ? order by code DESC", array( $input["session"], $faculty_code ) );
+	$last_created_module = R::findOne("module", "session = ? AND code like '%Provisional%' AND facultycode = ? order by code DESC", array( $input["session"], $faculty_code ) );
 
 	if(isset($last_created_module)){
 		$next_create_code = $last_created_module->code;
