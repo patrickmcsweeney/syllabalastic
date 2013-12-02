@@ -34,89 +34,89 @@ $API_KEYS = array($f3->get('api_key'));
 $REVIEWERS = array(  
         "pm5c08" => array(
 		'module' => array(
-			'facultycode' => array("F7")
+			'facultycode' => array("F7", "wf", "fp")
 #			'themecode' => array(),
 #			'code' => array()
 		)
 	),
         "bjc1f08" => array(
 		'module' => array(
-			'facultycode' => array("F7")
+			'facultycode' => array("F7", "wf", "fp")
 		)
 	),
         "ms1r10" => array(
 		'module' => array(
-			'facultycode' => array("F7")
+			'facultycode' => array("F7", "wf", "fp")
 		)
 	),
         "mjw7" => array(
 		'module' => array(
-			'facultycode' => array("F7")
+			'facultycode' => array("F7", "wf", "fp")
 		)
 	),
         "nmg" => array(
 		'module' => array(
-			'facultycode' => array("F7")
+			'facultycode' => array("F7", "wf", "fp")
 		)
 	),
         "mcf" => array(
 		'module' => array(
-			'facultycode' => array("F7")
+			'facultycode' => array("F7", "wf", "fp")
 		)
 	),
         "asw1v08" => array(
 		'module' => array(
-			'facultycode' => array("F7")
+			'facultycode' => array("F7", "wf", "fp")
 		)
 	),
         "fenglian" => array(
 		'module' => array(
-			'facultycode' => array("F7")
+			'facultycode' => array("F7", "wf", "fp")
 		)
 	),
         "gbw" => array(
 		'module' => array(
-			'facultycode' => array("F7")
+			'facultycode' => array("F7", "wf", "fp")
 		)
 	),
         "dan1" => array(
 		'module' => array(
-			'facultycode' => array("F7")
+			'facultycode' => array("F7", "wf", "fp")
 		)
 	),
         "srg" => array(
 		'module' => array(
-			'facultycode' => array("F7")
+			'facultycode' => array("F7", "wf", "fp")
 		)
 	),
         "gravell" => array(
 		'module' => array(
-			'facultycode' => array("F7")
+			'facultycode' => array("F7", "wf", "fp")
 		)
 	),
         "mz1" => array(
 		'module' => array(
-			'facultycode' => array("F7")
+			'facultycode' => array("F7", "wf", "fp")
 		)
 	),
         "ck7" => array(
 		'module' => array(
-			'facultycode' => array("F7")
+			'facultycode' => array("F7", "wf", "fp")
 		)
 	),
         "phc1" => array(
 		'module' => array(
-			'facultycode' => array("F7")
+			'facultycode' => array("F7", "wf", "fp")
 		)
 	),
         "chdg" => array(
 		'module' => array(
-			'facultycode' => array("F7")
+			'facultycode' => array("F7", "wf", "fp")
 		)
 	),
         "rwe" => array(
 		'module' => array(
-			'facultycode' => array("F7")
+			'facultycode' => array("F7", "wf", "fp")
 		)
 	),
         "dm3" => array(
@@ -151,7 +151,7 @@ $REVIEWERS = array(
 	),
         "af05v" => array(
 		'module' => array(
-			'facultycode' => array("F7")
+			'facultycode' => array("F7", "wf", "fp")
 		)
 	)
 );
