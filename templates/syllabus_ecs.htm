@@ -47,7 +47,7 @@
     <div class='uos_tab' id='tab_pane_learning'>
       <ul style='font-size:130%'>
 <F3:repeat group="{{@syllabus->ownRegularteaching}}" value="{{@activity}}">
-        <li style='margin-bottom:0.5em'>{{@getConstant(@syllabus, @activity->activitytype)}} - {{@activity->studenthours}} hours per term</li>
+        <li style='margin-bottom:0.5em'>{{@getConstant(@syllabus, @activity->activitytype)}} - {{@activity->studenthours}} hours per semester</li>
 </F3:repeat>
       </ul>
     </div>
