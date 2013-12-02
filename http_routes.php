@@ -193,6 +193,7 @@ function create_syllabus($f3)
 	$syllabus->quinquenialreviewed = false;
 	$syllabus->reviewedby = "";
 	$syllabus->approvalnote = "";
+	$syllabus->changessummary = "";
 	$syllabus->timeapproved = null;
 	$syllabus_id = R::store($syllabus);
 	$existing_module->provisionalsyllabus = $syllabus;
