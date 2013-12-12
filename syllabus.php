@@ -175,14 +175,15 @@ class Model_Syllabus extends RedBean_SimpleModel {
 	}
 	public function getForm( $flags = array() )
 	{
-		$params =  array( "heading"=>1, "resourcesURL"=>"/ui/resources", ); 
-		
-		$action = "http";
+		$url = "http";
 		if(isset($_SERVER['HTTPS']))
 		{
-			$action .= "s";
+			$url .= "s";
 		}
-		$action .= "://".$_SERVER['HTTP_HOST']."/save/syllabus/".$this->id;
+		
+		$url .= "://".$_SERVER['HTTP_HOST'];
+		$params = array( "heading"=>1, "resourcesURL"=>"$url/html_assets/floraform/resources" ); 
+		$action = "$url/save/syllabus/".$this->id;
 		$params["action"] = $action;
 		$form = new FloraForm($params);
 
