@@ -173,6 +173,7 @@ function create_secret($api_key)
 	$secret->secret = md5("9b49a808af453e5cde8d9bbec9fe4385".$api_key.time());
 	$secret->issuetime = time();
 	R::store($secret);
+	return $secret;
 
 }
 

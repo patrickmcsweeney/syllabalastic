@@ -330,10 +330,10 @@ function edit_syllabus($f3)
 
 	$module = $syllabus->module;
 
-	if(valid_api_key(F3::get("REQUEST.apikey")))
+	if(valid_api_key($f3->get("REQUEST.apikey")))
 	{
-		$secret = create_secret(F3::get("REQUEST.apikey"));
-		echo serialize( $syllabus->renderForm(array("secret"=>$secret, "passback"=>F3::get("REQUEST.passback"))));
+		$secret = create_secret($f3->get("REQUEST.apikey"));
+		echo serialize( $syllabus->renderForm(array("secret"=>$secret, "passback"=>$f3->get("REQUEST.passback"))));
 		return;
 	}
 
