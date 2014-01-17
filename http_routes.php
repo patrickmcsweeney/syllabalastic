@@ -162,7 +162,7 @@ function create_syllabus($f3)
 	
 	if(!isset($existing_module))
 	{
-		$f3->error( 500, "This module does not exists");
+		$f3->error( 500, "There is no syllabus for this module in the central system.");
 		return;
 	}
 	if(isset($existing_module->provisionalsyllabus))

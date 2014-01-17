@@ -9,9 +9,9 @@ function ff_tinyMCEConfig()
 {
 	return {
 		theme : 'advanced',
-		plugins : 'table,layer',
+		plugins : 'table,layer,paste,searchreplace',
 		theme_advanced_toolbar_location : 'top',
-        	theme_advanced_buttons1 : "bold,italic,underline,strikethrough,|,bullist,numlist,|,undo,redo,|,link,unlink,|,sub,sup,|,cleanup,removeformat,|,indent,outdent",
+        	theme_advanced_buttons1 : "bold,italic,underline,strikethrough,charmap|,bullist,numlist,|,undo,redo,|,link,unlink,|,sub,sup,|,cleanup,removeformat,|,indent,outdent,|,cut,copy,paste,pastetext,|,search,replace,|,code",
         	theme_advanced_buttons2 : "",
         	theme_advanced_buttons3 : "",
         	theme_advanced_buttons4 : ""//,

@@ -19,7 +19,7 @@ Text books for the current session
 	<repeat group="{{@syllabuses}}" value="{{@syllabus}}">
 		<check if="{{@syllabus->module}}">
 			<repeat group="{{@syllabus->ownResources}}" value="{{@resource}}">
-				<check if="{{@resource->type == 'core'}}">
+				<check if="{{@resource->type == 'background'}}">
 					<li><strong><a href="/view/syllabus/{{@syllabus->id}}">{{@syllabus->module->code}}</a></strong> - {{@resource->details}}</li>
 					
 				</check>
