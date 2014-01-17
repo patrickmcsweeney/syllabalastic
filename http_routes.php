@@ -122,7 +122,7 @@ function create_specification($f3)
 {
 	authenticate($f3);
 
-	$input = $f3->scrub($_POST);
+	$input = $f3->scrub($_REQUEST);
 
 	$theme = R::load("major", $input["majorid"] );
 	
@@ -149,7 +149,7 @@ function create_syllabus($f3)
 {
 	authenticate($f3);
 
-	$input = $f3->scrub($_POST);
+	$input = $f3->scrub($_REQUEST);
 	
 #	if(!($input["session"] > key(dates_as_sessions())))
 #	{
@@ -360,6 +360,7 @@ function save_syllabus($f3)
 	if($f3->get('REQUEST.passback'))
 	{
 		header("Location: ".$f3->get('REQUEST.passback'));
+		return;
 	}
 	header("Location: /view/syllabus/".$syllabus->id);
 }
