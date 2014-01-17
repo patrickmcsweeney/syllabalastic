@@ -173,7 +173,7 @@ function create_secret($api_key)
 	$secret->secret = md5("9b49a808af453e5cde8d9bbec9fe4385".$api_key.time());
 	$secret->issuetime = time();
 	R::store($secret);
-	return $secret;
+	return $secret->secret;
 
 }
 
@@ -184,7 +184,7 @@ function valid_secret($secret)
 	if(isset($secret_key))
 	{
 		$a_day = 60*60*24;
-		if( (time() - $secretkey->issuetime) < $a_day && !$secret_key->used)
+		if( (time() - $secret_key->issuetime) < $a_day && !$secret_key->used)
 		{
 			$secret_key->used = true;
 			R::store($secret_key);
