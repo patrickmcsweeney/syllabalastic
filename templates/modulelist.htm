@@ -11,21 +11,21 @@
 		<F3:repeat group="{{@details['modules']}}" value="{{@module}}">
 			<li><span class="module-code">{{@module->code}}</span>: {{@module->title}} 
 				<span class="syllabus-tools">- 
-					<F3:check if="{{@module->ownSyllabus}}">
+					<F3:check if="{{@module->getCurrent()}}">
 						<F3:true>
-						<a href="/view/syllabus/{{reset(@module->ownSyllabus)->id}}">View current syllabus</a> 
+						<a href="/view/syllabus/{{@module->getCurrent()->id}}">View current syllabus</a> 
 						</F3:true>
 					</F3:check>
-					<F3:check if="{{@module->fetchAs('syllabus')->provisionalsyllabus }}">
-						<F3:true>
-							<a href="/view/syllabus/{{@module->fetchAs('syllabus')->provisionalsyllabus->id}}">View provisional syllabus</a> 
-							<a href="/edit/syllabus/{{@module->fetchAs('syllabus')->provisionalsyllabus->id}}">Edit provisional syllabus</a> 
-							<F3:check if="{{@module->fetchAs('syllabus')->provisionalsyllabus->isunderreview}}">
+					<F3:check if="{{@module->getProvisional()}}">
+						<F3:true>							
+						<a href="/view/syllabus/{{@module->getProvisional()->id}}">View provisional syllabus</a> 
+						<a href="/edit/syllabus/{{@module->getProvisional()->id}}">Edit provisional syllabus</a> 
+							<F3:check if="{{@module->getProvisional()->isunderreview}}">
 								<F3:true>
-									<a href="/review/syllabus/{{@module->fetchAs('syllabus')->provisionalsyllabus->id}}">Review provisional syllabus</a> 
+									<a href="/review/syllabus/{{@module->getProvisional()->id}}">Review provisional syllabus</a> 
 								</F3:true>
 								<F3:false>
-									<a href="/toreview/syllabus/{{@module->fetchAs('syllabus')->provisionalsyllabus->id}}">Submit for review</a> 
+									<a href="/toreview/syllabus/{{@module->getProvisional()->id}}">Submit for review</a> 
 								</F3:false>
 							</F3:check>
 						</F3:true>
