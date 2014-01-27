@@ -97,7 +97,7 @@ class Model_User extends RedBean_SimpleModel {
 				syllabus, module
 			WHERE
 				syllabus.module_id = module.id
-				AND isprovisional=1
+				AND syllabus.isprovisional=1
 				AND (isunderreview!=1 or isunderreview is null )
 				AND module.session=?
 				AND ". $review_groups["sql"] ." 
