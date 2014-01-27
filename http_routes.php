@@ -2,7 +2,7 @@
 
 function front_page($f3)
 {
-	#syllabuses work one academic year ahead 
+	#syllabuses work one academic year ahead
 	# this will probably blow everyones mind :-(
 	$session_array = dates_as_sessions(strtotime("+1 year"));
 	$next_year = key($session_array);
@@ -17,7 +17,7 @@ function modules_by_year($f3)
 	$f3->set("selected_year", $f3->get("PARAMS.session"));
 
 	$modules = R::find('module', "session = ? ORDER BY code", array($f3->get('PARAMS.session')));
-	
+
 	$modules_by_faculty = array();
 	foreach($modules as $module)
 	{
@@ -32,10 +32,10 @@ function modules_by_year($f3)
 	$f3->set('title', 'Module list by course code');
 	$f3->set('modules', $modules_by_faculty);
 	$f3->set('userfacultycode', current_user($f3)->facultycode);
-	
+
 	$templates = array('year.htm');
 
-	#we can't create modules in the past!	
+	#we can't create modules in the past!
 	$current_year = dates_as_sessions();
 	if($f3->get("PARAMS.session") > key($current_year)){
 		array_push( $templates, 'createmodule.htm');
@@ -43,23 +43,23 @@ function modules_by_year($f3)
 
 	array_push( $templates, 'modulesearch.htm');
 	array_push( $templates, 'modulelist.htm');
-	$f3->set('templates', $templates); 
-	
+	$f3->set('templates', $templates);
+
 	echo Template::instance()->render("main.htm");
 }
 
 function ecs_overviews($f3)
 {
 	$modules = R::find('module', "session = ? ORDER BY code", array($f3->get('PARAMS["session"]')));
-	
+
 	$modules_by_faculty = array();
 	header("Content-type: text/plain" );
 	foreach($modules as $module)
-	{
-		$syl = reset($module->ownSyllabus);
-		if( $syl ) 
+    {
+        $syl = $module->getCurrent();
+		if( $syl )
 		{
-			$modules_by_faculty[$module->facultycode][$module->code] = array( 
+			$modules_by_faculty[$module->facultycode][$module->code] = array(
 				"code" => $module->code,
 				"title" => $module->title,
 				"introduction" => $syl->introduction );
@@ -71,7 +71,7 @@ function ecs_overviews($f3)
 }
 
 
-function themes($f3) 
+function themes($f3)
 {
 	#TODO this should be dynamic based on the date
 	#$programs = R::find('program', "session = ?", array( "201213" ));
@@ -85,7 +85,7 @@ function themes($f3)
 	echo Template::instance()->render("main.htm");
 }
 
-function create_module($f3) 
+function create_module($f3)
 {
 	authenticate($f3);
 
@@ -100,32 +100,32 @@ function create_module($f3)
 
 	if(isset($last_created_module)){
 		$next_create_code = $last_created_module->code;
-		$next_create_code++; 
+		$next_create_code++;
 	}
 
 	$next_create_code = $next_create_code;
-	
+
 	$new_module = R::dispense("module");
-	$new_module->code = $next_create_code; 
+	$new_module->code = $next_create_code;
 	$new_module->session = $input["session"];
 	$new_module->title = $input["moduleprefix"].$input["modulepart"]." - ".$input["moduletitle"];
 	$new_module->facultycode = $faculty_code;
 	$new_module->facultyname = $user->facultyname;
-	
-	
+
+
 	R::store($new_module);
 
-	header("Location: /"); 
+	header("Location: /");
 }
 
-function create_specification($f3) 
+function create_specification($f3)
 {
 	authenticate($f3);
 
 	$input = $f3->scrub($_REQUEST);
 
 	$theme = R::load("major", $input["majorid"] );
-	
+
 	if(!isset($theme)){
 		$f3->error( 500, "This theme does not exist.");
 		return;
@@ -139,27 +139,27 @@ function create_specification($f3)
 	$specification->major = $theme;
 	$specification_id = R::store($specification);
 	$theme->specification = $specification;
-	
+
 	R::store($theme);
 
-	header("Location: /edit/specification/$specification_id"); 
+	header("Location: /edit/specification/$specification_id");
 }
 
-function create_syllabus($f3) 
+function create_syllabus($f3)
 {
 	authenticate($f3);
 
 	$input = $f3->scrub($_REQUEST);
-	
+
 #	if(!($input["session"] > key(dates_as_sessions())))
 #	{
 #		$f3->error( 500, "You cannot create syllabuses for the current or past sessions");
 #		return;
-#	
+#
 #	}
 
 	$existing_module = R::findOne("module", "session = ? AND code = ?", array( $input["session"], $input["modulecode"] ) );
-	
+
 	if(!isset($existing_module))
 	{
 		$f3->error( 500, "There is no syllabus for this module in the central system.");
@@ -173,9 +173,8 @@ function create_syllabus($f3)
 
 	$syllabus = "";
 	#print_r($existing_module->ownSyllabus);
-	if($existing_module->ownSyllabus)
+	if($current_syllabus = $existing_module->getCurrent())
 	{
-		$current_syllabus = reset($existing_module->ownSyllabus);
 		$syllabus = R::dup($current_syllabus);
 	}
 	else
@@ -197,19 +196,19 @@ function create_syllabus($f3)
 	$syllabus->timeapproved = null;
 	$syllabus_id = R::store($syllabus);
 	$existing_module->provisionalsyllabus = $syllabus;
-	
+
 	R::store($existing_module);
-	
+
 	if(valid_api_key($f3->get("REQUEST.apikey")))
 	{
 		echo serialize( array( 'provisionalsyllabusid', $syllabus_id) );
 		return;
 	}
-		
-	header("Location: /edit/syllabus/$syllabus_id"); 
+
+	header("Location: /edit/syllabus/$syllabus_id");
 }
 
-function view_syllabus($f3) 
+function view_syllabus($f3)
 {
 	$syllabus = R::load("syllabus", $f3->get('PARAMS["syllabus_id"]'));
 	if(!$syllabus->id)
@@ -233,7 +232,7 @@ function view_syllabus($f3)
 	echo Template::instance()->render("main.htm");
 }
 
-function json_syllabus($f3) 
+function json_syllabus($f3)
 {
 	$syllabus = R::load("syllabus", $f3->get('PARAMS["syllabus_id"]'));
 	if(!$syllabus->id)
@@ -245,7 +244,7 @@ function json_syllabus($f3)
 	echo json_encode($module);
 }
 
-function ecs_syllabus($f3) 
+function ecs_syllabus($f3)
 {
 	$existing_module = R::findOne("module", "session = ? AND code = ?", array( $f3->get("PARAMS.session"), $f3->get("PARAMS.modulecode") ) );
 	if(!isset($existing_module))
@@ -259,8 +258,8 @@ function ecs_syllabus($f3)
 		return;
 
 	}
-	$syllabus = reset($existing_module->ownSyllabus);
-	if(!$syllabus->id)
+	$syllabus = $existing_module->getCurrent();
+	if(!$syllabus)
 	{
 		$f3->error( 500, "This syllabus id does not exist");
 		return;
@@ -283,7 +282,7 @@ function ecs_syllabus($f3)
 	echo json_encode($module);
 }
 
-function php_module($f3) 
+function php_module($f3)
 {
 	$existing_module = R::findOne("module", "session = ? AND code = ?", array( $f3->get("PARAMS.session"), $f3->get("PARAMS.modulecode") ) );
 
@@ -298,9 +297,8 @@ function php_module($f3)
 		exit;
 
 	}
-	$syllabus = reset($existing_module->ownSyllabus);
-
-	if(!isset($syllabus) || !$syllabus->id)
+    $syllabus = $existing_module->getCurrent();
+	if(!$syllabus)
 	{
 		echo("This syllabus does not exist");
 		return;
@@ -309,10 +307,10 @@ function php_module($f3)
 	echo serialize($module);
 }
 
-function edit_syllabus($f3) 
+function edit_syllabus($f3)
 {
 	global $API_KEYS;
-	
+
 	authenticate($f3);
 
 	$syllabus = R::load("syllabus", $f3->get('PARAMS["syllabus_id"]'));
@@ -385,7 +383,7 @@ function toreview_syllabus($f3)
 	$syllabus->isunderreview = 1;
 
 	R::store($syllabus);
-	
+
 	header( "Location: /" );
 }
 
@@ -399,43 +397,42 @@ function review_syllabus($f3)
 		$f3->error( 500, "This syllabus id does not exist");
 		return;
 	}
-	
+
 	if(!$syllabus->isunderreview)
 	{
 		$f3->error( 500, "This syllabus is not under review");
 		return;
 	}
-	
+
 	$user = current_user($f3);
 	if(!$syllabus->canBeReviewedBy($user))
 	{
-		$f3->error( 500, "You are not a reviewer for this syllabus");	
+		$f3->error( 500, "You are not a reviewer for this syllabus");
 		return;
 	}
 
 	$module = $syllabus->module;
 	$content = "";
-	# if there is only 1 ownSyllabus that is the provisional one
-	if(count($module->ownSyllabus) > 1)
-	{
-		$previous_syllabus = array_shift($module->ownSyllabus);
-	}
+
+    #Check to see if there is a currently published syllabus
+    $current_syllabus = $module->getCurrent();
+
 	$f3->set("title", "Reviewing ".$module->code.": ".$module->title." (".$module->session.") ");
 	$f3->set("module", $module);
 
 	$f3->set("syllabus", $syllabus);
-	
+
 	$templates = array();
-	if(!isset($previous_syllabus)){
+	if(!$current_syllabus){
 		$content .= Template::instance()->render("syllabus.htm");
 		$templates[] = 'syllabus.htm';
 	}else{
-		$f3->set("syllabuses", array('previous'=>$previous_syllabus, 'current'=>$syllabus));
+		$f3->set("syllabuses", array('current'=>$current_syllabus, 'provisional'=>$syllabus));
 		$templates[] = "comparesyllabuses.htm";
-		
+
 	}
 
-	$templates[] = 'reviewtools.htm';	
+	$templates[] = 'reviewtools.htm';
 	$f3->set('templates', $templates);
 	echo Template::instance()->render("main.htm");
 }
@@ -473,23 +470,22 @@ function approve_syllabus($f3)
 	}
 
 	R::store($syllabus);
-	
+
 	# this is far too complicated for users to actually do. bottom line is if CQA says its ok then it is
-	#if($syllabus->quinquenialreviewed && $syllabus->courseleaderreviewed && $syllabus->cqareviewed && $syllabus->educationboardreviewed) 
-	if($syllabus->cqareviewed) 
+	#if($syllabus->quinquenialreviewed && $syllabus->courseleaderreviewed && $syllabus->cqareviewed && $syllabus->educationboardreviewed)
+	if($syllabus->cqareviewed)
 	{
 		$user = current_user($f3);
 		$syllabus->isprovisional = 0;
 		$syllabus->isunderreview = 0;
 		$syllabus->timeapproved = time();
-		$syllabus->approvedby = $user->username; 
-		$syllabus->approvalnote = $_POST["approvalnote"]; 
+		$syllabus->approvedby = $user->username;
+		$syllabus->approvalnote = $_POST["approvalnote"];
 		$module = $syllabus->module;
-		unset($module->syllabus);
-		$module->ownSyllabus = array($syllabus); 
-		unset($module->provisionalsyllabus);
+        $module->currentsyllabus_id = $syllabus->id;
+        unset($module->provisionalsyllabus);
 		R::store($module);
-		
+
 	}
 
 	R::store($syllabus);
@@ -508,7 +504,7 @@ function review_dashboard($f3)
 		$f3->reroute($f3->get('PARAMS.0') . '/' . key($default_date));
 		return;
 	}
-	
+
 	$user = current_user($f3);
 	$session = $f3->get('PARAMS.session');
 
@@ -529,7 +525,7 @@ function review_dashboard($f3)
 	$f3->set('syllabuses_awaiting_submission_count', count($syllabuses));
 
 	$f3->set("title", "Your Review Dashboard");
-	$f3->set('templates', array('year.htm','reviewdashboard.htm')); 
+	$f3->set('templates', array('year.htm','reviewdashboard.htm'));
 
 	echo Template::instance()->render("main.htm");
 }
@@ -549,9 +545,9 @@ function logout($f3)
 	header("Location: /");
 }
 
-function report_usage($f3) 
+function report_usage($f3)
 {
-	$report_start = strtotime("-1 month");	
+	$report_start = strtotime("-1 month");
 	$report_end = time();
 	if($f3->exists("REQUEST.report_start")){
 		$report_start = strtotime($f3->get("REQUEST.report_start"));
@@ -583,8 +579,8 @@ function report_books($f3)
 	$params = array($session, $faculty_code);
 	$syllabuses = R::convertToBeans("syllabus", R::getAll( $sql, $params));
 
-	$f3->set("syllabuses", $syllabuses);	
-	$f3->set("title", "Text book usage");	
+	$f3->set("syllabuses", $syllabuses);
+	$f3->set("title", "Text book usage");
 	$f3->set('templates', array('report_books.htm'));
 
 	echo Template::instance()->render("main.htm");
