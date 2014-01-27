@@ -12,28 +12,36 @@ function front_page($f3)
 
 function modules_by_year($f3)
 {
-
 	$f3->set("years", dates_as_sessions(null,3)); #null defaults to this year
 	$f3->set("selected_year", $f3->get("PARAMS.session"));
-
-	$modules = R::find('module', "session = ? ORDER BY code", array($f3->get('PARAMS.session')));
+	$f3->set('title', 'Module list by course code');
+	$templates = array('year.htm');
+	
+	$user = current_user($f3);
+	$user->departmentcode = "FP";
+	$f3->set('userdepartmentcode', $user->departmentcode);
+	#TODO dont hard code the department code...
+	if($f3->exists("REQUEST.allmodules") || !isset($user->departmentcode))
+	{
+		$modules = R::find('module', "session = ? ORDER BY code", array($f3->get('PARAMS.session')));
+	}else{
+		$templates[] = "seeallmodules.htm";
+		$modules = R::find('module', "session = ? and departmentcode = ? ORDER BY code", array($f3->get('PARAMS.session'), $user->departmentcode));
+	}
 	
 	$modules_by_faculty = array();
 	foreach($modules as $module)
 	{
-		if(!array_key_exists($module->facultycode, $modules_by_faculty))
+		if(!array_key_exists($module->departmentcode, $modules_by_faculty))
 		{
-			$modules_by_faculty[$module->facultycode]['name'] = $module->facultyname;
-			$modules_by_faculty[$module->facultycode]['modules'] = array();
+			$modules_by_faculty[$module->departmentcode]['name'] = $module->departmentname;
+			$modules_by_faculty[$module->departmentcode]['modules'] = array();
 		}
-		array_push($modules_by_faculty[$module->facultycode]['modules'], $module);
+		array_push($modules_by_faculty[$module->departmentcode]['modules'], $module);
 	}
 
-	$f3->set('title', 'Module list by course code');
 	$f3->set('modules', $modules_by_faculty);
-	$f3->set('userfacultycode', current_user($f3)->facultycode);
 	
-	$templates = array('year.htm');
 
 	#we can't create modules in the past!	
 	$current_year = dates_as_sessions();
@@ -47,6 +55,7 @@ function modules_by_year($f3)
 	
 	echo Template::instance()->render("main.htm");
 }
+
 
 function ecs_overviews($f3)
 {
