@@ -1,5 +1,32 @@
 <?php
 
+function error_page($f3)
+{
+	$f3->set('templates', array( "error.htm" ) );
+	$title = $f3->get( "ERROR.code" )." ";
+	$desc = array( 
+		"403"=>"Forbidden",
+		"404"=>"Not Found",
+		"500"=>"Server Error",
+	);
+	if( @$desc[$f3->get( "ERROR.code" )] ) 
+	{ 
+		$title .= $desc[$f3->get( "ERROR.code" )];
+	}
+	else
+	{
+		$title .= "Error";
+	}
+	$f3->set('title', $title );
+
+	# the stack traace seems to break the template engine!
+	$f3->clear('ERROR.trace' );
+	
+	echo Template::instance()->render("main.htm");
+	exit;
+}
+	
+
 function front_page($f3)
 {
 	#syllabuses work one academic year ahead 
@@ -138,7 +165,7 @@ function create_specification($f3)
 	$theme = R::load("major", $input["majorid"] );
 	
 	if(!isset($theme)){
-		$f3->error( 500, "This theme does not exist.");
+		$f3->error( 404, "This theme does not exist.");
 		return;
 	}
 	if(isset($theme->specification)){
@@ -225,7 +252,7 @@ function view_syllabus($f3)
 	$syllabus = R::load("syllabus", $f3->get('PARAMS["syllabus_id"]'));
 	if(!$syllabus->id)
 	{
-		$f3->error( 500, "This syllabus id does not exist");
+		$f3->error( 404, "This syllabus id does not exist");
 		return;
 	}
 	$content = "";
@@ -249,7 +276,7 @@ function json_syllabus($f3)
 	$syllabus = R::load("syllabus", $f3->get('PARAMS["syllabus_id"]'));
 	if(!$syllabus->id)
 	{
-		$f3->error( 500, "This syllabus id does not exist");
+		$f3->error( 404, "This syllabus id does not exist");
 		return;
 	}
 	$module = array("module"=>$syllabus->module->export(), "syllabus"=>$syllabus->getData());
@@ -273,7 +300,7 @@ function ecs_syllabus($f3)
 	$syllabus = reset($existing_module->ownSyllabus);
 	if(!$syllabus->id)
 	{
-		$f3->error( 500, "This syllabus id does not exist");
+		$f3->error( 404, "This syllabus id does not exist");
 		return;
 	}
 	foreach($syllabus->ownResources as $resource)
@@ -329,7 +356,7 @@ function edit_syllabus($f3)
 	$syllabus = R::load("syllabus", $f3->get('PARAMS["syllabus_id"]'));
 	if(!$syllabus->id)
 	{
-		$f3->error( 500, "This syllabus id does not exist");
+		$f3->error( 404, "This syllabus id does not exist");
 		return;
 	}
 
@@ -362,7 +389,7 @@ function save_syllabus($f3)
 
 	if(!$syllabus->id)
 	{
-		$f3->error( 500, "This syllabus id does not exist");
+		$f3->error( 404, "This syllabus id does not exist");
 		return;
 	}
 
@@ -392,13 +419,13 @@ function toreview_syllabus($f3)
 	$syllabus = R::load("syllabus", $f3->get('PARAMS["syllabus_id"]'));
 	if(!$syllabus->id)
 	{
-		$f3->error( 500, "This syllabus id does not exist");
+		$f3->error( 404, "This syllabus id does not exist");
 		return;
 	}
 
 	if(!$syllabus->canEdit())
 	{
-		$f3->error( 500, "You do not have permission to move this to review");
+		$f3->error( 403, "You do not have permission to move this to review");
 		return;
 	}
 
@@ -416,7 +443,7 @@ function review_syllabus($f3)
 	$syllabus = R::load("syllabus", $f3->get('PARAMS["syllabus_id"]'));
 	if(!$syllabus->id)
 	{
-		$f3->error( 500, "This syllabus id does not exist");
+		$f3->error( 404, "This syllabus id does not exist");
 		return;
 	}
 	
@@ -429,7 +456,7 @@ function review_syllabus($f3)
 	$user = current_user($f3);
 	if(!$syllabus->canBeReviewedBy($user))
 	{
-		$f3->error( 500, "You are not a reviewer for this syllabus");	
+		$f3->error( 403, "You are not a reviewer for this syllabus");	
 		return;
 	}
 
@@ -466,7 +493,7 @@ function approve_syllabus($f3)
 	$syllabus = R::load("syllabus", $f3->get('PARAMS["syllabus_id"]'));
 	if(!$syllabus->id)
 	{
-		$f3->error( 500, "This syllabus id does not exist");
+		$f3->error( 404, "This syllabus id does not exist");
 		return;
 	}
 
@@ -534,7 +561,7 @@ function review_dashboard($f3)
 
 	if (!$user->is_reviewer())
 	{
-		$f3->error( 500, "You are not registered as a module reviewer");
+		$f3->error( 403, "You are not registered as a module reviewer");
 	}
 
 	$f3->set("years", dates_as_sessions(null,3)); #null defaults to this year

@@ -25,7 +25,6 @@ foreach ($includes as $file)
         require_once($path_to_base_dir.$file);
 }
 
-
 $db_name = $f3->get('db_name');
 $db_password = $f3->get('db_password');
 $db_user = $f3->get('db_user');

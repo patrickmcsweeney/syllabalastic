@@ -66,7 +66,7 @@ function authenticate($f3, $pass_through = null)
 	{
 		// Didn't return a single record
 //TODO prompt for login
-		$f3->error( 500,"<p>Unrecognised username</p>");
+		$f3->error( 403,"<p>Unrecognised username</p>");
 		return FALSE;
 	}
 	// Bind using credentials
@@ -74,18 +74,18 @@ function authenticate($f3, $pass_through = null)
 	if (!@ldap_bind($dc,$info[0]['dn'],$_POST["password"]))
 	{
 		// Bind failed
-		$f3->error( 500,"<p>Unrecognised password</p>");
+		$f3->error( 403,"<p>Unrecognised password</p>");
 	}
 	@ldap_unbind($dc);
 
 	if(!array_key_exists("extensionattribute10",$info[0]) || $info[0]['extensionattribute10'][0]!='Active')
 	{
-		$f3->error( 500,"Your account appears to be expired. Contact serviceline on x25656.");
+		$f3->error( 403,"Your account appears to be expired. Contact serviceline on x25656.");
 	}
 
 	if(!array_key_exists("extensionattribute9",$info[0]) || $info[0]['extensionattribute9'][0]!='staff')
 	{
-		$f3->error( 500,"Only staff may log into this service");
+		$f3->error( 403,"Only staff may log into this service");
 	}
 
 	$user = R::findOne('user', ' username = ?', array($_POST["username"]));
