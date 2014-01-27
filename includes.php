@@ -16,6 +16,7 @@ $includes = array
         'http_routes.php',
         'lib/redbean/rb.php',
         'syllabus.php',
+        'module.php',
         'user.php',
         'lib/floraform/FloraForm.php'
 );
@@ -47,7 +48,12 @@ $REVIEWERS = array(
 #			'code' => array()
 		)
 	),
-        "bjc1f08" => array(
+        "ob1a12" => array(
+		'module' => array(
+			'facultycode' => array("F7", "wf", "fp", "jf")
+		)
+	),
+       "bjc1f08" => array(
 		'module' => array(
 			'facultycode' => array("F7", "wf", "fp")
 		)

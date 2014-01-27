@@ -16,7 +16,7 @@ fgets($file); # chuck the headings away
 while( $line = fgets($file) )
 {
 	$line = explode("|", $line);
-	if(!is_array($line) or count($line) < 10){ print("Something is wrong this line has no data"); continue; }
+	if(!is_array($line) or count($line) < 10){ print("Something is wrong this line has no data\n"); continue; }
 	####### TODO, reading the data file should be abstracted, this is blatently something which will change
 	$info[$line[0]][$line[10]]["title"] = $line[44];
 	$info[$line[0]][$line[10]]["departmentcode"] = $line[6];
@@ -39,10 +39,18 @@ while( $line = fgets($file) )
 		$programs[$program_code]["title"] = $line[37];
 		$programs[$program_code]["majors"][$line[38]] = 1;
 	}
-	if($module_code = trim($line[38]))
+	if($major_code = trim($line[38]))
 	{
-		$majors[$module_code]["title"] = $line[39];
-		$majors[$module_code]["modules"][$line[40]][$line[10]] = 1;
+		# 10 - course_code
+		# 40 - year_of_study
+		# 43 - module_type
+		# 38 = major_code
+		# 39 = major_desc (title)
+		# 0 = session
+		$majors[$line[0]][$major_code]["title"] = $line[39];
+		$majors[$line[0]][$major_code]["modules"][$line[10]] = array(
+			"yearofstudy"=>$line[40],
+			"type"=>$line[43] );
 	}
 }
 
@@ -62,17 +70,18 @@ foreach( $people as $staff_id => $people_properties )
 	R::store($person);
 }
 
+$module_beans = array();
 print "Modules import\n";
-foreach( $info as $year => $modules)
+foreach( $info as $session => $modules)
 {
 	foreach($modules as $module_code => $properties )
 	{
-		$module = R::findOne("module", "session = ? AND code = ?", array( $year, $module_code ) );
+		$module = R::findOne("module", "session = ? AND code = ?", array( $session, $module_code ) );
 		
 		if(!isset($module)){
 			$module = R::dispense('module');
 			$module->code = $module_code;
-			$module->session = $year;
+			$module->session = $session;
 		}
 
 		$module->title = $properties["title"];
@@ -90,31 +99,53 @@ foreach( $info as $year => $modules)
 			$module->sharedPerson = R::find('person', ' staffid IN ('.R::genSlots($people).') ', $people);
 		}
 		R::store($module);
+
+		$module_beans[$session][$module_code] = $module;
 	}
 	
 }
+
+
+R::wipe( "modulemajorrelation" );
 
 print "Majors import\n";
-foreach( $majors as $major_code => $major_properties )
+foreach( $majors as $session=>$session_majors )
 {
-	$major = R::findOne("major", "code = ?", array($major_code ) );
-
-	if(!isset($major))
+	foreach( $session_majors as $major_code => $major_properties )
 	{
-		$major = R::dispense('major');
-		$major->code = $major_code;
-	}
-
-	$major->title = $major_properties["title"];
-
-	if( !empty($major_properties["modules"]) )
-	{
-		$modules = array_keys($major_properties["modules"]);
-		$major->sharedModule = R::find('module', ' code IN ('.R::genSlots($modules).') ', $modules);
-	}
+		$major = R::findOne("major", "code = ? AND session = ?", array($major_code,$session ) );
 	
-	R::store($major);
+		if(!isset($major))
+		{
+			$major = R::dispense('major');
+			$major->code = $major_code;
+			$major->session = $session;
+		}
+	
+		$major->title = $major_properties["title"];
+
+		R::store($major);
+
+		if( !empty($major_properties["modules"]) )
+		{
+			foreach( $major_properties["modules"] as $module_code=>$rel_info )
+			{
+				$module = $module_beans[$session][$module_code];
+				$relation = R::dispense('modulemajorrelation');
+				$relation->session = $session; # not strictly needed
+				$relation->yearofstudy = $rel_info["yearofstudy"];
+				$relation->type = $rel_info["type"];
+				$relation->module = $module;
+				$relation->major = $major;
+				R::store( $relation );
+			}
+				
+		}
+	}
 }
+
+#!!!!!!!!!!!!!
+exit;
 
 print "Programs import\n";
 foreach($programs as $program_code => $program_properties){
@@ -137,5 +168,10 @@ foreach($programs as $program_code => $program_properties){
 
 	R::store($program);
 }
+
+
+		
+	
+
 
 ?>

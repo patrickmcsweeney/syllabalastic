@@ -177,7 +177,7 @@
 	<p>Author: {{@syllabus->author}}</p>
 </check>
 <check if="{{@syllabus->changessummary}}">
-	<p>Author: {{@syllabus->changessummary}}</p>
+	<p>Change summary: {{@syllabus->changessummary}}</p>
 </check>
 <check if="{{@syllabus->approvedby}}">
 	<p>Approved by: {{@syllabus->approvedby}}</p>
@@ -185,7 +185,7 @@
 <check if="{{@syllabus->timeapproved}}">
 	<p>Time approved: {{date("jS M Y - g:ia",@syllabus->timeapproved)}}</p>
 </check>
-<check if="{{trim(@syllabus->approvalnote)}}">
+<check if="{{@syllabus->approvalnote}}">
 	<true><p>Approval note: {{@syllabus->approvalnote}}</p></true>
 	<false><p>Approval note: No approval note was left.</p></false>
 </check>
