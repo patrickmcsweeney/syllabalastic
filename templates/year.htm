@@ -2,11 +2,15 @@
 	-
 	<repeat group="{{@years}}" key="{{@year_code}}" value="{{@year_render}}"> 
 		<check if="{{@year_code == @selected_year}}">
-			<true>
-				<strong><a href="{{@year_code}}">{{@year_render}}</a></strong> -
-			</true>
-			<false>
-				<a href="{{@year_code}}">{{@year_render}}</a> -
-			</false>
+				<strong>
+		</check>
+		<check if="{{isset(@REQUEST.allmodules)}}">
+			<true><a href="{{@year_code}}?allmodules=1">{{@year_render}}</a></true>
+			<false><a href="{{@year_code}}">{{@year_render}}</a></false>
+		</check>
+		<check if="{{@year_code == @selected_year}}">
+				</strong>
+		</check>
+		- <exclude>A closing minus sign</exclude>
 	</repeat>
 </div>

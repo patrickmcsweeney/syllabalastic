@@ -12,28 +12,48 @@ function front_page($f3)
 
 function modules_by_year($f3)
 {
-
 	$f3->set("years", dates_as_sessions(null,3)); #null defaults to this year
 	$f3->set("selected_year", $f3->get("PARAMS.session"));
+<<<<<<< HEAD
 
 	$modules = R::find('module', "session = ? ORDER BY code", array($f3->get('PARAMS.session')));
 
+=======
+	$f3->set('title', 'Module list by course code');
+	$templates = array('year.htm');
+	
+	$user = current_user($f3);
+	$user->departmentcode = "FP";
+	$f3->set('userdepartmentcode', $user->departmentcode);
+	#TODO dont hard code the department code...
+	if($f3->exists("REQUEST.allmodules") || !isset($user->departmentcode))
+	{
+		$modules = R::find('module', "session = ? ORDER BY code", array($f3->get('PARAMS.session')));
+	}else{
+		$templates[] = "seeallmodules.htm";
+		$modules = R::find('module', "session = ? and departmentcode = ? ORDER BY code", array($f3->get('PARAMS.session'), $user->departmentcode));
+	}
+	
+>>>>>>> 9595c777045ddc8d11abd5904e8a23bb35940ad4
 	$modules_by_faculty = array();
 	foreach($modules as $module)
 	{
-		if(!array_key_exists($module->facultycode, $modules_by_faculty))
+		if(!array_key_exists($module->departmentcode, $modules_by_faculty))
 		{
-			$modules_by_faculty[$module->facultycode]['name'] = $module->facultyname;
-			$modules_by_faculty[$module->facultycode]['modules'] = array();
+			$modules_by_faculty[$module->departmentcode]['name'] = $module->departmentname;
+			$modules_by_faculty[$module->departmentcode]['modules'] = array();
 		}
-		array_push($modules_by_faculty[$module->facultycode]['modules'], $module);
+		array_push($modules_by_faculty[$module->departmentcode]['modules'], $module);
 	}
 
-	$f3->set('title', 'Module list by course code');
 	$f3->set('modules', $modules_by_faculty);
+<<<<<<< HEAD
 	$f3->set('userfacultycode', current_user($f3)->facultycode);
 
 	$templates = array('year.htm');
+=======
+	
+>>>>>>> 9595c777045ddc8d11abd5904e8a23bb35940ad4
 
 	#we can't create modules in the past!
 	$current_year = dates_as_sessions();
@@ -47,6 +67,7 @@ function modules_by_year($f3)
 
 	echo Template::instance()->render("main.htm");
 }
+
 
 function ecs_overviews($f3)
 {
@@ -106,13 +127,24 @@ function create_module($f3)
 	$next_create_code = $next_create_code;
 
 	$new_module = R::dispense("module");
+<<<<<<< HEAD
 	$new_module->code = $next_create_code;
+=======
+	$new_module->code = $next_create_code; 
+	$new_module->provisionalcode = $next_create_code;
+>>>>>>> 9595c777045ddc8d11abd5904e8a23bb35940ad4
 	$new_module->session = $input["session"];
 	$new_module->title = $input["moduleprefix"].$input["modulepart"]." - ".$input["moduletitle"];
+	$new_module->provisionaltitle = $input["moduleprefix"].$input["modulepart"]." - ".$input["moduletitle"];
 	$new_module->facultycode = $faculty_code;
 	$new_module->facultyname = $user->facultyname;
+<<<<<<< HEAD
 
 
+=======
+	$new_module->isprovisional = true;
+	
+>>>>>>> 9595c777045ddc8d11abd5904e8a23bb35940ad4
 	R::store($new_module);
 
 	header("Location: /");
@@ -150,6 +182,7 @@ function create_syllabus($f3)
 	authenticate($f3);
 
 	$input = $f3->scrub($_REQUEST);
+<<<<<<< HEAD
 
 #	if(!($input["session"] > key(dates_as_sessions())))
 #	{
@@ -158,6 +191,9 @@ function create_syllabus($f3)
 #
 #	}
 
+=======
+	
+>>>>>>> 9595c777045ddc8d11abd5904e8a23bb35940ad4
 	$existing_module = R::findOne("module", "session = ? AND code = ?", array( $input["session"], $input["modulecode"] ) );
 
 	if(!isset($existing_module))
@@ -190,9 +226,10 @@ function create_syllabus($f3)
 	$syllabus->cqareviewed = false;
 	$syllabus->courseleaderreviewed = false;
 	$syllabus->quinquenialreviewed = false;
-	$syllabus->reviewedby = "";
+	$syllabus->approvedby = "";
 	$syllabus->approvalnote = "";
 	$syllabus->changessummary = "";
+	$syllabus->author = "";
 	$syllabus->timeapproved = null;
 	$syllabus_id = R::store($syllabus);
 	$existing_module->provisionalsyllabus = $syllabus;
@@ -227,7 +264,10 @@ function view_syllabus($f3)
 		$templates[] = 'provisional.htm';
 	}
 	$templates[] = 'syllabus.htm';
+	#$f3->set("author", array( R::findOne("user", " username = ? ", array($syllabus->author))));
 
+	#$f3->set("reviewer", array(R::findOne("user", " username = ? ", array($syllabus->approvedby))));
+	#print_r($f3->get("reviewer"));exit;
 	$f3->set('templates', $templates);
 	echo Template::instance()->render("main.htm");
 }
@@ -352,9 +392,18 @@ function save_syllabus($f3)
 		$f3->error( 500, "This syllabus id does not exist");
 		return;
 	}
-	$data = $syllabus->fromForm();
+
+	$syllabus->fromForm();
+	$user = current_user();
+	$syllabus->author = $user->username;
+
+	if( $syllabus->module->isprovisional )
+	{
+		R::store( $syllabus->module );
+	}
 
 	R::store($syllabus);
+
 	if($f3->get('REQUEST.passback'))
 	{
 		header("Location: ".$f3->get('REQUEST.passback'));

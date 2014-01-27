@@ -72,10 +72,12 @@ class Model_User extends RedBean_SimpleModel {
 	{
 		$this->staffid = $ldap_data[0]['employeenumber'][0];
 		$this->username = $ldap_data[0]['name'][0];
+		$this->givenname = $ldap_data[0]['givenname'][0];
+		$this->familyname = $ldap_data[0]['sn'][0];
 		$bits = explode(',',$ldap_data[0]['dn']);
 		$faculty_bits = explode("OU=", $bits[2]);
-		$this->facultycode = $faculty_bits[1];
-		$this->facultyname = $ldap_data[0]['department'][0];
+		$this->departmentcode = strtoupper($faculty_bits[1]);
+		$this->departmentname = $ldap_data[0]['department'][0];
 			
 		R::store($this);
 	}
@@ -97,7 +99,7 @@ class Model_User extends RedBean_SimpleModel {
 				syllabus, module
 			WHERE
 				syllabus.module_id = module.id
-				AND isprovisional=1
+				AND syllabus.isprovisional=1
 				AND (isunderreview!=1 or isunderreview is null )
 				AND module.session=?
 				AND ". $review_groups["sql"] ." 

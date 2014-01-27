@@ -1,5 +1,35 @@
 <article>
 
+<F3:check if="{{@syllabus->module->isprovisional}}">
+	<F3:true>
+		<div class="provisional-module">
+			<h2>Provisional Module Information</h3>
+			<div class="credits"><span class="label">Credits:</span> {{@syllabus->module->provisionalcredits}}</div>
+			<div class="code"><span class="label">Code:</span> {{@syllabus->module->provisionalcode}}</div>
+			<div class="title"><span class="label">Title:</span> {{@syllabus->module->provisionaltitle}}</div>
+			<div class="semester"><span class="label">Semester:</span> {{@syllabus->module->semestername}}</div>
+			<F3:check if="{{@syllabus->module->provisionalnotes}}">	
+				<F3:true>
+					<div class="notes">
+						<h3>Notes on provisional module</h3> 
+						{{@syllabus->module->provisionalnotes}}
+						<p>(these are not shown once the module ceases to be provisional)</p>
+					</div>
+				</F3:true>
+			</F3:check>
+                     
+		</div>
+	</F3:true>
+	<F3:false>
+		<div class="banner">
+			<div class="credits"><span class="label">Credits:</span> {{@syllabus->module->credits}}</div>
+			<div class="semester"><span class="label">Semester:</span> {{@syllabus->module->semestername}}</div>
+		</div>
+	</F3:false>
+</F3:check>
+
+  
+
 <F3:check if="{{count(@module->sharedPerson) > 0}}">
 	<F3:true>
 		<div class="people">
@@ -13,6 +43,7 @@
 		</div>
 	</F3:true>
 </F3:check>
+
 
 <F3:check if="{{@syllabus->introduction}}">
 	<F3:true>
@@ -140,6 +171,24 @@
 	<include href="{{'prerequisites/'.@module->code.'.html'}}" />
 </check>
 
+<h2>Meta information</h2>
+
+<check if="{{@syllabus->author}}">
+	<p>Author: {{@syllabus->author}}</p>
+</check>
+<check if="{{@syllabus->changessummary}}">
+	<p>Change summary: {{@syllabus->changessummary}}</p>
+</check>
+<check if="{{@syllabus->approvedby}}">
+	<p>Approved by: {{@syllabus->approvedby}}</p>
+</check>
+<check if="{{@syllabus->timeapproved}}">
+	<p>Time approved: {{date("jS M Y - g:ia",@syllabus->timeapproved)}}</p>
+</check>
+<check if="{{@syllabus->approvalnote}}">
+	<true><p>Approval note: {{@syllabus->approvalnote}}</p></true>
+	<false><p>Approval note: No approval note was left.</p></false>
+</check>
 
 <!-- Change information will not be shown here -->
 </article>

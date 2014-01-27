@@ -1,11 +1,11 @@
-<F3:repeat group="{{@modules}}" key="{{@facultycode}}" value="{{@details}}">
-	<a href="#" onclick="$('#syllabus-list-{{@facultycode}}').toggle();return false;"><h2 id="{{@facultycode}}">{{@details["name"]}}</h2></a>
-	<F3:check if="{{@facultycode==@userfacultycode}}">
+<F3:repeat group="{{@modules}}" key="{{@departmentcode}}" value="{{@details}}">
+	<a href="#" onclick="$('#syllabus-list-{{@departmentcode}}').toggle();return false;"><h2 id="{{@departmentcode}}">{{@details["name"]}}</h2></a>
+	<F3:check if="{{@departmentcode==@userdepartmentcode}}">
 		<true>
-			<ul class="syllabus-list" id="syllabus-list-{{@facultycode}}">
+			<ul class="syllabus-list" id="syllabus-list-{{@departmentcode}}">
 		</true>
 		<false>
-			<ul class="syllabus-list" id="syllabus-list-{{@facultycode}}" style="display:none">
+			<ul class="syllabus-list" id="syllabus-list-{{@departmentcode}}" style="display:none">
 		</false>
 	</F3:check>
 		<F3:repeat group="{{@details['modules']}}" value="{{@module}}">

@@ -34,7 +34,6 @@
 					<li><a href="/review/dashboard" >Review dashboard</a></li>
 <check if="{{ @SESSION.authenticated }}">
 <true>
-					<li>Logged in as {{ @SESSION.user.username }}</li>
 					<li><a href="/logout" >Logout</a></li>
 </true>
 <false>
@@ -42,6 +41,11 @@
 </false>
 </check>
 				</ul>
+<check if="{{ @SESSION.authenticated }}">
+<true>
+					Logged in as {{ @SESSION.user.username }}
+</true>
+</check>
 			</div>	
 			<div class="main-content">
 				<repeat group="{{ @templates }}" value="{{ @template__ }}">
@@ -53,5 +57,6 @@
 		</div>
 
 		<div class="clearer"> </div>
+<!-- {{ tick() }} -->
 	</body>
 </html>
