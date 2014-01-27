@@ -72,6 +72,17 @@ class Model_Syllabus extends RedBean_SimpleModel {
 		"major"=>"Major", 
 	);
 
+	private $SEMESTER_TYPES = array(
+		""=>"",
+		"S1"=>"Semester 1",
+		"S2"=>"Semester 2",
+		"1"=>"Full Academic Year",
+		"NS"=>"Non-Standard",
+		"T1"=>"Term 1",
+		"T2"=>"Term 2",
+		"T3"=>"Term 3",
+		"S3"=>"Semester 3", 
+	);
 
 
 
@@ -114,6 +125,24 @@ class Model_Syllabus extends RedBean_SimpleModel {
 		$data = array();
 		#echo "<pre>",htmlentities(print_r($_POST, true)),"</pre>";
 		$this->getForm($flags)->fromForm( $data, $_POST );
+		$module_info = @$data["module"];
+		unset( $data["module"] );
+		if( $this->module->isprovisional )
+		{
+			$this->module->title = $module_info["provisionaltitle"];
+			$this->module->provisionaltitle = $module_info["provisionaltitle"];
+
+			$this->module->credits = $module_info["provisionalcredits"];
+			$this->module->provisionalcredits = $module_info["provisionalcredits"];
+
+			$this->module->provisionalcode = $module_info["provisionalcode"];
+
+			$this->module->provisionalsemestercode = $module_info["provisionalsemestercode"];
+			$this->module->semestercode = $module_info["provisionalsemestercode"];
+			$this->module->semestername = @$this->SEMESTER_TYPES[ $module_info["provisionalsemestercode"] ];
+
+			$this->module->provisionalnotes = $module_info["provisionalnotes"];
+		}
 		$this->setData($data);
 		return $data;
 	}
@@ -198,7 +227,7 @@ class Model_Syllabus extends RedBean_SimpleModel {
 		}
 
 		# Section 1.
-		if( isset($this->module->id) ) 
+		if( ! $this->module->isprovisional )
 		{
 			$intro = $form->add( "SECTION", array( 
 				"title" => "Basic information", 
@@ -224,45 +253,45 @@ class Model_Syllabus extends RedBean_SimpleModel {
 		}
 		else
 		{
-#			$intro = $form->add( "SECTION", array( 
-#				"title" => "Provisional Module Description",
-#				"layout" => "section" ));
-#			$intro->add( "INFO", array( 
-#				"layout" => "section",
-#				"content_html" => "<p>This syllabus description has not yet been formally linked with a code and session.</p>" ));
-#
-#			$intro->add( "TEXT", array( 
-#				"id"=>"provisionaltitle",
-#				"title"=>"Provisional Module Title",
-#				"layout"=>"vertical"
-#			));
-#			$intro->add( "TEXT", array( 
-#				"id"=>"provisionalcode",
-#				"title"=>"Provisional Module Code",
-#				"layout"=>"vertical"
-#			));
-#			$intro->add( "CHOICE", array( 
-#				"id"=>"provisionalsession",
-#				"title"=>"Provisional Session",
-#				"mode"=>"pull-down",
-#				"choices"=>array( 
-#					"" => "Select...",
-#					"1213" => "2012-2013",
-#					"1314" => "2013-2014",
-#					"1415" => "2014-2015",
-#					"1516" => "2015-2016",
-#					"1617" => "2016-2017", )
-#			));
-#			$intro->add( "TEXT", array( 
-#				"id"=>"provisionalsemester",
-#				"title"=>"Provisional Semester",
-#				"layout"=>"vertical"
-#			));
-#			$intro->add( "HTML", array( 
-#				"id"=>"provisionalnotes",
-#				"title"=>"Provisional Notes",
-#				"layout"=>"section"
-#			));
+			$intro = $form->add( "SECTION", array( 
+				"title" => "Provisional Module Description",
+				"layout" => "section" ));
+			$intro->add( "INFO", array( 
+				"layout" => "section",
+				"content_html" => "<p>This syllabus description has not yet been formally linked with a module code.</p>" ));
+
+			$mod_combo = $intro->add( "COMBO", array(
+				"id"=>"module",
+			));
+			$mod_combo->add( "TEXT", array( 
+				"id"=>"provisionaltitle",
+				"title"=>"Module Title",
+				"layout"=>"vertical"
+			));
+			$mod_combo->add( "TEXT", array( 
+				"id"=>"provisionalcode",
+				"title"=>"Module Code",
+				"layout"=>"vertical"
+			));
+			$mod_combo->add( "CHOICE", array( 
+				"id"=>"provisionalsemestercode",
+				"choices" => $this->SEMESTER_TYPES,
+				"mode" => "pull-down",
+				"title"=>"Semester",
+				"layout"=>"vertical"
+			));
+			$mod_combo->add( "TEXT", array( 
+				"id"=>"provisionalcredits",
+				"title"=>"Credits",
+				"layout"=>"vertical"
+			));
+			$mod_combo->add( "HTML", array( 
+				"id"=>"provisionalnotes",
+				"title"=>"Notes",
+				"description"=>"
+Notes on this provisional module. These will not be visible to students.",
+				"layout"=>"section"
+			));
 		}
 
 

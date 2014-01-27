@@ -116,11 +116,13 @@ function create_module($f3)
 	
 	$new_module = R::dispense("module");
 	$new_module->code = $next_create_code; 
+	$new_module->provisionalcode = $next_create_code;
 	$new_module->session = $input["session"];
 	$new_module->title = $input["moduleprefix"].$input["modulepart"]." - ".$input["moduletitle"];
+	$new_module->provisionaltitle = $input["moduleprefix"].$input["modulepart"]." - ".$input["moduletitle"];
 	$new_module->facultycode = $faculty_code;
 	$new_module->facultyname = $user->facultyname;
-	
+	$new_module->isprovisional = true;
 	
 	R::store($new_module);
 
@@ -360,12 +362,18 @@ function save_syllabus($f3)
 		$f3->error( 500, "This syllabus id does not exist");
 		return;
 	}
-	$syllabus->fromForm();
 
+	$syllabus->fromForm();
 	$user = current_user();
 	$syllabus->author = $user->username;
 
+	if( $syllabus->module->isprovisional )
+	{
+		R::store( $syllabus->module );
+	}
+
 	R::store($syllabus);
+
 	if($f3->get('REQUEST.passback'))
 	{
 		header("Location: ".$f3->get('REQUEST.passback'));

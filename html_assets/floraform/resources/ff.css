@@ -9,8 +9,6 @@ textarea {
 	width: 98%;
 }
 .ff_combo {
-	display: block;
-	border: solid 10px #f00;
 }
 .ff_combo .ff_field {
 	display: inline-block;
