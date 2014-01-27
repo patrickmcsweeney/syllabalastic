@@ -8,8 +8,8 @@
 <script type="text/javascript" src="/html_assets/js/difflib.js"></script>
 <script type="text/javascript">
 $(document).ready(function() {
-	var oldSyllabus = $(".previous-syllabus").text().replace(/ +/g, ' ').replace(/\t+/g, '').replace(/\n+/g, "\n");
-	var newSyllabus = $(".current-syllabus").text().replace(/ +/g, ' ').replace(/\t+/g, '').replace(/\n+/g, "\n");
+	var oldSyllabus = $(".current-syllabus").text().replace(/ +/g, ' ').replace(/\t+/g, '').replace(/\n+/g, "\n");
+	var newSyllabus = $(".provisional-syllabus").text().replace(/ +/g, ' ').replace(/\t+/g, '').replace(/\n+/g, "\n");
 	oldSyllabus = difflib.stringAsLines(oldSyllabus);
 	newSyllabus = difflib.stringAsLines(newSyllabus);
 
