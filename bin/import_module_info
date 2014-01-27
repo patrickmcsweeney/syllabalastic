@@ -19,10 +19,13 @@ while( $line = fgets($file) )
 	if(!is_array($line) or count($line) < 10){ print("Something is wrong this line has no data"); continue; }
 	####### TODO, reading the data file should be abstracted, this is blatently something which will change
 	$info[$line[0]][$line[10]]["title"] = $line[44];
+	$info[$line[0]][$line[10]]["departmentcode"] = $line[6];
+	$info[$line[0]][$line[10]]["departmentname"] = $line[7];
 	$info[$line[0]][$line[10]]["facultycode"] = $line[4];
 	$info[$line[0]][$line[10]]["facultyname"] = $line[5];
 	$info[$line[0]][$line[10]]["semestercode"] = $line[17];
 	$info[$line[0]][$line[10]]["semestername"] = $line[18];
+	$info[$line[0]][$line[10]]["levelcode"] = $line[35];
 	$info[$line[0]][$line[10]]["credits"] = $line[19];
 	if($staff_id = trim($line[29]))
 	{
@@ -77,6 +80,9 @@ foreach( $info as $year => $modules)
 		$module->facultyname = $properties["facultyname"];
 		$module->semestercode = $properties["semestercode"];
 		$module->semestername = $properties["semestername"];
+		$module->departmentcode = $properties["departmentcode"];
+		$module->departmentname = $properties["departmentname"];
+		$module->levelcode = $properties["levelcode"];
 		$module->credits = $properties["credits"];
 		if( !empty($properties["people"]) )
 		{	

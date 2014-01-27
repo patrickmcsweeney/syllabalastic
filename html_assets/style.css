@@ -5,6 +5,11 @@ body {
 	display: inline;
 }
 
+.syllabus-tools a {
+    font-size: 80%;
+    margin-right: 10px;
+}
+
 .syllabus-tools input {
 	background-color: transparent;
 	padding: 0 ;
