@@ -1,6 +1,9 @@
 <?php
 
 $f3=require($path_to_base_dir.'lib/fatfree-master/lib/base.php');
+$f3->set('page_load_start', microtime(true));
+$f3->set('last_tick', microtime(true));
+
 $f3->config($path_to_base_dir.'config.ini');
 
 #Note on first installation, you will need to fill in
