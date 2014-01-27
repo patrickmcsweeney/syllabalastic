@@ -363,7 +363,10 @@ function save_syllabus($f3)
 		$f3->error( 500, "This syllabus id does not exist");
 		return;
 	}
-	$data = $syllabus->fromForm();
+	$syllabus->fromForm();
+
+	$user = current_user();
+	$syllabus->author = $user->username;
 
 	R::store($syllabus);
 	if($f3->get('REQUEST.passback'))
