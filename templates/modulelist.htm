@@ -13,38 +13,24 @@
 				<span class="syllabus-tools">- 
 					<F3:check if="{{@module->ownSyllabus}}">
 						<F3:true>
-							<form method="GET" action="/view/syllabus/{{reset(@module->ownSyllabus)->id}}">
-								<input type="submit" value="View current syllabus" />
-							</form>
+						<a href="/view/syllabus/{{reset(@module->ownSyllabus)->id}}">View current syllabus</a> 
 						</F3:true>
 					</F3:check>
 					<F3:check if="{{@module->fetchAs('syllabus')->provisionalsyllabus }}">
 						<F3:true>
-							<form method="GET" action="/view/syllabus/{{@module->fetchAs('syllabus')->provisionalsyllabus->id}}">
-								<input type="submit" value="View provisional syllabus" />
-							</form>
+							<a href="/view/syllabus/{{@module->fetchAs('syllabus')->provisionalsyllabus->id}}">View provisional syllabus</a> 
+							<a href="/edit/syllabus/{{@module->fetchAs('syllabus')->provisionalsyllabus->id}}">Edit provisional syllabus</a> 
 							<F3:check if="{{@module->fetchAs('syllabus')->provisionalsyllabus->isunderreview}}">
 								<F3:true>
-									<form method="GET" action="/review/syllabus/{{@module->fetchAs('syllabus')->provisionalsyllabus->id}}">
-										<input type="submit" value="Review provisonal syllabus" />
-									</form>
+									<a href="/review/syllabus/{{@module->fetchAs('syllabus')->provisionalsyllabus->id}}">Review provisional syllabus</a> 
 								</F3:true>
 								<F3:false>
-									<form method="GET" action="/edit/syllabus/{{@module->fetchAs('syllabus')->provisionalsyllabus->id}}">
-										<input type="submit" value="Edit provisonal syllabus" />
-									</form>
-									<form method="GET" action="/toreview/syllabus/{{@module->fetchAs('syllabus')->provisionalsyllabus->id}}">
-										<input type="submit" value="Submit for review" />
-									</form>
+									<a href="/toreview/syllabus/{{@module->fetchAs('syllabus')->provisionalsyllabus->id}}">Submit for review</a> 
 								</F3:false>
 							</F3:check>
 						</F3:true>
 						<F3:false>
-							<form method="POST" action="/create/syllabus">
-								<input type="hidden" name="modulecode" value="{{@module->code}}" />
-								<input type="hidden" name="session" value="{{@module->session}}" />
-								<input type="submit" value="Edit provisional syllabus" />
-							</form>
+						<a href="/create/syllabus/?modulecode={{@module->code}}&session={{@module->session}}">Edit provisional syllabus</a> 
 						</F3:false>
 					</F3:check>
 				</span>
