@@ -1,5 +1,33 @@
 <?php
 
+
+function error_page($f3)
+{
+	$f3->set('templates', array( "error.htm" ) );
+	$title = $f3->get( "ERROR.code" )." ";
+	$desc = array( 
+		"403"=>"Forbidden",
+		"404"=>"Not Found",
+		"500"=>"Server Error",
+	);
+	if( @$desc[$f3->get( "ERROR.code" )] ) 
+	{ 
+		$title .= $desc[$f3->get( "ERROR.code" )];
+	}
+	else
+	{
+		$title .= "Error";
+	}
+	$f3->set('title', $title );
+
+	# the stack traace seems to break the template engine!
+	$f3->clear('ERROR.trace' );
+	
+	echo Template::instance()->render("main.htm");
+	exit;
+}
+	
+
 function front_page($f3)
 {
 	#syllabuses work one academic year ahead
