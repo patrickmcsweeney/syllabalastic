@@ -160,13 +160,6 @@ function create_syllabus($f3)
 
 	$input = $f3->scrub($_REQUEST);
 	
-#	if(!($input["session"] > key(dates_as_sessions())))
-#	{
-#		$f3->error( 500, "You cannot create syllabuses for the current or past sessions");
-#		return;
-#	
-#	}
-
 	$existing_module = R::findOne("module", "session = ? AND code = ?", array( $input["session"], $input["modulecode"] ) );
 	
 	if(!isset($existing_module))
@@ -200,9 +193,10 @@ function create_syllabus($f3)
 	$syllabus->cqareviewed = false;
 	$syllabus->courseleaderreviewed = false;
 	$syllabus->quinquenialreviewed = false;
-	$syllabus->reviewedby = "";
+	$syllabus->approvedby = "";
 	$syllabus->approvalnote = "";
 	$syllabus->changessummary = "";
+	$syllabus->author = "";
 	$syllabus->timeapproved = null;
 	$syllabus_id = R::store($syllabus);
 	$existing_module->provisionalsyllabus = $syllabus;
@@ -237,7 +231,10 @@ function view_syllabus($f3)
 		$templates[] = 'provisional.htm';
 	}
 	$templates[] = 'syllabus.htm';
+	#$f3->set("author", array( R::findOne("user", " username = ? ", array($syllabus->author))));
 
+	#$f3->set("reviewer", array(R::findOne("user", " username = ? ", array($syllabus->approvedby))));
+	#print_r($f3->get("reviewer"));exit;
 	$f3->set('templates', $templates);
 	echo Template::instance()->render("main.htm");
 }

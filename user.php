@@ -72,6 +72,8 @@ class Model_User extends RedBean_SimpleModel {
 	{
 		$this->staffid = $ldap_data[0]['employeenumber'][0];
 		$this->username = $ldap_data[0]['name'][0];
+		$this->givenname = $ldap_data[0]['givenname'][0];
+		$this->familyname = $ldap_data[0]['sn'][0];
 		$bits = explode(',',$ldap_data[0]['dn']);
 		$faculty_bits = explode("OU=", $bits[2]);
 		$this->departmentcode = strtoupper($faculty_bits[1]);
