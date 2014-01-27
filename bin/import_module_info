@@ -144,8 +144,6 @@ foreach( $majors as $session=>$session_majors )
 	}
 }
 
-#!!!!!!!!!!!!!
-exit;
 
 print "Programs import\n";
 foreach($programs as $program_code => $program_properties){
