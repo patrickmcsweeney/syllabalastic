@@ -4,7 +4,10 @@
 		<check if="{{@year_code == @selected_year}}">
 				<strong>
 		</check>
-		<a href="{{@year_code}}">{{@year_render}}</a>
+		<check if="{{isset(@REQUEST.allmodules)}}">
+			<true><a href="{{@year_code}}?allmodules=1">{{@year_render}}</a></true>
+			<false><a href="{{@year_code}}">{{@year_render}}</a></false>
+		</check>
 		<check if="{{@year_code == @selected_year}}">
 				</strong>
 		</check>
