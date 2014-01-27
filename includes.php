@@ -33,8 +33,14 @@ $db_host = $f3->get('db_host');
 
 R::setup("mysql:host=$db_host;dbname=$db_name",$db_user,$db_password);
 
-$API_KEYS = array($f3->get('api_key'));
-$REVIEWERS = array(  
+#Initialise API keys
+$API_KEYS = array();
+if($f3->get('api_key')) {
+    #config API key
+    array_push($API_KEYS,$f3->get('api_key'));
+}
+
+$REVIEWERS = array(
         "pm5c08" => array(
 		'module' => array(
 			'facultycode' => array("F7", "wf", "fp")
