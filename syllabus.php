@@ -235,6 +235,8 @@ class Model_Syllabus extends RedBean_SimpleModel {
 			$syllabus_data = "";
 			$syllabus_data.= "<p>Title: ".htmlentities($this->module->title)."</p>";
 			$syllabus_data.= "<p>Code and Session: ".htmlentities($this->module->code)." (".$this->module->session.")</p>";
+			$syllabus_data.= "<p>Credits: ".htmlentities($this->module->credits)."</p>";
+			$syllabus_data.= "<p>".htmlentities($this->module->semestername)."</p>";
 
 			$semesters = array();
 			if( $this->semester_1 ) { $semesters []= "1"; }
@@ -249,6 +251,7 @@ class Model_Syllabus extends RedBean_SimpleModel {
 			$intro->add( "HIDDEN", array( "id"=>"provisionalsession",));
 			$intro->add( "HIDDEN", array( "id"=>"provisionalsemester",));
 			$intro->add( "HIDDEN", array( "id"=>"provisionalnotes",));
+			$intro->add( "HIDDEN", array( "id"=>"provisionalcredits",));
 
 		}
 		else
