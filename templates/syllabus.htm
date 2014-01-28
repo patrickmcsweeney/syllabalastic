@@ -188,22 +188,49 @@
 
 <h2>Meta information</h2>
 
-<check if="{{@syllabus->author}}">
-	<p>Author: {{@syllabus->author}}</p>
-</check>
-<check if="{{@syllabus->changessummary}}">
-	<p>Change summary: {{@syllabus->changessummary}}</p>
-</check>
-<check if="{{@syllabus->approvedby}}">
-	<p>Approved by: {{@syllabus->approvedby}}</p>
-</check>
-<check if="{{@syllabus->timeapproved}}">
-	<p>Time approved: {{date("jS M Y - g:ia",@syllabus->timeapproved)}}</p>
-</check>
-<check if="{{@syllabus->approvalnote}}">
-	<true><p>Approval note: {{@syllabus->approvalnote}}</p></true>
-	<false><p>Approval note: No approval note was left.</p></false>
-</check>
+<F3:check if="{{@syllabus->isprovisional}}">
+	<F3:false>
+		<check if="{{@syllabus->approvedby}}">
+			<p>Approved by: {{@syllabus->approvedby}}</p>
+		</check>
+		<check if="{{@syllabus->timeapproved}}">
+			<p>Time approved: {{date("jS M Y - g:ia",@syllabus->timeapproved)}}</p>
+		</check>
+		<check if="{{@syllabus->approvalnote}}">
+			<true><p>Approval note: {{@syllabus->approvalnote}}</p></true>
+			<false><p>Approval note: No approval note was left.</p></false>
+		</check>
+
+	</F3:false>
+	<F3:true>
+		{{* changessummary is deprecated but some syllabus may still have
+		    it set so we'll show it if there's any data. *}}
+		<check if="{{@syllabus->changessummary}}">
+			<p>Change summary: {{@syllabus->changessummary}}</p>
+		</check>
+		
+		<h3>Change log since last approval:</h3>
+		<table class='changelog' >
+			<tr>
+				<th>Date</th>
+				<th>Time</th>
+				<th>Name &amp; username</th>
+				<th>Summary</th>
+			</tr>
+			<F3:repeat group="{{ @syllabus->ownSyllabuseditlog }}" value="@log">
+				<tr>
+					<td>{{ date( "D, d M Y", @log->timestamp ) }}</td>
+					<td>{{ date( "H:i", @log->timestamp ) }}</td>
+					<td>{{ @log->name }} ({{ @log->username }})</td>
+					<td>{{ @log->summary }}</td>
+				</tr>
+			</F3:repeat>
+		</table>
+	</F3:true>
+</F3:check>
+
+
+
 
 <!-- Change information will not be shown here -->
 </article>
