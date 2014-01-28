@@ -389,7 +389,7 @@ function save_syllabus($f3)
 	}
 
 	$syllabus->fromForm();
-	$user = current_user();
+	$user = current_user($f3);
 	$syllabus->author = $user->username;
 
 	if( $syllabus->module->isprovisional )
