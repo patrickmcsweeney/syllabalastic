@@ -1,0 +1,160 @@
+.ff_block {
+	display:block !important;
+}
+.ff_component {
+	display: block;
+}
+.ff_description {
+	margin-bottom: 0.5em;
+}
+.ff_form textarea {
+	display: block;
+	width: 95%;
+}
+.ff_combo {
+	display: block;
+}
+.ff_combo .ff_field {
+	display: inline-block;
+	padding-right: 1em;
+}
+.ff_combo .ff_field .ff_title {
+	display: inline-block;
+}
+.ff_field .ff_title {
+	padding-right: 0.5em;
+}
+
+
+
+.ff_section h2.ff_title {
+	border-radius: 10px;
+	box-shadow: 10px 10px 8px #ccc;
+	background-color: #eef;
+	border: solid 2px #99e;
+	padding: 0.2em;
+	margin-top: 2em;
+	margin-bottom: 1em;
+}
+.ff_section .ff_section .ff_component {
+	margin-left: 1em;
+	margin-right: 1em;
+}
+.ff_section .ff_section .ff_component .ff_component{
+	border: none;
+	margin: 0;
+}
+.ff_select .ff_radio_option {
+	padding-right: 10px;
+}
+
+/* Lists */
+
+.ff_list .ff_item_number {
+	padding: 8px 5px 5px 5px;
+	width: 40px;
+	float:left;
+}
+.ff_list .ff_item_remove {
+	width: 40px;
+	padding: 8px 5px 5px 5px;
+	float: right;
+}
+.ff_even { 
+	background-color: #eef;
+	border-top: solid 1px #eef;
+}
+.ff_odd { 
+	background-color: #eee;
+	border-top: solid 2px #eee
+}
+.ff_item_value {
+	display: block;
+	padding: 5px 50px 5px 50px;
+}
+
+
+.ff_item { 
+	border-bottom: solid 1px #999;
+	margin: 0px;
+	clear: both;
+}
+.ff_first { 
+	border-top: solid 1px #999;
+}
+
+.ff_list .ff_combo {
+	padding-left: 40px
+	display: block;
+}
+.ff_list { 
+	margin-bottom: 1em;
+}
+
+
+.ff_list ul li {
+	list-style: none;
+	padding: 0px;
+	margin: 0px;
+	min-height: 50px;
+}
+.ff_list ul {
+	list-style: none;
+	padding: 0px;
+	margin: 0px;
+}
+.ff_item_remove {
+	cursor: pointer;
+}
+.ff_item_add img {
+	vertical-align: text-bottom;
+	width: 12px;
+}
+.ff_item_add {
+	cursor: pointer;
+	border-radius: 10px;
+	background-color: #eef;
+	border: solid 2px #99e;
+	padding: 2px 6px 2px 6px;
+	margin-top: 5px;
+	min-height: 14px;
+	display: inline-block;
+	font-size: 12px;
+	color: #669;
+}
+
+
+/* horizontal field */
+/*
+.ff_horizontal {
+	display: block;
+}
+
+
+.ff_combo_vertical .ff_component {
+	display: block;
+}
+.ff_combo_vertical .ff_component .ff_title {
+	width: 20%;
+	text-align: right;
+}
+.ff_combo_vertical .ff_component .ff_input_text {
+	width: 70%;
+}
+*/
+
+.ff_input_submit {
+    background-color: #EEEEFF;
+    border: 2px solid #9999EE;
+    border-radius: 10px 10px 10px 10px;
+    color: #666699;
+    cursor: pointer;
+    display: inline-block;
+    font-size: 12px;
+    margin-top: 1em;
+    min-height: 14px;
+    padding: 2px 6px;
+}	
+	
+
+	

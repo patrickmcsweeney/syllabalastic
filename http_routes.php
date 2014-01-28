@@ -50,7 +50,6 @@ function modules_by_year($f3)
 	$templates = array('year.htm');
 	
 	$user = current_user($f3);
-	$user->departmentcode = "FP";
 	$f3->set('userdepartmentcode', $user->departmentcode);
 	#TODO dont hard code the department code...
 	if($f3->exists("REQUEST.allmodules") || !isset($user->departmentcode))

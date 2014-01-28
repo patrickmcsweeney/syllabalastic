@@ -211,7 +211,7 @@ class Model_Syllabus extends RedBean_SimpleModel {
 		}
 		
 		$url .= "://".$_SERVER['HTTP_HOST'];
-		$params = array( "heading"=>1, "resourcesURL"=>"$url/html_assets/floraform/resources" ); 
+		$params = array( "heading"=>1, "resourcesURL"=>"$url/html_assets/floraform" ); 
 		$action = "$url/save/syllabus/".$this->id;
 		$params["action"] = $action;
 		$form = new FloraForm($params);
@@ -353,9 +353,6 @@ Notes on this provisional module. These will not be visible to students.",
 			"title" => "Hours per semester a student will spend on this activity",
 			"size"=> 2 ) );
 #TODO upgrade to new Flora form so we dont have to add this little hack in textarea should render its own title.
-		$reg_combo->add( "INFO", array( 
-			"layout" => "block",
-			"content_html" => "Description:" ));
 		$reg_combo->add( "TEXTAREA", array(
 			"id" => "teachingdescription",
 			"rows" => "2",
@@ -428,9 +425,6 @@ Notes on this provisional module. These will not be visible to students.",
 	#			"id" => "notes",
 	#			"title" => "Notes" ));
 
-		$ass_combo->add( "INFO", array( 
-			"layout" => "block",
-			"content_html" => "Feedback:" ));
 		$ass_combo->add( "TEXTAREA", array(
 			"id" => "feedback",
 			"rows" => "3",
@@ -507,7 +501,7 @@ Notes on this provisional module. These will not be visible to students.",
 			"id" => "syllabusid",
 		));
 		$form->add( "SUBMIT", array( 
-			"title" => "Save Changes",
+			"text" => "Save Changes",
 		));
 
 
