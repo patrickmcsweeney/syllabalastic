@@ -118,6 +118,42 @@ abstract class FloraForm_Component
 		return $field;
 	}
 
+	function addJSONFile( $fn )
+	{
+		$json = file_get_contents( $fn );
+		$this->addJSON( $json );
+	}
+
+	function addJSON( $json )
+	{
+		$data = json_decode( $json, true ); # not error trapping if the JSON ain't legit
+		$this->addJSONData( $data );
+	}
+
+	function addJSONData( $data )
+	{
+		if( !isset( $data["type"] )  )
+		{
+			throw( new Exception( 'type not set: '.substr( json_encode( $data ),0,60 )));
+		}
+		$type = $data["type"];
+		unset( $data["type"] );
+		$fields_data = array();
+		if( @$data["fields"] )
+		{
+			$fields_data = $data["fields"];
+			unset( $data["fields"] );
+		}
+
+		$new_field = $this->add( $type, $data );
+		foreach( $fields_data as $field_data )
+		{
+			$new_field->addJSONData( $field_data );
+		}
+		return $new_field;
+	}		
+
+
 	function classes()
 	{
 		return "ff_component";
@@ -389,6 +425,7 @@ class FloraForm_Field_List extends FloraForm_Field
 	function add( $type, $options=array() )
 	{
 		$options["id-prefix"] = $this->fullId();
+
 		$this->field = parent::add($type, $options);
 
 		return $this->field;

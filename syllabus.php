@@ -298,35 +298,7 @@ Notes on this provisional module. These will not be visible to students.",
 
 
 
-		$s2 = $form->add( "SECTION", array(
-			"title" => "1. Description",
-			));
-		$s2->add( "HTML", array( 
-			"layout" => "section",
-			"id" => "introduction", # TODO change field name
-			"title" => "1.1 Introduction",
-			"rows" => 10,
-			"description" => "
-	This section should be used to give a summary of the syllabus, its aims, and (for core / compulsory syllabuss) how it fits in with the programme as a whole or (for optional syllabuss) why students might choose to take it. You can also give a general indication of pre-requisite knowledge and skills which are assumed.
-	",
-		));
-
-		$s2->add( "HTML", array( 
-			"layout" => "section",
-			"id" => "learningoutcomes", # TODO change field name
-			"title" => "1.2 Learning Outcomes",
-			"rows" => 10,
-			"description" => "
-	This section should be used to list the intended learning outcomes of the syllabus. You can refer to <a href='https://sharepoint.soton.ac.uk/sites/ese/quality_handbook/default.aspx'>guidance in the quality handbook</a> for advice on these. For a standard 15 credit syllabus, 5 to 8 outcomes should be sufficient. Please do not repeat the list of topics for the syllabus, which are given in the following section.
-	",
-		));
-
-		$s2->add( "HTML", array( 
-			"layout" => "section",
-			"id" => "topics", # TODO change field name
-			"rows" => 10,
-			"title" => "1.3 Topics",
-			"description" => "A summary of contents covered, perhaps 10 to 20 bullet points." ) );
+		$s2 = $form->addJSONFile( 'etc/ff/section1.json' );
 
 		### Assessment
 
@@ -503,7 +475,6 @@ Notes on this provisional module. These will not be visible to students.",
 		$form->add( "SUBMIT", array( 
 			"text" => "Save Changes",
 		));
-
 
 		return $form;	
 	}
