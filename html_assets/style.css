@@ -110,14 +110,12 @@ div.main-content {
 }
 
 a {
-	color: #666666;
-	border-bottom: 1px dashed #666666;	
+	color: #0066cc;
 	text-decoration: none;
 }
 
 a:hover {
-	color: #666666;
-	border-bottom: 1px solid #666666;	
+	text-decoration: underline;
 }
 .current-syllabus, .previous-syllabus {
 	display:none;
@@ -135,9 +133,10 @@ table.login .login-container {
 }
 
 .notice {
-	padding: 10px;
+	padding: 0.8em;
 	border: 1px solid #4884ff;
 	background-color: #acc7ff;
+	margin-bottom: 1em;
 }
 
 .assessment, .teaching-activity{
