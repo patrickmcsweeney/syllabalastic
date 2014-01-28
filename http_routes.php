@@ -19,6 +19,10 @@ function error_page($f3)
 		$title .= "Error";
 	}
 	$f3->set('title', $title );
+	if( $f3->get( "ERROR.code" ) == "404" )
+	{
+		$f3->set( "ERROR.text", "The page or resource you requested does not exist." );
+	}
 
 	# the stack traace seems to break the template engine!
 	$f3->clear('ERROR.trace' );
