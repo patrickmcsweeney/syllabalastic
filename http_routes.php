@@ -631,4 +631,12 @@ function report_books($f3)
 
 }
 
+function about_syllabalastic($f3)
+{
+	$f3->set("title", "About Syllabalastic");
+	$f3->set('templates', array('about_syllabalastic.htm'));
+
+	echo Template::instance()->render("main.htm");
+}
+
 ?>
