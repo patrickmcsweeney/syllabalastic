@@ -156,7 +156,9 @@ function create_module($f3)
 	
 	R::store($new_module);
 
-	header("Location: /");
+	$_REQUEST["modulecode"] = $next_create_code;
+	$_REQUEST["session"] = $input["session"];
+	create_syllabus($f3);
 }
 
 function create_specification($f3)
