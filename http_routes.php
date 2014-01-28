@@ -463,7 +463,7 @@ function review_syllabus($f3)
 	$content = "";
 
     #Check to see if there is a currently published syllabus
-    $current_syllabus = $module->getCurrent();
+	$current_syllabus = $module->getCurrent();
 
 	$f3->set("title", "Reviewing ".$module->code.": ".$module->title." (".$module->session.") ");
 	$f3->set("module", $module);
