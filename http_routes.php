@@ -132,11 +132,11 @@ function create_module($f3)
 	$input = $f3->scrub($_POST);
 
 	$user = current_user($f3);
-	$faculty_code = $user->facultycode;
+	$department_code = $user->departmentcode;
 
-	$next_create_code = $faculty_code."Provisional000001";
+	$next_create_code = $department_code."Provisional000001";
 
-	$last_created_module = R::findOne("module", "session = ? AND code like '%Provisional%' AND facultycode = ? order by code DESC", array( $input["session"], $faculty_code ) );
+	$last_created_module = R::findOne("module", "session = ? AND code like '%Provisional%' AND departmentcode = ? order by code DESC", array( $input["session"], $department_code ) );
 
 	if(isset($last_created_module)){
 		$next_create_code = $last_created_module->code;
@@ -151,8 +151,8 @@ function create_module($f3)
 	$new_module->session = $input["session"];
 	$new_module->title = $input["moduleprefix"].$input["modulepart"]." - ".$input["moduletitle"];
 	$new_module->provisionaltitle = $input["moduleprefix"].$input["modulepart"]." - ".$input["moduletitle"];
-	$new_module->facultycode = $faculty_code;
-	$new_module->facultyname = $user->facultyname;
+	$new_module->departmentcode = $department_code;
+	$new_module->departmentname = $user->departmentname;
 	$new_module->isprovisional = true;
 	
 	R::store($new_module);
