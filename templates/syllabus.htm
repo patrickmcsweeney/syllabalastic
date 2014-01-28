@@ -25,6 +25,21 @@
 			<div class="credits"><span class="label">Credits:</span> {{@syllabus->module->credits}}</div>
 			<div class="semester"><span class="label">Semester:</span> {{@syllabus->module->semestername}}</div>
 		</div>
+		<F3:if check="{{ @syllabus->module->ownModulemajorrelation }}"><F3:true>
+			<h2>Degrees offering this module</h2>
+			<table>
+				<F3:repeat group="{{ @syllabus->module->ownModulemajorrelation }}" value="{{@relation}}">
+					<tr>
+						<td style='text-align:right'>{{ @relation->type }} on</td>	
+						<td>{{ @relation->major->title }}
+						<F3:check "{{ @relation->yearofstudy <=5 }}"><F3:true>
+							(year {{ @relation->yearofstudy }})</td>	
+						</F3:true></F3:check>
+					</tr>
+				</F3:repeat>
+			</table>
+		</F3:true></F3:check>
+
 	</F3:false>
 </F3:check>
 
