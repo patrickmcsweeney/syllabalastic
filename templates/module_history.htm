@@ -1,0 +1,21 @@
+
+<p>This page each approved version of each syllabus each year. Only the approved version of each is stored</p>
+<F3:repeat group="{{ @modules }}" value="{{ @module }}">
+	<h3>{{ @module->title }} - {{ @module->session }}</h3>
+
+	<F3:repeat group="{{ @module->with( ' ORDER BY id DESC' )->ownSyllabus }}" value="{{ @syllabus }}" counter="{{ @i }}">
+		<p><a href='/view/syllabus/{{ @syllabus->id }}'>Revision #{{ @syllabus->id }}</a>:
+			<F3:check if="{{ @syllabus->isprovisional }}">Provisional.</F3:check>
+			<F3:check if="{{ @syllabus->isunderreview }}">Under review.</F3:check>
+
+		<F3:check if="{{ @syllabus->approvedby }}">
+			Approved {{ date( "D, d M Y H:i", @syllabus->timeapproved ) }} by
+			{{ @syllabus->approvedname }} ({{ @syllabus->approvedby }})
+		</F3:check>
+		</p>
+		{{ @syllabus->changessummary }}
+		<F3:include href="log.htm" />
+	</F3:repeat> 
+</F3:repeat>
+
+

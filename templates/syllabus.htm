@@ -203,32 +203,26 @@
 
 	</F3:false>
 	<F3:true>
-		{{* changessummary is deprecated but some syllabus may still have
-		    it set so we'll show it if there's any data. *}}
+		<F3:exclude>
+		    changessummary is deprecated but some syllabus may still have
+		    it set so we'll show it if there's any data. 
+		</f3:exclude>
 		<check if="{{@syllabus->changessummary}}">
 			<p>Change summary: {{@syllabus->changessummary}}</p>
 		</check>
-		
+
 		<h3>Change log since last approval:</h3>
-		<table class='changelog' >
-			<tr>
-				<th>Date</th>
-				<th>Time</th>
-				<th>Name &amp; username</th>
-				<th>Summary</th>
-			</tr>
-			<F3:repeat group="{{ @syllabus->ownSyllabuseditlog }}" value="@log">
-				<tr>
-					<td>{{ date( "D, d M Y", @log->timestamp ) }}</td>
-					<td>{{ date( "H:i", @log->timestamp ) }}</td>
-					<td>{{ @log->name }} ({{ @log->username }})</td>
-					<td>{{ @log->summary }}</td>
-				</tr>
-			</F3:repeat>
-		</table>
+
+		<F3:include href="log.htm" />
+
 	</F3:true>
 </F3:check>
 
+<F3:check if="{{ ! @syllabus->module->isprovisional }}">
+	<p><a href='/history/module/{{ @syllabus->module->code }}'>View module history</a></p>
+</F3:check>	
+		
+		
 
 
 
