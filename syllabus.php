@@ -317,7 +317,7 @@ Notes on this provisional module. These will not be visible to students.",
 			"title" => "1.2 Learning Outcomes",
 			"rows" => 10,
 			"description" => "
-	This section should be used to list the intended learning outcomes of the syllabus. You can refer to <a href='http://www.opendatacompetition.soton.ac.uk/newsite/'>guidance in the quality handbook</a> for advice on these. For a standard 15 credit syllabus, 5 to 8 outcomes should be sufficient. Please do not repeat the list of topics for the syllabus, which are given in the following section.
+	This section should be used to list the intended learning outcomes of the syllabus. You can refer to <a href='https://sharepoint.soton.ac.uk/sites/ese/quality_handbook/default.aspx'>guidance in the quality handbook</a> for advice on these. For a standard 15 credit syllabus, 5 to 8 outcomes should be sufficient. Please do not repeat the list of topics for the syllabus, which are given in the following section.
 	",
 		));
 
