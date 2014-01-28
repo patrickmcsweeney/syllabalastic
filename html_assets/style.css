@@ -168,3 +168,9 @@ table.login .login-container {
 .action:active {
 	margin: 7px 3px 3px 2px;
 }
+#module_container .ff_field {
+	display:block;
+}
+#module_container .ff_field .ff_title {
+	width: 15ex;
+}
