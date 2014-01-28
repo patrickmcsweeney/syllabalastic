@@ -8,18 +8,18 @@
 							<li>{{@major->title}} - 
 								<F3:check if="{{@major->specification}}">
 									<F3:true>
-										<form method="GET" action="/edit/specification/{{@major->specification->id}}">
-											<input type="submit" value="Edit" />
-										</form>
-										<form method="GET" action="/view/specification/{{@major->specification->id}}">
-											<input type="submit" value="View" />
-										</form>
+		<form method="GET" action="/edit/specification/{{@major->specification->id}}">
+			<input type="submit" value="Edit" />
+		</form>
+		<form method="GET" action="/view/specification/{{@major->specification->id}}">
+			<input type="submit" value="View" />
+		</form>
 									</F3:true>
 									<F3:false>
-										<form method="POST" action="/create/specification">
-											<input type="hidden" name="majorid" value="{{@major->id}}" />
-											<input type="submit" value="Create theme specification" />
-										</form>
+		<form method="POST" action="/create/specification">
+			<input type="hidden" name="majorid" value="{{@major->id}}" />
+			<input type="submit" value="Create theme specification" />
+		</form>
 									</F3:false>
 								</F3:check>
 							</li>

@@ -1,17 +1,13 @@
 <li><span class="module-code">{{@syllabus->module->code}}</span>: {{@syllabus->module->title}} 
 	<span class="syllabus-tools">- 
-		<form method="GET" action="/view/syllabus/{{@syllabus->id}}">
-			<input type="submit" value="View provisional syllabus" />
-		</form>
+		<a href="/view/syllabus/{{@syllabus->id}}">View provisional syllabus</a>
 		<F3:check if="{{ @syllabus->isunderreview }}">
 			<F3:true>
-				<form method="GET" action="/review/syllabus/{{@syllabus->id}}">
-					<input type="submit" value="Review provisonal syllabus" />
-				</form>
+				<a href="/review/syllabus/{{@syllabus->id}}">Review provisonal syllabus</a>
 			</F3:true>
 			<F3:false>
 				<form method="GET" action="/toreview/syllabus/{{@syllabus->id}}">
-					<input type="submit" value="Submit for review" />
+					<input type="submit" class='action' value="Submit for review" />
 				</form>
 			</F3:false>
 		</F3:check>

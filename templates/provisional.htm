@@ -3,21 +3,16 @@
 	<F3:check if="{{ @syllabus->isunderreview }}">
 		<true>
 			<p>This syllabus is currently awaiting review.</p>
+			<p><a href="/">&larr; Return to module list</a></p>
 		</true>
 		<false>
 			<form method="GET" action="/toreview/syllabus/{{@syllabus->id}}">
-				<p>Submit this syllabus for review: 
-					<input type="submit" value="Submit for review" />
+				<p>
+					<input class='action' type="submit" value="Submit syllabus for review" />
 				</p>
 			</form>
-    </F3:check>
-			<form method="GET" action="/edit/syllabus/{{@syllabus->id}}">
-				<p>Continue making changes to this syllabus: 
-					<input type="submit" value="Continue editing" />
-				</p>
-			</form>
+			<p><a href="/">&larr; Return to module list</a> or <a href="/edit/syllabus/{{@syllabus->id}}">continue editing this syllabus</a>.</p>
 			
 		</false>
 	</F3:check>
-	<p><a href="/">Return to module list</a></p>
 </div>
