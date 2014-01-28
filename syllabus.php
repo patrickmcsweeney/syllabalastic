@@ -156,28 +156,28 @@ class Model_Syllabus extends RedBean_SimpleModel {
 	public function setData($data)
 	{
 		
-                foreach( $data as $field => $value )
-                {       
-                        if(! is_array($value))
-                        {
-                                $this->$field = $value;
-                                continue;
-                        }
+		foreach( $data as $field => $value )
+		{       
+			if(! is_array($value))
+			{
+				$this->$field = $value;
+				continue;
+			}
 
-                        $sub_objects = array();
-                        foreach( $value as $sub_object_in_array )
-                        {
-                                $sub_object = R::dispense($field);
-                                foreach( $sub_object_in_array as $sub_field => $sub_value)
-                                {
-                                        $sub_object->$sub_field = $sub_value;
-                                }
-                                $sub_objects[] = $sub_object;
-                        }
+			$sub_objects = array();
+			foreach( $value as $sub_object_in_array )
+			{
+				$sub_object = R::dispense($field);
+				foreach( $sub_object_in_array as $sub_field => $sub_value)
+				{
+					$sub_object->$sub_field = $sub_value;
+				}
+				$sub_objects[] = $sub_object;
+			}
 			$field_name = "own".ucfirst($field);
-                        $this->$field_name = $sub_objects;
+			$this->$field_name = $sub_objects;
 
-                }
+		}
 	}
 
 	public function getData(){
@@ -252,7 +252,6 @@ class Model_Syllabus extends RedBean_SimpleModel {
 			$intro->add( "HIDDEN", array( "id"=>"provisionalsemester",));
 			$intro->add( "HIDDEN", array( "id"=>"provisionalnotes",));
 			$intro->add( "HIDDEN", array( "id"=>"provisionalcredits",));
-
 		}
 		else
 		{
@@ -494,7 +493,7 @@ Notes on this provisional module. These will not be visible to students.",
 			));
 		$s4->add( "HTML", array(
 			"id" => "changessummary",
-			"description" => "Please use this section to summarise recent changes to the syllabus, and why they were made. If this was in response to student comments, please quote some of them, or link to the questionnaire data.",
+			"description" => "Please use this section to summarise recent changes to the syllabus since it was last approved, and why they were made. If this was in response to student comments, please quote some of them, or link to the questionnaire data. This field should list ALL changes since the last approval, not just the edits you just made.",
 			"layout"=>"section" ));
 
 		$form->add( "HIDDEN", array( 

@@ -94,8 +94,8 @@ function ecs_overviews($f3)
 	$modules_by_faculty = array();
 	header("Content-type: text/plain" );
 	foreach($modules as $module)
-    {
-        $syl = $module->getCurrent();
+	{
+		$syl = $module->getCurrent();
 		if( $syl )
 		{
 			$modules_by_faculty[$module->facultycode][$module->code] = array(
@@ -226,8 +226,8 @@ function create_syllabus($f3)
 	$syllabus->quinquenialreviewed = false;
 	$syllabus->approvedby = "";
 	$syllabus->approvalnote = "";
-	$syllabus->changessummary = "";
-	$syllabus->author = "";
+	$syllabus->changessummary = ""; 	# deprecated
+	$syllabus->author = ""; 		# deprecated
 	$syllabus->timeapproved = null;
 	$syllabus_id = R::store($syllabus);
 	$existing_module->provisionalsyllabus = $syllabus;
@@ -335,7 +335,7 @@ function php_module($f3)
 		exit;
 
 	}
-    $syllabus = $existing_module->getCurrent();
+	$syllabus = $existing_module->getCurrent();
 	if(!$syllabus)
 	{
 		echo("This syllabus does not exist");
@@ -461,7 +461,7 @@ function review_syllabus($f3)
 	$module = $syllabus->module;
 	$content = "";
 
-    #Check to see if there is a currently published syllabus
+	#Check to see if there is a currently published syllabus
 	$current_syllabus = $module->getCurrent();
 
 	$f3->set("title", "Reviewing ".$module->code.": ".$module->title." (".$module->session.") ");
@@ -529,8 +529,8 @@ function approve_syllabus($f3)
 		$syllabus->approvedby = $user->username;
 		$syllabus->approvalnote = $_POST["approvalnote"];
 		$module = $syllabus->module;
-        $module->currentsyllabus_id = $syllabus->id;
-        unset($module->provisionalsyllabus);
+		$module->currentsyllabus_id = $syllabus->id;
+		unset($module->provisionalsyllabus);
 		R::store($module);
 
 	}
