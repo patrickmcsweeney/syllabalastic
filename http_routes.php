@@ -226,9 +226,9 @@ function create_syllabus($f3)
 	$syllabus->courseleaderreviewed = false;
 	$syllabus->quinquenialreviewed = false;
 	$syllabus->approvedby = "";
+	$syllabus->approvedname = "";
 	$syllabus->approvalnote = "";
 	$syllabus->changessummary = ""; 	# deprecated
-	$syllabus->author = ""; 		# deprecated
 	$syllabus->timeapproved = null;
 	$syllabus_id = R::store($syllabus);
 	$existing_module->provisionalsyllabus = $syllabus;
@@ -263,10 +263,7 @@ function view_syllabus($f3)
 		$templates[] = 'provisional.htm';
 	}
 	$templates[] = 'syllabus.htm';
-	#$f3->set("author", array( R::findOne("user", " username = ? ", array($syllabus->author))));
 
-	#$f3->set("reviewer", array(R::findOne("user", " username = ? ", array($syllabus->approvedby))));
-	#print_r($f3->get("reviewer"));exit;
 	$f3->set('templates', $templates);
 	echo Template::instance()->render("main.htm");
 }
@@ -393,8 +390,11 @@ function save_syllabus($f3)
 	}
 
 	$syllabus->fromForm();
-	$user = current_user($f3);
-	$syllabus->author = $user->username;
+
+	# if re-editing a provisional syl with a changes summary
+	# this is now moved to the per edit log and cleared.
+	$changessummary = $syllabus->changessummary;
+	$syllabus->changessummary="";
 
 	if( $syllabus->module->isprovisional )
 	{
@@ -402,6 +402,16 @@ function save_syllabus($f3)
 	}
 
 	R::store($syllabus);
+
+	$user = current_user($f3);
+	$new_log = R::dispense("syllabuseditlog");
+	$new_log->timestamp = time();
+	$new_log->user = $user;
+	$new_log->username = $user->username;
+	$new_log->name = $user->familyname.", ".$user->givenname;
+	$new_log->syllabus = $syllabus;
+	$new_log->summary = $changessummary;
+	R::store($new_log);
 
 	if($f3->get('REQUEST.passback'))
 	{
@@ -528,6 +538,7 @@ function approve_syllabus($f3)
 		$syllabus->isunderreview = 0;
 		$syllabus->timeapproved = time();
 		$syllabus->approvedby = $user->username;
+		$syllabus->approvedname = $user->familyname.", ".$user->givenname;
 		$syllabus->approvalnote = $_POST["approvalnote"];
 		$module = $syllabus->module;
 		$module->currentsyllabus_id = $syllabus->id;

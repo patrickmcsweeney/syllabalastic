@@ -168,3 +168,24 @@ table.login .login-container {
 .action:active {
 	margin: 7px 3px 3px 2px;
 }
+
+table.changelog {
+	border-collapse: collapse;
+}
+table.changelog th {
+	text-align:left;
+	background-color: #666;
+	color: white;
+	font-weight: normal;
+	border-right: solid 1px #fff;
+	padding: 3px;
+	font-size: 90%;
+}
+table.changelog td {
+	text-align:left;
+	color: #666;
+	font-weight: normal;
+	border: solid 1px #666;
+	padding: 3px;
+	font-size: 90%;
+}

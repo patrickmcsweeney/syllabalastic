@@ -497,9 +497,10 @@ Notes on this provisional module. These will not be visible to students.",
 		$s4 = $form->add( "SECTION", array(
 			"title" => "4. Changes",
 			));
-		$s4->add( "HTML", array(
+		$s4->add( "TEXTAREA", array(
 			"id" => "changessummary",
-			"description" => "Please use this section to summarise recent changes to the syllabus since it was last approved, and why they were made. If this was in response to student comments, please quote some of them, or link to the questionnaire data. This field should list ALL changes since the last approval, not just the edits you just made.",
+			"rows"=>5,
+			"description" => "A summary of these changes, and why they were made. If this was in response to student comments, please quote some of them, or the link to the questionnaire data.",
 			"layout"=>"section" ));
 
 		$form->add( "HIDDEN", array( 
