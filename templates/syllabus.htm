@@ -33,10 +33,28 @@
 			<div class="code"><span class="label">Code:</span> {{@syllabus->module->provisionalcode}}</div>
 			<div class="title"><span class="label">Title:</span> {{@syllabus->module->provisionaltitle}}</div>
 			<div class="semester"><span class="label">Semester:</span> {{@syllabus->module->semestername}}</div>
+			<F3:check if="{{@syllabus->module->provisionalprogs}}">	
+				<F3:true>
+					<div class="notes">
+						<h3>Provisional module programmes</h3> 
+						{{@syllabus->module->provisionalprogs}}
+						<p>(this information is not shown once the module ceases to be provisional, as it will be transferred to BANNER)</p>
+					</div>
+				</F3:true>
+			</F3:check>
+			<F3:check if="{{@syllabus->module->provisionalreqs}}">	
+				<F3:true>
+					<div class="notes">
+						<h3>Pre-requisites on provisional module</h3> 
+						{{@syllabus->module->provisionalreqs}}
+						<p>(these are not shown once the module ceases to be provisional, as they will be transferred to BANNER)</p>
+					</div>
+				</F3:true>
+			</F3:check>
 			<F3:check if="{{@syllabus->module->provisionalnotes}}">	
 				<F3:true>
 					<div class="notes">
-						<h3>Notes on provisional module</h3> 
+						<h3>Other notes about provisional module</h3> 
 						{{@syllabus->module->provisionalnotes}}
 						<p>(these are not shown once the module ceases to be provisional)</p>
 					</div>
