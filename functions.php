@@ -66,7 +66,7 @@ function authenticate($f3, $pass_through = null)
 	{
 		// Didn't return a single record
 //TODO prompt for login
-		$f3->error( 403,"<p>Unrecognised username</p>");
+		$f3->error( 403,"Unrecognised username");
 		return FALSE;
 	}
 	// Bind using credentials
@@ -74,7 +74,7 @@ function authenticate($f3, $pass_through = null)
 	if (!@ldap_bind($dc,$info[0]['dn'],$_POST["password"]))
 	{
 		// Bind failed
-		$f3->error( 403,"<p>Unrecognised password</p>");
+		$f3->error( 403,"Unrecognised password");
 	}
 	@ldap_unbind($dc);
 
