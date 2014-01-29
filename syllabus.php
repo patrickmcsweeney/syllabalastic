@@ -507,4 +507,13 @@ Notes on this provisional module. These will not be visible to students.",
 
 		return $form;	
 	}
+
+	function isCurrent()	
+	{
+		$module = $this->module;
+		if( !$module ) { return false; }
+		$current = $module->getCurrent();
+		if( !$current ) { return false; }
+		return ( $this->id == $current->id );
+	}
 }

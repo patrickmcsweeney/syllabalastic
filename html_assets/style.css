@@ -229,3 +229,9 @@ table.changelog td {
 	margin-top: 0;
 }
 	
+article.deprecated {
+	background: url(/html_assets/deprecated-bg.png);
+}
+article.provisional {
+	background: url(/html_assets/provisional-bg.png);
+}

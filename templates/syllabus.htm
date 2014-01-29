@@ -1,4 +1,29 @@
-<article>
+
+<F3:check if="{{@syllabus->isCurrent()}}">
+	<F3:true>
+		<article>
+	</F3:true>
+	<F3:false>
+		<F3:check if="{{@syllabus->isprovisional}}">
+			<F3:true><article class='provisional'></F3:true>
+			<F3:false><article class='deprecated'></F3:false>
+		</F3:check>
+		<div class='notice'><strong>THIS IS NOT THE CURRENT VERSION FOR {{@syllabus->module->session}}.</strong> 
+		<F3:check if="{{@syllabus->module->getCurrent()}}">
+			<p>
+			<F3:true>
+				<a href='/view/syllabus/{{@syllabus->module->getCurrent()->id}}'>View the current version for {{@syllabus->module->session}}</a>
+			</F3:true>
+			<F3:false>
+				<p>No current version availible (this may indicate a bug)</p>
+			</F3:false>
+			or <a href='/history/module/{{ @syllabus->module->code }}'>view the entire history for {{@syllabus->module->code}}</a>.
+			</p>
+		</F3:check>
+		</div>
+	</F3:false>
+</F3:check>
+  
 
 <F3:check if="{{@syllabus->module->isprovisional}}">
 	<F3:true>
@@ -33,8 +58,9 @@
 						<td style='text-align:right'>{{ @relation->type }} on</td>	
 						<td>{{ @relation->major->title }}
 						<F3:check "{{ @relation->yearofstudy <=5 }}"><F3:true>
-							(year {{ @relation->yearofstudy }})</td>	
+							(year {{ @relation->yearofstudy }})
 						</F3:true></F3:check>
+						</td>	
 					</tr>
 				</F3:repeat>
 			</table>
@@ -43,7 +69,6 @@
 	</F3:false>
 </F3:check>
 
-  
 
 <F3:check if="{{count(@module->sharedPerson) > 0}}">
 	<F3:true>
