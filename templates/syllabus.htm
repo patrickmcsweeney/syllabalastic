@@ -25,7 +25,7 @@
 			<div class="credits"><span class="label">Credits:</span> {{@syllabus->module->credits}}</div>
 			<div class="semester"><span class="label">Semester:</span> {{@syllabus->module->semestername}}</div>
 		</div>
-		<F3:if check="{{ @syllabus->module->ownModulemajorrelation }}"><F3:true>
+		<F3:check if="{{ @syllabus->module->ownModulemajorrelation }}"><F3:true>
 			<h2>Degrees offering this module</h2>
 			<table>
 				<F3:repeat group="{{ @syllabus->module->ownModulemajorrelation }}" value="{{@relation}}">
