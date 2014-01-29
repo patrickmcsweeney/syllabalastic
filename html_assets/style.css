@@ -205,3 +205,27 @@ table.changelog td {
 	width: 99%;
 }
 
+.review-syllabus {
+	border:solid 2px #000;
+	margin-top: 1em;
+}
+.review-syllabus article {
+	padding: 1em;
+}
+.review-syllabus .syllabus-type {
+	background-color: #000;
+	color: #fff;
+	font-weight: bold;
+	padding: 2px;
+	font-size: 140%;
+}
+.review-syllabus .review-intro {
+	background-color: #ccf;
+	padding: 1em;
+	margin-bottom: 1em;
+	border-bottom: solid 2px #000;
+}
+.review-syllabus .review-intro p {
+	margin-top: 0;
+}
+	

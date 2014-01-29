@@ -1,7 +1,22 @@
 <div class="diffoutput"> </div>
 <repeat group="{{@syllabuses}}" key="{{@syllabus_status}}" value="{{@syllabus}}">
-	<div class="toggle-{{@syllabus_status}}"><a id="{{@syllabus_status}}-syllabus" href="#{{@syllabus_status}}-syllabus" onclick="$('.{{@syllabus_status}}-syllabus').toggle();">Show/hide {{@syllabus_status}} syllabus</a></div>
-	<div class="{{@syllabus_status}}-syllabus"><include href="syllabus.htm" /></div>
+	<div class="{{@syllabus_status}}-syllabus review-syllabus">
+		<div class='syllabus-type'>{{ucfirst(@syllabus_status)}} syllabus</div>
+		<div class='review-intro'>
+			<check if="{{@syllabus_status == 'provisional'}}">
+				<p>This is the new version of the syllabus that has been proposed. The form at the end of this page allows you to approve this as the new version.</p>
+			</check>
+			<check if="{{@syllabus_status == 'current'}}">
+				<p>This is the current version of the syllabus. It will be replaced if you approve the proposed new version.</p>
+			</check>
+			<repeat group="{{@syllabuses}}" key="{{@syllabus_status2}}" value="{{@syllabus2}}">
+				<check if="{{@syllabus_status != @syllabus_status2}}">
+					<div><a onclick="$('.review-syllabus').hide(); $('.{{@syllabus_status2}}-syllabus').show();">Show {{@syllabus_status2}} syllabus</a></div>
+				</check>
+			</repeat>
+		</div>
+		<include href="syllabus.htm" />
+	</div>
 </repeat>
 <script type="text/javascript" src="/html_assets/js/diffview.js"></script>
 <link rel="stylesheet" type="text/css" href="/html_assets/diffview.css"/>
