@@ -18,8 +18,8 @@
 					</F3:check>
 					<F3:check if="{{@module->getProvisional()}}">
 						<F3:true>							
-						<a href="/view/syllabus/{{@module->getProvisional()->id}}">View provisional syllabus</a> 
-						<a href="/edit/syllabus/{{@module->getProvisional()->id}}">Edit provisional syllabus</a> 
+							<a href="/view/syllabus/{{@module->getProvisional()->id}}">View provisional syllabus</a> 
+							<a href="/edit/syllabus/{{@module->getProvisional()->id}}">Edit provisional syllabus</a> 
 							<F3:check if="{{@module->getProvisional()->isunderreview}}">
 								<F3:true>
 									<a href="/review/syllabus/{{@module->getProvisional()->id}}">Review provisional syllabus</a> 
@@ -30,7 +30,7 @@
 							</F3:check>
 						</F3:true>
 						<F3:false>
-						<a class='action' href="/create/syllabus/?modulecode={{@module->code}}&session={{@module->session}}">Edit provisional syllabus</a> 
+							<a class='action' href="/create/syllabus/?modulecode={{@module->code}}&session={{@module->session}}">Edit provisional syllabus</a> 
 						</F3:false>
 					</F3:check>
 				</span>
