@@ -5,9 +5,9 @@ require_once($path_to_base_dir.'includes.php');
 
 R::exec("UPDATE `syllabus` LEFT JOIN `module` ON `syllabus`.`module_id`=`module`.`id`
 SET `module`.`currentsyllabus_id` = `syllabus`.`id`
-WHERE `isprovisional`=0 AND `module`.`id` IS NOT NULL
+WHERE `syllabus.isprovisional`=0 AND `module`.`id` IS NOT NULL
 ");
 
-echo 'Modules have been updated';
+echo "Modules have been updated\n";
 
 ?>
