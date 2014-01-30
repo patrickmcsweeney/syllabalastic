@@ -1,4 +1,29 @@
-<article>
+
+<F3:check if="{{@syllabus->isCurrent()}}">
+	<F3:true>
+		<article>
+	</F3:true>
+	<F3:false>
+		<F3:check if="{{@syllabus->isprovisional}}">
+			<F3:true><article class='provisional'></F3:true>
+			<F3:false><article class='deprecated'></F3:false>
+		</F3:check>
+		<div class='notice'><strong>THIS IS NOT THE CURRENT VERSION FOR {{@syllabus->module->session}}.</strong> 
+		<F3:check if="{{@syllabus->module->getCurrent()}}">
+			<p>
+			<F3:true>
+				<a href='/view/syllabus/{{@syllabus->module->getCurrent()->id}}'>View the current version for {{@syllabus->module->session}}</a>
+			</F3:true>
+			<F3:false>
+				<p>No current version availible.</p>
+			</F3:false>
+			or <a href='/history/module/{{ @syllabus->module->code }}'>view the entire history for {{@syllabus->module->code}}</a>.
+			</p>
+		</F3:check>
+		</div>
+	</F3:false>
+</F3:check>
+  
 
 <F3:check if="{{@syllabus->module->isprovisional}}">
 	<F3:true>
@@ -8,10 +33,28 @@
 			<div class="code"><span class="label">Code:</span> {{@syllabus->module->provisionalcode}}</div>
 			<div class="title"><span class="label">Title:</span> {{@syllabus->module->provisionaltitle}}</div>
 			<div class="semester"><span class="label">Semester:</span> {{@syllabus->module->semestername}}</div>
+			<F3:check if="{{@syllabus->module->provisionalprogs}}">	
+				<F3:true>
+					<div class="notes">
+						<h3>Provisional module programmes</h3> 
+						{{@syllabus->module->provisionalprogs}}
+						<p>(this information is not shown once the module ceases to be provisional, as it will be transferred to BANNER)</p>
+					</div>
+				</F3:true>
+			</F3:check>
+			<F3:check if="{{@syllabus->module->provisionalreqs}}">	
+				<F3:true>
+					<div class="notes">
+						<h3>Pre-requisites on provisional module</h3> 
+						{{@syllabus->module->provisionalreqs}}
+						<p>(these are not shown once the module ceases to be provisional, as they will be transferred to BANNER)</p>
+					</div>
+				</F3:true>
+			</F3:check>
 			<F3:check if="{{@syllabus->module->provisionalnotes}}">	
 				<F3:true>
 					<div class="notes">
-						<h3>Notes on provisional module</h3> 
+						<h3>Other notes about provisional module</h3> 
 						{{@syllabus->module->provisionalnotes}}
 						<p>(these are not shown once the module ceases to be provisional)</p>
 					</div>
@@ -25,7 +68,7 @@
 			<div class="credits"><span class="label">Credits:</span> {{@syllabus->module->credits}}</div>
 			<div class="semester"><span class="label">Semester:</span> {{@syllabus->module->semestername}}</div>
 		</div>
-		<F3:if check="{{ @syllabus->module->ownModulemajorrelation }}"><F3:true>
+		<F3:check if="{{ @syllabus->module->ownModulemajorrelation }}"><F3:true>
 			<h2>Degrees offering this module</h2>
 			<table>
 				<F3:repeat group="{{ @syllabus->module->ownModulemajorrelation }}" value="{{@relation}}">
@@ -33,8 +76,9 @@
 						<td style='text-align:right'>{{ @relation->type }} on</td>	
 						<td>{{ @relation->major->title }}
 						<F3:check "{{ @relation->yearofstudy <=5 }}"><F3:true>
-							(year {{ @relation->yearofstudy }})</td>	
+							(year {{ @relation->yearofstudy }})
 						</F3:true></F3:check>
+						</td>	
 					</tr>
 				</F3:repeat>
 			</table>
@@ -43,7 +87,6 @@
 	</F3:false>
 </F3:check>
 
-  
 
 <F3:check if="{{count(@module->sharedPerson) > 0}}">
 	<F3:true>
@@ -203,32 +246,26 @@
 
 	</F3:false>
 	<F3:true>
-		{{* changessummary is deprecated but some syllabus may still have
-		    it set so we'll show it if there's any data. *}}
+		<F3:exclude>
+		    changessummary is deprecated but some syllabus may still have
+		    it set so we'll show it if there's any data. 
+		</f3:exclude>
 		<check if="{{@syllabus->changessummary}}">
 			<p>Change summary: {{@syllabus->changessummary}}</p>
 		</check>
-		
+
 		<h3>Change log since last approval:</h3>
-		<table class='changelog' >
-			<tr>
-				<th>Date</th>
-				<th>Time</th>
-				<th>Name &amp; username</th>
-				<th>Summary</th>
-			</tr>
-			<F3:repeat group="{{ @syllabus->ownSyllabuseditlog }}" value="@log">
-				<tr>
-					<td>{{ date( "D, d M Y", @log->timestamp ) }}</td>
-					<td>{{ date( "H:i", @log->timestamp ) }}</td>
-					<td>{{ @log->name }} ({{ @log->username }})</td>
-					<td>{{ @log->summary }}</td>
-				</tr>
-			</F3:repeat>
-		</table>
+
+		<F3:include href="log.htm" />
+
 	</F3:true>
 </F3:check>
 
+<F3:check if="{{ ! @syllabus->module->isprovisional }}">
+	<p><a href='/history/module/{{ @syllabus->module->code }}'>View module history</a></p>
+</F3:check>	
+		
+		
 
 
 

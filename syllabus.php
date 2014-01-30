@@ -141,6 +141,8 @@ class Model_Syllabus extends RedBean_SimpleModel {
 			$this->module->semestercode = $module_info["provisionalsemestercode"];
 			$this->module->semestername = @$this->SEMESTER_TYPES[ $module_info["provisionalsemestercode"] ];
 
+			$this->module->provisionalreqs = $module_info["provisionalreqs"];
+			$this->module->provisionalprogs = $module_info["provisionalprogs"];
 			$this->module->provisionalnotes = $module_info["provisionalnotes"];
 		}
 		$this->setData($data);
@@ -246,12 +248,6 @@ class Model_Syllabus extends RedBean_SimpleModel {
 			$intro->add( "INFO", array( 
 				"layout" => "section",
 				"content_html" => $syllabus_data ));
-			$intro->add( "HIDDEN", array( "id"=>"provisionaltitle"));
-			$intro->add( "HIDDEN", array( "id"=>"provisionalcode",));
-			$intro->add( "HIDDEN", array( "id"=>"provisionalsession",));
-			$intro->add( "HIDDEN", array( "id"=>"provisionalsemester",));
-			$intro->add( "HIDDEN", array( "id"=>"provisionalnotes",));
-			$intro->add( "HIDDEN", array( "id"=>"provisionalcredits",));
 		}
 		else
 		{
@@ -284,14 +280,27 @@ class Model_Syllabus extends RedBean_SimpleModel {
 			));
 			$mod_combo->add( "TEXT", array( 
 				"id"=>"provisionalcredits",
-				"title"=>"Credits",
-				"layout"=>"vertical"
+				"title"=>"ECTS Credits",
+				"layout"=>"vertical",
+#				"surround"=>"floraform/component_surround.htm",
+#				"description" => "See the <a href='http://www.calendar.soton.ac.uk/sectionIV/cats.html'>Calendar</a> for regulations."
+			));
+			$mod_combo->add( "HTML", array( 
+				"id"=>"provisionalprogs",
+				"title"=>"Programmes",
+				"description"=>"To which degree programmes should this module be offered? If possible specify core/compulsory/option.",
+				"layout"=>"section"
+			));
+			$mod_combo->add( "HTML", array( 
+				"id"=>"provisionalreqs",
+				"title"=>"Pre-requisites",
+				"description"=>"What are the pre-requisites and exclusions for this module? ",
+				"layout"=>"section"
 			));
 			$mod_combo->add( "HTML", array( 
 				"id"=>"provisionalnotes",
 				"title"=>"Notes",
-				"description"=>"
-Notes on this provisional module. These will not be visible to students.",
+				"description"=>"Other notes on this provisional module. ",
 				"layout"=>"section"
 			));
 		}
@@ -307,7 +316,7 @@ Notes on this provisional module. These will not be visible to students.",
 			"title" => "1.1 Introduction",
 			"rows" => 10,
 			"description" => "
-	This section should be used to give a summary of the syllabus, its aims, and (for core / compulsory syllabuss) how it fits in with the programme as a whole or (for optional syllabuss) why students might choose to take it. You can also give a general indication of pre-requisite knowledge and skills which are assumed.
+	This section should be used to give a summary of the syllabus, its aims, and (for core / compulsory modules) how it fits in with the programme as a whole or (for optional modules) why students might choose to take it. You can also give a general indication of pre-requisite knowledge and skills which are assumed.
 	",
 		));
 
@@ -506,5 +515,14 @@ Notes on this provisional module. These will not be visible to students.",
 
 
 		return $form;	
+	}
+
+	function isCurrent()	
+	{
+		$module = $this->module;
+		if( !$module ) { return false; }
+		$current = $module->getCurrent();
+		if( !$current ) { return false; }
+		return ( $this->id == $current->id );
 	}
 }

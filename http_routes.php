@@ -156,7 +156,9 @@ function create_module($f3)
 	
 	R::store($new_module);
 
-	header("Location: /");
+	$_REQUEST["modulecode"] = $next_create_code;
+	$_REQUEST["session"] = $input["session"];
+	create_syllabus($f3);
 }
 
 function create_specification($f3)
@@ -229,6 +231,7 @@ function create_syllabus($f3)
 	$syllabus->approvalnote = "";
 	$syllabus->changessummary = ""; 	# deprecated
 	$syllabus->timeapproved = null;
+	$syllabus->ownSyllabuseditlog = array();
 	$syllabus_id = R::store($syllabus);
 	$existing_module->provisionalsyllabus = $syllabus;
 
@@ -441,6 +444,16 @@ function toreview_syllabus($f3)
 
 	R::store($syllabus);
 
+	$user = current_user($f3);
+	$new_log = R::dispense("syllabuseditlog");
+	$new_log->timestamp = time();
+	$new_log->user = $user;
+	$new_log->username = $user->username;
+	$new_log->name = $user->familyname.", ".$user->givenname;
+	$new_log->syllabus = $syllabus;
+	$new_log->summary = "SUBMITTED FOR REVIEW";
+	R::store($new_log);
+
 	header( "Location: /" );
 }
 
@@ -650,6 +663,21 @@ function about_syllabalastic($f3)
 	$f3->set("title", "About Syllabalastic");
 	$f3->set('templates', array('about_syllabalastic.htm'));
 
+	echo Template::instance()->render("main.htm");
+}
+
+function view_module_history($f3)
+{
+	$module_code = $f3->get("PARAMS.modulecode");
+	$f3->set('title', 'History of syllabus for module "'.$module_code.'"');
+	$f3->set('templates', array('module_history.htm'));
+	$modules = R::find('module', "code = ? ORDER BY session DESC", array( $module_code ) );
+	if( !sizeof( $modules ) )
+	{
+		$f3->error( 404, "No module with that code on record." );
+		return;
+	}
+	$f3->set('modules', $modules );
 	echo Template::instance()->render("main.htm");
 }
 
