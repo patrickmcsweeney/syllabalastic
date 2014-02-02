@@ -85,7 +85,7 @@ foreach( $people as $staff_id => $people_properties )
 }
 echo count(array_values($dbpeoplehash))." - people\n";
 tick("people objects changed\n");
-R::storeAll(array_values($dbpeoplehash));
+#R::storeAll(array_values($dbpeoplehash));
 tick("people in the db now\n");
 $module_beans = array();
 print "Modules import\n";
@@ -125,13 +125,19 @@ foreach( $info as $session => $modules)
 			$people = array_keys($properties["people"]);
 			$module->sharedPerson = R::find('person', ' staffid IN ('.R::genSlots($people).') ', $people);
 		}
-		R::store($module);
+		#R::store($module);
 
 		$module_beans[$session][$module_code] = $module;
 	}
 	
 }
 
+tick("before storing modules");
+foreach($moduledbhash as $session => $module_code)
+{
+	R::storeAll(array_values($module_code));
+}
+tick("after storing all modules");
 exit;
 
 $program_beans = array();
