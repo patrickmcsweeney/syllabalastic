@@ -212,7 +212,7 @@
 			<F3:repeat group="{{@syllabus->ownResources}}" value="{{@resource}}">
 				<div class="resource">
 					<div class="type"><span class="label">Resource type:</span> {{@getConstant(@syllabus, @resource->type)}}</div>
-					<F3:check if="{{@syllabus->isbn}}">
+					<F3:check if="{{@resource->isbn}}">
 						<div class="isbn"><span class="label">ISBN:</span> {{@resource->isbn}}</div>
 					</F3:check>
 					<div class="details">{{@resource->details}}</div>
