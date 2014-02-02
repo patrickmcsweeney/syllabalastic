@@ -2,6 +2,7 @@
 <?php
 $path_to_base_dir = "../"; 
 require_once($path_to_base_dir.'includes.php');
+#R::debug(true);
 
 if (count($argv) < 2)
 {
@@ -11,6 +12,7 @@ if (count($argv) < 2)
 $file = fopen( $argv[1], "r" ) or die("file does not exist");
 $info = array();
 
+tick("started spreadsheet");
 fgets($file); # chuck the headings away
 
 while( $line = fgets($file) )
@@ -53,35 +55,60 @@ while( $line = fgets($file) )
 			"type"=>$line[43] );
 	}
 }
-
+tick("finished spreadsheet");
 print "People import\n";
+$dbpeople = R::findAll("person");
+$dbpeoplehash =array();
+foreach($dbpeople as $person)
+{
+	$dbpeoplehash[$person->staffid] = $person;
+}
+
 foreach( $people as $staff_id => $people_properties )
 {
-	$person = R::findOne("person", "staffid = ?", array( $staff_id ) );
+	#$person = R::findOne("person", "staffid = ?", array( $staff_id ) );
+	if(array_key_exists($staff_id, $dbpeoplehash))
+	{
+		$person = $dbpeoplehash[$staff_id];
+	}
 	if(!isset($person))
 	{
 		$person = R::dispense("person");
 		$person->staffid = $staff_id;
+		$dbpeoplehash[$staff_id] = $person;
 	}
 #always update staff name for cases of name change in data. This could be optimized if necessary.
 	$person->firstname = $people[$staff_id]["first_name"];
 	$person->lastname = $people[$staff_id]["last_name"];
 	
-	R::store($person);
+	#R::store($person);
 }
-
+echo count(array_values($dbpeoplehash))." - people\n";
+tick("people objects changed\n");
+R::storeAll(array_values($dbpeoplehash));
+tick("people in the db now\n");
 $module_beans = array();
 print "Modules import\n";
+
+$moduledb = R::findAll("module");
+$moduledbhash = array();
+foreach($moduledb as $module)
+{
+	$moduledbhash[$module->session][$module->code] = $module;
+}
+
 foreach( $info as $session => $modules)
 {
 	foreach($modules as $module_code => $properties )
 	{
-		$module = R::findOne("module", "session = ? AND code = ?", array( $session, $module_code ) );
+		#$module = R::findOne("module", "session = ? AND code = ?", array( $session, $module_code ) );
+		$module = @$moduledbhash[$session][$module_code];
 		
 		if(!isset($module)){
 			$module = R::dispense('module');
 			$module->code = $module_code;
 			$module->session = $session;
+			$moduledbhash[$session][$module_code] = $module;
 		}
 
 		$module->title = $properties["title"];
@@ -105,6 +132,7 @@ foreach( $info as $session => $modules)
 	
 }
 
+exit;
 
 R::wipe( "modulemajorrelation" );
 
