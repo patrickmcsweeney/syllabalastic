@@ -200,7 +200,7 @@ function tick($msg = "tick" )
 {
 	$f3 = Base::instance();
 	$mt = microtime(true);
-	print sprintf( "<p>%s: %0.3f since start. %0.3f since last tick.</p>",
+	print sprintf( "<p>%s: %0.3f since start. %0.3f since last tick.</p>\n",
 		$msg,
 		$mt - $f3->get('page_load_start' ),
 		$mt - $f3->get('last_tick' ) );

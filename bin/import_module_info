@@ -3,6 +3,7 @@
 $path_to_base_dir = "../"; 
 require_once($path_to_base_dir.'includes.php');
 #R::debug(true);
+#R::freeze(true);
 
 if (count($argv) < 2)
 {
@@ -58,24 +59,21 @@ while( $line = fgets($file) )
 tick("finished spreadsheet");
 print "People import\n";
 $dbpeople = R::findAll("person");
-$dbpeoplehash =array();
+$persondbhash =array();
 foreach($dbpeople as $person)
 {
-	$dbpeoplehash[$person->staffid] = $person;
+	$persondbhash[$person->staffid] = $person;
 }
 
 foreach( $people as $staff_id => $people_properties )
 {
 	#$person = R::findOne("person", "staffid = ?", array( $staff_id ) );
-	if(array_key_exists($staff_id, $dbpeoplehash))
-	{
-		$person = $dbpeoplehash[$staff_id];
-	}
+	$person = @$persondbhash[$staff_id];
 	if(!isset($person))
 	{
 		$person = R::dispense("person");
 		$person->staffid = $staff_id;
-		$dbpeoplehash[$staff_id] = $person;
+		$persondbhash[$staff_id] = $person;
 	}
 #always update staff name for cases of name change in data. This could be optimized if necessary.
 	$person->firstname = $people[$staff_id]["first_name"];
@@ -83,10 +81,10 @@ foreach( $people as $staff_id => $people_properties )
 	
 	#R::store($person);
 }
-echo count(array_values($dbpeoplehash))." - people\n";
-tick("people objects changed\n");
-#R::storeAll(array_values($dbpeoplehash));
-tick("people in the db now\n");
+echo count(array_values($persondbhash))." - people\n";
+tick("people objects changed");
+#R::storeAll(array_values($persondbhash));
+tick("people in the db now");
 $module_beans = array();
 print "Modules import\n";
 
@@ -120,25 +118,39 @@ foreach( $info as $session => $modules)
 		$module->departmentname = $properties["departmentname"];
 		$module->levelcode = $properties["levelcode"];
 		$module->credits = $properties["credits"];
+		$module->sharedPerson = array();
 		if( !empty($properties["people"]) )
 		{	
 			$people = array_keys($properties["people"]);
-			$module->sharedPerson = R::find('person', ' staffid IN ('.R::genSlots($people).') ', $people);
+			foreach($people as $person)
+			{
+				if(isset($persondbhash[$person]))
+				{
+					$module->sharedPerson[] = @$persondbhash[$person]; #R::find('person', ' staffid IN ('.R::genSlots($people).') ', $people);
+				}
+			}
 		}
 		#R::store($module);
 
-		$module_beans[$session][$module_code] = $module;
+		#$module_beans[$session][$module_code] = $module;
 	}
 	
 }
 
 tick("before storing modules");
-foreach($moduledbhash as $session => $module_code)
-{
-	R::storeAll(array_values($module_code));
-}
+#foreach($moduledbhash as $session => $module_code)
+#{
+#	R::storeAll(array_values($module_code));
+#}
 tick("after storing all modules");
-exit;
+
+$allprograms = R::findAll("program");
+$programdbhash = array();
+
+foreach($allprograms as $program)
+{
+	$programdbhash[$program->session][$program->code] = $program;
+}
 
 $program_beans = array();
 print "Programs import\n";
@@ -146,65 +158,94 @@ foreach( $programs as $session=>$session_programs )
 {
 	foreach($session_programs as $program_code => $program_properties)
 	{
-		$program = R::findOne("program", "code = ? AND session = ?", array($program_code, $session ) );
-		
+		#$program = R::findOne("program", "code = ? AND session = ?", array($program_code, $session ) );
+		$program = @$programdbhash[$session][$program_code];		
+
+
 		if(!isset($program))
 		{
 			$program = R::dispense('program');	
 			$program->code = $program_code;
 			$program->session = $session;
+			@$programdbhash[$session][$program_code] = $program;		
 		}
 	
 		$program->title = $program_properties["title"];
 	
-		R::store($program);
+		#R::store($program);
 
 		$program_beans[$session][$program_code] = $program;
 	}
 }
-
-
+tick("before writing programs");
+#foreach($programdbhash as $session => $program_code)
+#{
+#	R::storeAll(array_values($program_code));
+#}
+tick("after writing programs");
 		
 	
 
 
 
 R::wipe( "modulemajorrelation" );
+tick("after wiping majors");
 
+$majorsdb = R::findAll("major");
+
+$majordbhash = array();
+
+foreach($majorsdb as $major)
+{
+	$majordbhash[$major->session][$major->code] = $major;
+}
+$relations = array();
 print "Majors import\n";
 foreach( $majors as $session=>$session_majors )
 {
 	foreach( $session_majors as $major_code => $major_properties )
 	{
-		$major = R::findOne("major", "code = ? AND session = ?", array($major_code,$session ) );
-	
+		#$major = R::findOne("major", "code = ? AND session = ?", array($major_code,$session ) );
+		$major = @$majordbhash[$session][$major_code];	
+
 		if(!isset($major))
 		{
 			$major = R::dispense('major');
 			$major->code = $major_code;
 			$major->session = $session;
+			$majordbhash[$session][$major_code] = $major;	
 		}
 	
 		$major->title = $major_properties["title"];
-		$major->program = $program_beans[$session][ $major_properties["programcode"] ];
+		$major->program = $programdbhash[$session][ $major_properties["programcode"] ];
 
-		R::store($major);
+		#R::store($major);
 
 		if( !empty($major_properties["modules"]) )
 		{
 			foreach( $major_properties["modules"] as $module_code=>$rel_info )
 			{
-				$module = $module_beans[$session][$module_code];
+				$module = $moduledbhash[$session][$module_code];
 				$relation = R::dispense('modulemajorrelation');
 				$relation->session = $session; # not strictly needed
 				$relation->yearofstudy = $rel_info["yearofstudy"];
 				$relation->type = $rel_info["type"];
 				$relation->module = $module;
 				$relation->major = $major;
-				R::store( $relation );
+				$relations[] = $relation;
+				#R::store( $relation );
 			}
 				
 		}
 	}
 }
 
+tick("befor storing modules");
+
+R::storeAll($relations);
+#foreach($majordbhash as $session => $major_code)
+#{
+#	R::storeAll(array_values($major_code));
+#}
+
+tick("after storing modules");
