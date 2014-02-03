@@ -1,0 +1,29 @@
+#!/usr/bin/php
+<?php
+$path_to_base_dir = "../";
+require_once($path_to_base_dir.'includes.php');
+$indexes = array(
+	array("module","code"),
+	array("module","session"),
+	array("module","departmentcode"),
+	array("module","facultycode"),
+	array("person","staffid"),
+	array("major","code"),
+	array("major","session"),
+	array("program","code"),
+);
+
+foreach($indexes as $tupal)
+{	
+	list($table, $column) = $tupal;
+	echo "$table -> $column \n";
+	if(R::exec("show index from $table where Key_name='$column'") ){
+		echo "Index exists $table -> $column \n";
+	}else{
+		R::exec("create index $column on $table ($column)") ;
+		echo "Added index to $table -> $column \n";
+	}
+}
+echo "\n";
+
+?>
