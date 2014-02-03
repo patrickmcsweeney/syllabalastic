@@ -3,7 +3,7 @@
 $path_to_base_dir = "../";
 require_once($path_to_base_dir.'includes.php');
 
-$modules = R::find("module", " code like '%Provisional%'");
+$modules = R::find("module", " session='201415'");
 foreach( $modules as $module )
 {
 	$module->departmentcode = strtoupper($module->facultycode);

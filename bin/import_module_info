@@ -136,12 +136,11 @@ foreach( $info as $session => $modules)
 	}
 	
 }
-
 tick("before storing modules");
-#foreach($moduledbhash as $session => $module_code)
-#{
-#	R::storeAll(array_values($module_code));
-#}
+foreach($moduledbhash as $session => $module_code)
+{
+	R::storeAll(array_values($module_code));
+}
 tick("after storing all modules");
 
 $allprograms = R::findAll("program");
