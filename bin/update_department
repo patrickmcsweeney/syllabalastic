@@ -1,0 +1,20 @@
+#!/usr/bin/php
+<?php
+$path_to_base_dir = "../";
+require_once($path_to_base_dir.'includes.php');
+
+$modules = R::find("module", " code like '%Provisional%'");
+foreach( $modules as $module )
+{
+	$module->departmentcode = strtoupper($module->facultycode);
+	$module->departmentname = $module->facultyname;
+	if(preg_match('/[a-z][a-z]Provisional/',$module->code))
+	{
+		$bits = explode('Provisional',$module->code);
+		$module->code = strtoupper($bits[0])."Provisional".$bits[1];
+
+	}
+	R::store($module);
+}
+
+?>
