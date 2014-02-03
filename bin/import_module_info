@@ -36,8 +36,7 @@ while( $line = fgets($file) )
 
 	if($program_code = trim($line[36]))
 	{
-		$programs[$program_code]["title"] = $line[37];
-		$programs[$program_code]["majors"][$line[38]] = 1;
+		$programs[$line[0]][$program_code]["title"] = $line[37];
 	}
 	if($major_code = trim($line[38]))
 	{
@@ -48,6 +47,7 @@ while( $line = fgets($file) )
 		# 39 = major_desc (title)
 		# 0 = session
 		$majors[$line[0]][$major_code]["title"] = $line[39];
+		$majors[$line[0]][$major_code]["programcode"] = trim($line[36]);
 		$majors[$line[0]][$major_code]["modules"][$line[10]] = array(
 			"yearofstudy"=>$line[40],
 			"type"=>$line[43] );
@@ -106,6 +106,35 @@ foreach( $info as $session => $modules)
 }
 
 
+$program_beans = array();
+print "Programs import\n";
+foreach( $programs as $session=>$session_programs )
+{
+	foreach($session_programs as $program_code => $program_properties)
+	{
+		$program = R::findOne("program", "code = ? AND session = ?", array($program_code, $session ) );
+		
+		if(!isset($program))
+		{
+			$program = R::dispense('program');	
+			$program->code = $program_code;
+			$program->session = $session;
+		}
+	
+		$program->title = $program_properties["title"];
+	
+		R::store($program);
+
+		$program_beans[$session][$program_code] = $program;
+	}
+}
+
+
+		
+	
+
+
+
 R::wipe( "modulemajorrelation" );
 
 print "Majors import\n";
@@ -123,6 +152,7 @@ foreach( $majors as $session=>$session_majors )
 		}
 	
 		$major->title = $major_properties["title"];
+		$major->program = $program_beans[$session][ $major_properties["programcode"] ];
 
 		R::store($major);
 
@@ -144,32 +174,3 @@ foreach( $majors as $session=>$session_majors )
 	}
 }
 
-
-print "Programs import\n";
-foreach($programs as $program_code => $program_properties){
-
-	$program = R::findOne("program", "code = ?", array($program_code ) );
-	
-	if(!isset($program))
-	{
-		$program = R::dispense('program');	
-		$program->code = $program_code;
-	}
-
-	$program->title = $program_properties["title"];
-
-	if( !empty($program_properties["majors"]) )
-	{
-		$majors = array_keys($program_properties["majors"]);
-		$program->sharedMajor = R::find('major', ' code IN ('.R::genSlots($majors).') ', $majors);
-	}
-
-	R::store($program);
-}
-
-
-		
-	
-
-
-?>
