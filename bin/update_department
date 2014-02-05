@@ -9,6 +9,9 @@ foreach( $modules as $module )
 	$module->departmentcode = strtoupper($module->facultycode);
 	$module->departmentname = $module->facultyname;
 	$module->isprovisional = true;
+	$module->provisionaltitle = $module->title;
+	$module->provisionalcode = $module->code;
+
 	if(preg_match('/[a-z][a-z]Provisional/',$module->code))
 	{
 		$bits = explode('Provisional',$module->code);

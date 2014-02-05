@@ -3,10 +3,16 @@
 $path_to_base_dir = "../";
 require_once($path_to_base_dir.'includes.php');
 
-R::exec("UPDATE `syllabus` LEFT JOIN `module` ON `syllabus`.`module_id`=`module`.`id`
+$output = R::exec("UPDATE `syllabus` LEFT JOIN `module` ON `syllabus`.`module_id`=`module`.`id`
 SET `module`.`currentsyllabus_id` = `syllabus`.`id`
-WHERE `syllabus.isprovisional`=0 AND `module`.`id` IS NOT NULL
+WHERE `syllabus`.`isprovisional`=0 AND `module`.`id` IS NOT NULL
 ");
+
+if($output !== 0 )
+{
+	echo "ERROR modules have not been updated\n";
+	exit;
+}
 
 echo "Modules have been updated\n";
 
