@@ -112,15 +112,25 @@
 	</F3:true>
 </F3:check>
 
+<check if="{{count(@syllabus->ownItemisedlearningoutcomes) > 0}}">
+		<true>
+			<div class="learning-outcomes">
+				<h2>Learning Outcomes</h2>
+				<include href="itemisedlearningoutcomes.htm" />
+			</div>
+		</true>
+		<false>
+			<F3:check if="{{@syllabus->learningoutcomes}}">
+				<F3:true>
+					<div class="learning-outcomes">
+						<h2>Learning Outcomes</h2>
+						{{@syllabus->learningoutcomes}}
+					</div>
+				</F3:true>
+			</F3:check>
+		</false>
+</check>
 
-<F3:check if="{{@syllabus->learningoutcomes}}">
-	<F3:true>
-		<div class="learning-outcomes">
-			<h2>Learning Outcomes</h2>
-			{{@syllabus->learningoutcomes}}
-		</div>
-	</F3:true>
-</F3:check>
 
 <F3:check if="{{@syllabus->topics}}">
 	<F3:true>

@@ -232,9 +232,9 @@ table.changelog td {
 	margin-top: 0;
 }
 	
-article.deprecated {
-	background: url(/html_assets/deprecated-bg.png);
+.deprecated {
+	background: url("/html_assets/deprecated-bg.png") repeat scroll 0 50% rgba(0, 0, 0, 0);
 }
-article.provisional {
-	background: url(/html_assets/provisional-bg.png);
+.provisional {
+	background: url(/html_assets/provisional-bg.png) repeat scroll 0 50% rgba(0, 0, 0, 0);
 }
