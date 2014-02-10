@@ -135,6 +135,7 @@ class Model_Syllabus extends RedBean_SimpleModel {
 			$this->module->credits = $module_info["provisionalcredits"];
 			$this->module->provisionalcredits = $module_info["provisionalcredits"];
 
+			$this->module->code = $module_info["provisionalcode"];
 			$this->module->provisionalcode = $module_info["provisionalcode"];
 
 			$this->module->provisionalsemestercode = $module_info["provisionalsemestercode"];
