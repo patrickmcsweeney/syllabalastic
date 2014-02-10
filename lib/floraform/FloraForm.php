@@ -14,7 +14,7 @@ abstract class FloraForm_Component
 		$this->options = array_merge($this->default_options, $options);
 		if( array_key_exists( "id", $options ))
 		{
-			$this->id = $options["id"];
+			$this->setId($options["id"]);
 		}
 		if(!empty($options["fields"]))
 		{
@@ -38,18 +38,26 @@ abstract class FloraForm_Component
 	function setId( $new_id )
 	{
 		$this->id = $new_id;
+		foreach( $this->fields as $field )
+		{
+			$field->setIdPrefix( $this->fullId() );
+		}
 	}
 
 	function setIdPrefix( $new_id_prefix )
 	{
 		$this->options["id-prefix"] = $new_id_prefix;
+		foreach( $this->fields as $field )
+		{
+			$field->setIdPrefix( $this->fullId() );
+		}
 	}
 
 	function fullId($suffix=null)
 	{
-		if( !isset($this->id) ) { return ""; }
 		$id = "";
-		if( !empty($this->options["id-prefix"]) ) { $id .= $this->options["id-prefix"]."_"; }
+		if( !empty($this->options["id-prefix"]) ) { $id .= $this->options["id-prefix"]; }
+		if( !empty($this->options["id-prefix"]) && !empty($this->id) ) { $id .= "_"; }		
 		$id .= $this->id;
 		if( isset( $suffix ) ){ $id .= "_$suffix"; }
 		return $id;
@@ -63,7 +71,8 @@ abstract class FloraForm_Component
 	function render( $defaults=array() )
 	{
 		global $f3, $template;
-		$default = isset($defaults[$this->id]) ?  $default = $defaults[$this->id] : "";
+		$default = !empty($defaults[$this->id]) ?  $defaults[$this->id] : "";
+
 		$f3->set('default', $default);
 		$f3->set('defaults', $defaults);
 		$f3->set('self', $this);
@@ -74,7 +83,9 @@ abstract class FloraForm_Component
 	function renderInput( $defaults=array() )
 	{
 		global $f3, $template;
+
 		$default = isset($defaults[$this->id]) ?  $default = $defaults[$this->id] : "";
+		#$default = !empty($defaults[$this->id]) ?  $defaults[$this->id] : $defaults;
 		$f3->set('default', $default);
 		$f3->set('self', $this);
 		return $template->render($this->options["template"]);
@@ -111,6 +122,7 @@ abstract class FloraForm_Component
 	{
 		$options["heading"] = $this->option("heading") + 1;
 		$options["resourcesURL"] = $this->option("resourcesURL");
+		$options["id-prefix"] = $this->fullId();
 
 		$field = $this->factory( $type, $options );
 		$this->fields []= $field;
@@ -158,6 +170,7 @@ abstract class FloraForm_Field extends FloraForm_Component
 	{
 		global $_POST;
 		if( $this->id == "" ) { return; }
+
 		if(array_key_exists($this->fullID(), $form_data)){
 			$values[$this->id] = $form_data[$this->fullID()];
 		}
@@ -171,13 +184,7 @@ abstract class FloraForm_Field extends FloraForm_Component
 
 class FloraForm_Section extends FloraForm_Component
 {
-	var $default_options = array("template"=>"floraform/section.htm", "heading"=>2);
-
-	function __construct( $options=array() )
-	{
-		parent::__construct( $options );
-		$this->options["layout"] = "section"; 
-	}
+	var $default_options = array("template"=>"floraform/section.htm", "heading"=>2, "layout"=>"section");
 
 	function render( $defaults=array() )
 	{
@@ -221,35 +228,46 @@ class FloraForm_Field_Combo extends FloraForm_Component
 	var $default_options = array("template"=>"floraform/combo.htm", "surround"=>"floraform/component_surround.htm", "heading"=>2);
 	var $fields = array();
 
-	function __construct( $options=array() )
-	{
-		parent::__construct( $options );
-	}
-
-	function setIdPrefix( $new_id_prefix )
-	{
-		$this->options["id-prefix"] = $new_id_prefix;
-		foreach( $this->fields as $field )
-		{
-			$field->setIdPrefix( $this->fullId() );
-		}
-	}
-	function setId( $new_id )
-	{
-		parent::setId( $new_id );
-		foreach( $this->fields as $field )
-		{
-			$field->setIdPrefix( $this->fullId() );
-		}
-	}
-
 	function fromForm( &$values, $form_data )
 	{
-		$values[$this->id] = array();
+		if(!empty($this->id))
+		{
+			$values[$this->id] = array();
+		}
 		foreach( $this->fields as $field )
 		{
-			$field->fromForm( $values[$this->id], $form_data );
+			if(empty($this->id))
+			{
+				$field->fromForm( $values, $form_data );
+			}else{
+				$field->fromForm( $values[$this->id], $form_data );
+			}
 		}
+	}
+
+	function render( $defaults=array() )
+	{
+		global $f3, $template;
+		$default = !empty($defaults[$this->id]) ?  $defaults[$this->id] : "";
+		$default = empty($this->id) ?  $defaults : $default;
+
+		$f3->set('default', $default);
+		$f3->set('defaults', $defaults);
+		$f3->set('self', $this);
+
+		return $template->render($this->options["surround"]);
+	}
+
+	function renderInput( $defaults=array() )
+	{
+		global $f3, $template;
+
+		$default = isset($defaults[$this->id]) ?  $default = $defaults[$this->id] : "";
+		$default = empty($this->id) ?  $defaults : $default;
+		#$default = !empty($defaults[$this->id]) ?  $defaults[$this->id] : $defaults;
+		$f3->set('default', $default);
+		$f3->set('self', $this);
+		return $template->render($this->options["template"]);
 	}
 
 	function classes()
@@ -291,7 +309,8 @@ class FloraForm_Field_Conditional extends FloraForm_Field
 	function fromForm( &$values, $form_data )
 	{
 		$this->fields[0]->fromForm( $values, $form_data );
-		$value = $values[$this->fields[0]->fullId()];
+
+		$value = $form_data[$this->fields[0]->fullId()];
 		foreach($this->options["conditions"] as $pattern_field)
 		{
 			$regex = $pattern_field[0];
@@ -306,15 +325,34 @@ class FloraForm_Field_Conditional extends FloraForm_Field
 		}
 	}
 
-	function conditionsJson()
+	function conditionsJson($defaults=array())
 	{
 		$conditions = array();
 		foreach($this->options["conditions"] as $condition)
 		{
-			$conditions[] = array($condition[0], $condition[1]->render());
+			$conditions[] = array($condition[0], $condition[1]->render($defaults));
 		}
 		return json_encode($conditions);
 	}
+
+	function processConfig( &$config )
+	{
+		parent::processConfig($config);
+		$this->processConditions();
+	}
+	function processConditions()
+	{
+		foreach($this->options["conditions"] as &$condition)
+		{
+			$options["heading"] = $this->option("heading") + 1;
+			$options["resourcesURL"] = $this->option("resourcesURL");
+			$options["id-prefix"] = $this->fullId();
+			$type = key($condition[1]);
+			$field = $this->factory( $type, $condition[1][$type] );
+			$condition[1] = $field;
+		}
+	}
+	
 	function classes()
 	{
 		return parent::classes()." ff_text";
@@ -388,7 +426,6 @@ class FloraForm_Field_List extends FloraForm_Field
 
 	function add( $type, $options=array() )
 	{
-		$options["id-prefix"] = $this->fullId();
 		$this->field = parent::add($type, $options);
 
 		return $this->field;
@@ -402,7 +439,7 @@ class FloraForm_Field_List extends FloraForm_Field
 
 	function fromForm( &$values, $form_data )
 	{
-		$i = 0;
+		$i = 1;
 		$done = false;
 		$values[$this->id] = array();
 		while( !$done )
@@ -420,8 +457,8 @@ class FloraForm_Field_List extends FloraForm_Field
 			{
 				$values[$this->id][$i] = array();
 				$field = clone $this->field;
-				$field->setId( $i );
-				$field->fromForm( $values[$this->id], $form_data );
+				$field->setIdPrefix( $field->options["id-prefix"]."_".$i );
+				$field->fromForm( $values[$this->id][$i], $form_data );
 			}	
 			$i++;
 		}
@@ -433,7 +470,9 @@ class FloraForm_Field_List extends FloraForm_Field
 	function renderInputRow( $defaults, $i )
 	{
 		global $f3, $template;
-                $default = isset($defaults[$this->id]) ?  $default = $defaults[$this->id] : "";
+		#print "renderinputrow for $i : "; print_r($defaults);
+                $default = !empty($defaults[$i-1]) ?  $defaults[$i-1] : "";
+		#print "renderinputrow default : "; print_r($default);
                 $f3->set('i', $i);
                 $f3->set('default', $default);
                 $f3->set('defaults', $defaults);
@@ -483,12 +522,4 @@ function FloraForm_var_is_set( $thing )
 
 	return !empty( $thing );
 }
-
-
-
-
-
-
-
-
 
