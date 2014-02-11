@@ -41,6 +41,14 @@ function front_page($f3)
 	header("Location: /view/modules/$next_year");
 }
 
+function programs($f3)
+{
+	#syllabuses work one academic year ahead
+	# this will probably blow everyones mind :-(
+	$session_array = dates_as_sessions(strtotime("+1 year"));
+	$next_year = key($session_array);
+	header("Location: /view/programs/$next_year");
+}
 
 function modules_by_year($f3)
 {
@@ -85,6 +93,54 @@ function modules_by_year($f3)
 
 	echo Template::instance()->render("main.htm");
 }
+
+function programs_by_year($f3)
+{
+	$f3->set("years", dates_as_sessions(null,3)); #null defaults to this year
+	$f3->set("selected_year", $f3->get("PARAMS.session"));
+	$f3->set('title', 'Programs');
+	$templates = array('year.htm');
+	$programs = R::find('program', "session = ? ORDER BY code", array($f3->get('PARAMS.session')));
+	
+	$majors = R::find('major', "session = ? ORDER BY code", array($f3->get('PARAMS.session')));
+	$majormap = array();
+	foreach( $majors as $major ) 
+	{ 
+		$majormap[ $major->program_id ? $major->program_id : "??" ][] = $major; 
+	}
+
+	array_push( $templates, 'programlist.htm');
+	$f3->set('templates', $templates);
+	$f3->set('programs', $programs);
+	$f3->set('majors', $majormap);
+
+	echo Template::instance()->render("main.htm");
+}
+
+function learning_outcomes_by_major($f3)
+{
+	$f3->set("selected_year", $f3->get("PARAMS.session"));
+	$f3->set("major_code", $f3->get("PARAMS.major_code"));
+
+	$majors = R::find(
+		'major', "code = ? AND session = ?", 
+		array( $f3->get("PARAMS.major_code"), $f3->get("PARAMS.session") ) );
+
+	if( !sizeof( $majors ) )
+	{
+		$f3->error( 404, "No major with that code on record." );
+		return;
+	}
+	$major = array_shift( $majors );
+	
+	$f3->set("title", $major->code." ".$major->title." (".$major->session.")");
+	$f3->set("major", $major);
+
+
+	$f3->set('templates', array( "learning_outcomes_by_major.htm" ));
+	echo Template::instance()->render("main.htm");
+}
+	
 
 
 function ecs_overviews($f3)
