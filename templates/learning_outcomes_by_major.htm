@@ -1,0 +1,24 @@
+
+<F3:repeat group="{{ array( 'Compulsory', 'Option' ) }}" value="{{@opttype}}">
+	<hr />
+	<h2>{{@opttype}} Modules</h2>
+	<hr />
+
+	<F3:repeat group="{{ @major->with( 'ORDER BY yearofstudy' )->ownModulemajorrelation }}" value="{{@relation}}">
+		<F3:check if="@relation->type == @opttype">
+			<h3>
+				{{ @relation->module->code }}:
+				{{ @relation->module->title }}
+			
+				<F3:check if="{{ @relation->yearofstudy <=5 }}">
+					(year {{ @relation->yearofstudy }})
+				</F3:check>
+			</h3>
+			
+			<F3:check if="{{ @relation->module && @relation->module->getCurrent() }}">
+				{{ @relation->module->getCurrent()->learningoutcomes }}
+			</F3:check>
+		</F3:check>
+
+	</F3:repeat>
+</F3:repeat>
