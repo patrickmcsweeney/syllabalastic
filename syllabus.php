@@ -20,11 +20,13 @@ class Model_Syllabus extends RedBean_SimpleModel {
 	private $SA_TYPES = array( 
 		""=>"",
 		"lecture"=>"Lecture",
-		"examples"=>"Examples Class",
+		"seminar"=>"Seminar",
 		"tutorial"=>"Tutorial",
 		"computer_lab"=>"Computer Lab",
 		"specialist_lab"=>"Specialist Lab",
-		"field_trip"=>"Field Trip" 
+		"project_supervision"=>"Project supervision",
+		"field_trip"=>"Fieldwork",  
+		"examples"=>"Demonstration or Examples Session"
 	);
 
 	private $SA_DURATIONS = array( 
@@ -83,7 +85,7 @@ class Model_Syllabus extends RedBean_SimpleModel {
 		"T3"=>"Term 3",
 		"S3"=>"Semester 3", 
 	);
-	private $OUTCOME_TYPES = array(
+	public $OUTCOME_TYPES = array(
 		""=>"",
 		"knowledge"=>"Knowledge and Understanding",
     		"subjectintelectual"=>"Subject Specific Intellectual",
@@ -191,7 +193,7 @@ class Model_Syllabus extends RedBean_SimpleModel {
 
 		}
 	}
-
+	
 	public function getData(){
 		$sub_objects = array("regularteaching", "resources", "exam", "continuousassessment", "itemisedlearningoutcomes" );
 		$data = $this->unbox()->export();
@@ -204,6 +206,27 @@ class Model_Syllabus extends RedBean_SimpleModel {
 		return $data;
 	}
 	
+	public function getLearningOutcomes()
+	{
+
+		# this is just a convenience method for rendering in categories
+		# it plays on phps ordering in associative arrays which chris doesnt like but until it stops working its staying this way :-P
+		$outcomes = array();
+		foreach($this->OUTCOME_TYPES as $key => $val)
+		{
+			$outcomes[$key] = array();
+		}
+
+		foreach($this->ownItemisedlearningoutcomes as $outcome)
+		{
+			$outcomes[$outcome->outcometype][] = $outcome->outcome;
+		}
+
+		return $outcomes;
+
+
+	}
+
 	public function getConstant( $constant_name )
 	{
 		foreach(array_keys(get_class_vars(__CLASS__)) as $key)
