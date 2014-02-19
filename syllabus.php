@@ -20,11 +20,13 @@ class Model_Syllabus extends RedBean_SimpleModel {
 	private $SA_TYPES = array( 
 		""=>"",
 		"lecture"=>"Lecture",
-		"examples"=>"Examples Class",
+		"seminar"=>"Seminar",
 		"tutorial"=>"Tutorial",
 		"computer_lab"=>"Computer Lab",
 		"specialist_lab"=>"Specialist Lab",
-		"field_trip"=>"Field Trip" 
+		"project_supervision"=>"Project supervision",
+		"field_trip"=>"Fieldwork",  
+		"examples"=>"Demonstration or Examples Session"
 	);
 
 	private $SA_DURATIONS = array( 
@@ -83,6 +85,14 @@ class Model_Syllabus extends RedBean_SimpleModel {
 		"T3"=>"Term 3",
 		"S3"=>"Semester 3", 
 	);
+	public $OUTCOME_TYPES = array(
+		""=>"",
+		"knowledge"=>"Knowledge and Understanding",
+    		"subjectintelectual"=>"Subject Specific Intellectual",
+    		"transferable"=>"Transferable and Generic",
+ 		"subjectpractical"=>"Subject Specific Practical",
+		"disciplinespecific"=>"Disciplinary Specific",
+	);
 
 
 
@@ -116,6 +126,7 @@ class Model_Syllabus extends RedBean_SimpleModel {
 		{
 			$defaults['secret'] = $flags['secret'];
 		}
+		#print_r($defaults);exit;
 		return $form->render($defaults);
 		#return $this->getForm($flags)->render();
 	}
@@ -158,7 +169,7 @@ class Model_Syllabus extends RedBean_SimpleModel {
 
 	public function setData($data)
 	{
-		
+
 		foreach( $data as $field => $value )
 		{       
 			if(! is_array($value))
@@ -182,18 +193,40 @@ class Model_Syllabus extends RedBean_SimpleModel {
 
 		}
 	}
-
+	
 	public function getData(){
-		$sub_objects = array("regularteaching", "resources", "exam", "continuousassessment" );
+		$sub_objects = array("regularteaching", "resources", "exam", "continuousassessment", "itemisedlearningoutcomes" );
 		$data = $this->unbox()->export();
 		foreach($sub_objects as $sub_object)
 		{
 			$property_name = "own".ucfirst($sub_object);
 			$data[$sub_object] = R::exportAll($this->$property_name);
 		}
+
 		return $data;
 	}
 	
+	public function getLearningOutcomes()
+	{
+
+		# this is just a convenience method for rendering in categories
+		# it plays on phps ordering in associative arrays which chris doesnt like but until it stops working its staying this way :-P
+		$outcomes = array();
+		foreach($this->OUTCOME_TYPES as $key => $val)
+		{
+			$outcomes[$key] = array();
+		}
+
+		foreach($this->ownItemisedlearningoutcomes as $outcome)
+		{
+			$outcomes[$outcome->outcometype][] = $outcome->outcome;
+		}
+
+		return $outcomes;
+
+
+	}
+
 	public function getConstant( $constant_name )
 	{
 		foreach(array_keys(get_class_vars(__CLASS__)) as $key)
@@ -283,8 +316,6 @@ class Model_Syllabus extends RedBean_SimpleModel {
 				"id"=>"provisionalcredits",
 				"title"=>"ECTS Credits",
 				"layout"=>"vertical",
-#				"surround"=>"floraform/component_surround.htm",
-#				"description" => "See the <a href='http://www.calendar.soton.ac.uk/sectionIV/cats.html'>Calendar</a> for regulations."
 			));
 			$mod_combo->add( "HTML", array( 
 				"id"=>"provisionalprogs",
@@ -321,15 +352,48 @@ class Model_Syllabus extends RedBean_SimpleModel {
 	",
 		));
 
-		$s2->add( "HTML", array( 
+#		$s2->add( "HTML", array( 
+#			"layout" => "section",
+#			"id" => "learningoutcomes", # TODO change field name
+#			"title" => "1.2 Learning Outcomes",
+#			"rows" => 10,
+#			"description" => "
+#	This section should be used to list the intended learning outcomes of the syllabus. You can refer to <a href='https://sharepoint.soton.ac.uk/sites/ese/quality_handbook/default.aspx'>guidance in the quality handbook</a> for advice on these. For a standard 15 credit syllabus, 5 to 8 outcomes should be sufficient. Please do not repeat the list of topics for the syllabus, which are given in the following section.
+#	",
+#		));
+		$learningitems = $s2->add( "LIST", array( 
+			"id" => "itemisedlearningoutcomes",
 			"layout" => "section",
-			"id" => "learningoutcomes", # TODO change field name
+			"min-items" => 5,
 			"title" => "1.2 Learning Outcomes",
-			"rows" => 10,
-			"description" => "
-	This section should be used to list the intended learning outcomes of the syllabus. You can refer to <a href='https://sharepoint.soton.ac.uk/sites/ese/quality_handbook/default.aspx'>guidance in the quality handbook</a> for advice on these. For a standard 15 credit syllabus, 5 to 8 outcomes should be sufficient. Please do not repeat the list of topics for the syllabus, which are given in the following section.
-	",
+			"description" => '
+<p>This section should be used to list the intended learning outcomes of the syllabus. You can refer to <a href=r"https://sharepoint.soton.ac.uk/sites/ese/quality_handbook/default.aspx">guidance in the quality handbook</a> for advice on these. For a standard 15 credit syllabus, 5 to 8 outcomes should be sufficient. Please do not repeat the list of topics for the syllabus, which are given in the following section.</p>
+<div class="deprecated">
+<h4>Your previous learning outcomes were</h4>
+'.$this->learningoutcomes.'
+</div>
+
+<p>Having successfully completed this module, you will be able to:</p>' ) 
+		)->setListType( "COMBO", array( "layout" ));
+
+		$learningitems->add("CHOICE", array(
+			"id" => "outcometype",
+			"title"=>"Outcome Type",
+			"mode" => "pull-down",
+			"choices" => $this->OUTCOME_TYPES,
 		));
+		$learningitems->add("TEXT", array(
+			"id" => "outcome",
+			"size"=>"60",
+		));
+		$s2->add("INFO", array("description"=>"<p>Knowledge and Understanding learning outcomes should be written
+    as noun phrases (for example, 'the relationship between English and
+    French realism')</p>
+
+
+    <p>All other learning outcomes should be written as verb phrases (for
+    example, 'compare different narrative modes').</p>
+"));
 
 		$s2->add( "HTML", array( 
 			"layout" => "section",
@@ -418,11 +482,7 @@ class Model_Syllabus extends RedBean_SimpleModel {
 			"id" => "description",
 			"layout" => "vertical",
 			"title" => "Description" ));
-#		$ass_combo->add( "TEXT", array(
-#			"id" => "frequency",
-#			"size" => 3,
-#			"layout" => "vertical2up",
-#			"title" => "Frequency" ));
+
 		$ass_combo->add( "TEXT", array(
 			"id" => "weeknos",
 			"title" => "Week no(s)" ));
@@ -431,9 +491,6 @@ class Model_Syllabus extends RedBean_SimpleModel {
 			"size" => 3,
 			"suffix" => "%",
 			"title" => "Total Percentage" ));
-	#		$ass_combo->add( "TEXT", array(
-	#			"id" => "notes",
-	#			"title" => "Notes" ));
 
 		$ass_combo->add( "TEXTAREA", array(
 			"id" => "feedback",
@@ -451,10 +508,7 @@ class Model_Syllabus extends RedBean_SimpleModel {
 			"prefix" => "On referral, this unit will be assessed ",
 			"choices" => $this->REFERRAL_OPTIONS,
 			"mode" => "pull-down" ) );
-	##		$s1->add( "TEXT", array( 
-	#			"id" => "referral_notes",
-	#			"title" => "Referral Notes",
-	#		));
+
 		$s1->add( "HTML", array( 
 			"id" => "assessmentnotes",
 			"title" => "2.4 Assessment Notes",
@@ -463,6 +517,7 @@ class Model_Syllabus extends RedBean_SimpleModel {
 	",
 			"layout" => "section",
 		));
+
 		$s1->add( "HTML", array( 
 			"id" => "timetablenotes",
 			"title" => "2.5 Timetabling Requirements",

@@ -1,0 +1,16 @@
+<repeat group="{{@syllabus->getLearningOutcomes()}}" key="{{@type}}" value="{{@learningoutcomes}}">
+	<check if="{{count(@learningoutcomes) > 0}}">
+		<h4>{{@syllabus->getConstant(@type)}}</h4>
+		<check if="{{@type == 'knowledge'}}">
+			<true><p>Having successfully completed this module, you will be able to demonstrate knowledge and understanding of:</p></true>
+			<false><p>Having successfully completed this module, you will be able to:</p></false>
+		</check>
+		<ul class="learningoutcomes">
+			<repeat group="{{@learningoutcomes}}" value="{{@outcome}}">
+				<li>
+					{{@outcome}}
+				</li>
+			</repeat>
+		</ul>
+	</check>
+</repeat>
