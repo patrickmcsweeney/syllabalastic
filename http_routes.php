@@ -257,7 +257,7 @@ function create_syllabus($f3)
 		$f3->error( 500, "There is no syllabus for this module in the central system.");
 		return;
 	}
-	if(isset($existing_module->provisionalsyllabus))
+	if($existing_module->provisionalsyllabus)
 	{
 		$f3->error( 500, "This syllabus exists already - TODO maybe redirect this to edit?");
 		return;
