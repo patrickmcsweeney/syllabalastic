@@ -676,6 +676,8 @@ function reports($f3)
 {
 	$f3->set("title", "Reports");
 	$f3->set('templates', array('reports.htm'));
+	$module = R::dispense('module');
+	$f3->set("faculties", $module->listFaculties());
 	echo Template::instance()->render("main.htm");
 }
 
