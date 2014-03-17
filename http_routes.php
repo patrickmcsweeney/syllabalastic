@@ -430,10 +430,13 @@ function edit_syllabus($f3)
 	}
 
 	$f3->set('title', "Editing ".$module->code.": ".$module->title );
+	$form = $syllabus->renderForm();
 
-	$f3->set('rendered_html_content', $syllabus->renderForm());
+	$f3->set('rendered_html_content', $form);
+	$f3->set('ESCAPE', false);
 	$f3->set('templates', array('rendered_html.htm'));
 	echo Template::instance()->render("main.htm");
+	$f3->set('ESCAPE', true);
 }
 
 function save_syllabus($f3)
