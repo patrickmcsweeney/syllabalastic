@@ -366,7 +366,7 @@ class Model_Syllabus extends RedBean_SimpleModel {
 			"layout" => "section",
 			"min-items" => 5,
 			"title" => "1.2 Learning Outcomes",
-			"description" => '
+			"description_html" => '
 <p>This section should be used to list the intended learning outcomes of the syllabus. You can refer to <a href=r"https://sharepoint.soton.ac.uk/sites/ese/quality_handbook/default.aspx">guidance in the quality handbook</a> for advice on these. For a standard 15 credit syllabus, 5 to 8 outcomes should be sufficient. Please do not repeat the list of topics for the syllabus, which are given in the following section.</p>
 <div class="deprecated">
 <h4>Your previous learning outcomes were</h4>
@@ -386,7 +386,7 @@ class Model_Syllabus extends RedBean_SimpleModel {
 			"id" => "outcome",
 			"size"=>"60",
 		));
-		$s2->add("INFO", array("description"=>"<p>Knowledge and Understanding learning outcomes should be written
+		$s2->add("INFO", array("description_html"=>"<p>Knowledge and Understanding learning outcomes should be written
     as noun phrases (for example, 'the relationship between English and
     French realism')</p>
 
@@ -447,7 +447,7 @@ class Model_Syllabus extends RedBean_SimpleModel {
 			"id" => "exam",
 			"layout" => "section",
 			"title" => "2.2 Examination",
-			"description" => "
+			"description_html" => "
 	This section is required for key information sets. Note that the total percentages across examination and other assessment activities (below) should add up to 100. For an exam, give the planned duration. </i>
 	" ) )->setListType( "COMBO", array( "layout" ));
 		$exam_combo->add( "TEXT", array(
@@ -466,7 +466,7 @@ class Model_Syllabus extends RedBean_SimpleModel {
 			"id" => "continuousassessment",
 			"layout" => "section",
 			"title" => "2.2 Other Assessment",
-			"description" => "
+			"description_html" => "
 	This section allows you to provide data for student workload monitoring, and key information sets. Note that the total percentages across all assessment activities and examination (above) should add up to 100. Please indicate the week or weeks of the semester assessment is planed to occur. Week 1 is the start of teaching, and week 12 is the last week before exams, which is typically reserved for revision. Note that assignment deadlines should therefore not occur during weeks 12 to 15.  Finally, indicate when and how you will provide feedback on assignments -- for example, you might state that <i>after 2 weeks individual feedback sheets will be returned, and a generic feedback will be provided in-class.</i>
 	" ) )->setListType( "COMBO", array( "layout" ));
 		$ass_combo->add( "CHOICE", array(
@@ -512,7 +512,7 @@ class Model_Syllabus extends RedBean_SimpleModel {
 		$s1->add( "HTML", array( 
 			"id" => "assessmentnotes",
 			"title" => "2.4 Assessment Notes",
-			"description" => "
+			"description_html" => "
 	If there are special aspects related to assessment, please state them here.  As one possible example, <i>where there are multiple worksheets, the best 8 out of 10 marks will be taken; or if a minimum attendance of 8 out of 10 laboratory sessions is required before a mark can be returned.</i>  Finally, if there is a field trip, please state the arrangements and cost implications.
 	",
 			"layout" => "section",
