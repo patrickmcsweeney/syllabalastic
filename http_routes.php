@@ -674,7 +674,9 @@ function logout($f3)
 
 function reports($f3)
 {
-	echo "Reports...";
+	$f3->set("title", "Reports");
+	$f3->set('templates', array('reports.htm'));
+	echo Template::instance()->render("main.htm");
 }
 
 function report_usage($f3)
@@ -695,7 +697,7 @@ function report_usage($f3)
 	$f3->set("report_start", date("Y-m-d",$report_start));
 	$f3->set("report_end", date("Y-m-d",$report_end));
 
-	$f3->set('templates', array('report_usage'));
+	$f3->set('templates', array('report_usage.htm'));
 
 	echo Template::instance()->render("main.htm");
 }
