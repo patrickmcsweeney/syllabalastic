@@ -672,6 +672,11 @@ function logout($f3)
 	header("Location: /");
 }
 
+function reports($f3)
+{
+	echo "Reports...";
+}
+
 function report_usage($f3)
 {
 	$report_start = strtotime("-1 month");
