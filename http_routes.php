@@ -286,6 +286,7 @@ function create_syllabus($f3)
 	$syllabus->approvedname = "";
 	$syllabus->approvalnote = "";
 	$syllabus->changessummary = ""; 	# deprecated
+	$syllabus->lock = 0;
 	$syllabus->timeapproved = null;
 	$syllabus->ownSyllabuseditlog = array();
 	$syllabus_id = R::store($syllabus);
@@ -419,6 +420,14 @@ function edit_syllabus($f3)
 		$f3->error( 500, "This syllabus is not provisional");
 		return;
 	}
+	$lock_length = $f3->get("LOCK_LENGTH") * 60; #specified in minutes in config
+	if(($syllabus->lock + $lock_length) > time())
+	{
+		$f3->error( 409, "Sorry this syllabus is locked for editing by another user. They will have the lock until they save or after ".$f3->get("LOCK_LENGTH")." minutes without saving their work.");
+	}
+
+	$syllabus->lock = time();
+	R::store($syllabus);
 
 	$module = $syllabus->module;
 
@@ -428,15 +437,22 @@ function edit_syllabus($f3)
 		echo serialize( $syllabus->renderForm(array("secret"=>$secret, "passback"=>$f3->get("REQUEST.passback"))));
 		return;
 	}
-
+	$f3->set("syllabusid", $syllabus->id);
 	$f3->set('title', "Editing ".$module->code.": ".$module->title );
 	$form = $syllabus->renderForm();
 
 	$f3->set('rendered_html_content', $form);
 	$f3->set('ESCAPE', false);
-	$f3->set('templates', array('rendered_html.htm'));
+	$f3->set('templates', array('rendered_html.htm', "releaseeditlock.htm"));
 	echo Template::instance()->render("main.htm");
 	$f3->set('ESCAPE', true);
+}
+
+function release_edit_lock($f3)
+{
+	$syllabus = R::load("syllabus", $f3->get('PARAMS["syllabus_id"]'));
+	$syllabus->lock = 0;
+	R::store($syllabus);
 }
 
 function save_syllabus($f3)
@@ -456,6 +472,7 @@ function save_syllabus($f3)
 	# this is now moved to the per edit log and cleared.
 	$changessummary = $syllabus->changessummary;
 	$syllabus->changessummary="";
+	$syllabus->lock=0;
 
 	if( $syllabus->module->isprovisional )
 	{

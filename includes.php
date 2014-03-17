@@ -97,7 +97,61 @@ $REVIEWERS = array(
 			'facultycode' => array("F7", "wf", "fp")
 		)
 	),
-        "gbw" => array(
+        "jr1a06" => array(
+		'module' => array(
+			'departmentcode' => array("FP", "JF"),
+			'facultycode' => array("F7", "wf", "fp")
+		)
+	),
+        "mjcoe" => array(
+		'module' => array(
+			'departmentcode' => array("FP", "JF"),
+			'facultycode' => array("F7", "wf", "fp")
+		)
+	),
+        "lac" => array(
+		'module' => array(
+			'departmentcode' => array("FP", "JF"),
+			'facultycode' => array("F7", "wf", "fp")
+		)
+	),
+        "act" => array(
+		'module' => array(
+			'departmentcode' => array("FP", "JF"),
+			'facultycode' => array("F7", "wf", "fp")
+		)
+	),
+        "stefano" => array(
+		'module' => array(
+			'departmentcode' => array("FP", "JF"),
+			'facultycode' => array("F7", "wf", "fp")
+		)
+	),
+        "ak3w07" => array(
+		'module' => array(
+			'departmentcode' => array("FP", "JF"),
+			'facultycode' => array("F7", "wf", "fp")
+		)
+	),
+        "peterw" => array(
+		'module' => array(
+			'departmentcode' => array("FP", "JF"),
+			'facultycode' => array("F7", "wf", "fp")
+		)
+	),
+        "rgm1y07" => array(
+		'module' => array(
+			'departmentcode' => array("FP", "JF"),
+			'facultycode' => array("F7", "wf", "fp")
+		)
+	),
+        "mdr1f06" => array(
+		'module' => array(
+			'departmentcode' => array("FP", "JF"),
+			'facultycode' => array("F7", "wf", "fp")
+		)
+	),
+        "raw1" => array(
 		'module' => array(
 			'departmentcode' => array("FP", "JF"),
 			'facultycode' => array("F7", "wf", "fp")
@@ -135,6 +189,12 @@ $REVIEWERS = array(
 	),
         "ck7" => array(
 		'module' => array(
+			'facultycode' => array("F7", "wf", "fp")
+		)
+	),
+        "gbw" => array(
+		'module' => array(
+			'departmentcode' => array("FP", "JF"),
 			'facultycode' => array("F7", "wf", "fp")
 		)
 	),
