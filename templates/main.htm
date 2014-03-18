@@ -24,7 +24,12 @@
 	</head>
 	<body>
 		<div class="container">
-			<div class="heading"><h1>{{@title}}</h1></div>
+			<div class="heading">
+				<check if="{{isset(@LIVESITE)}}">
+					<false><h1 style="background-color:red">DEV SITE</h1></false>
+				</check>
+				<h1>{{@title}}</h1>
+			</div>
 			<div class="menu">
 				<ul>
 					<li><a href="/" >Home</a></li>

@@ -238,3 +238,7 @@ table.changelog td {
 .provisional {
 	background: url(/html_assets/provisional-bg.png) repeat scroll 0 50% rgba(0, 0, 0, 0);
 }
+.return-from-review {
+	float:right;
+	margin-top: -2em;
+}

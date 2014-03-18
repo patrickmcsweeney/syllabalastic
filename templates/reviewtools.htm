@@ -16,6 +16,9 @@
 				</script>
 				<input type="submit" value="Approve syllabus" class='action'/>
 				</form>
+				<form action="/return/syllabus/{{@syllabus->id}}" method="POST">
+					<input type="submit" value="Return syllabus for further editing" class="action return-from-review" />
+				</form>
 			</check>
 		</false>
 	</check>

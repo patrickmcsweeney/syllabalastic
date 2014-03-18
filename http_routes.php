@@ -533,6 +533,39 @@ function toreview_syllabus($f3)
 	header( "Location: /" );
 }
 
+function return_syllabus($f3)
+{
+	authenticate($f3);
+	$syllabus = R::load("syllabus", $f3->get('PARAMS["syllabus_id"]'));
+	$user = current_user($f3);
+	if(!$syllabus->id)
+	{
+		$f3->error( 404, "This syllabus id does not exist");
+		return;
+	}
+
+	if(!$syllabus->canBeReviewedBy($user))
+	{
+		$f3->error( 403, "You cannot review this syllabus so you do not have permission to return it.");
+		return;
+	}
+
+	$syllabus->isunderreview = 0;
+
+	R::store($syllabus);
+
+	$new_log = R::dispense("syllabuseditlog");
+	$new_log->timestamp = time();
+	$new_log->user = $user;
+	$new_log->username = $user->username;
+	$new_log->name = $user->familyname.", ".$user->givenname;
+	$new_log->syllabus = $syllabus;
+	$new_log->summary = "RETURNED FOR FURTHER EDITING";
+	R::store($new_log);
+
+	header( "Location: /review/dashboard" );
+}
+
 
 function review_syllabus($f3)
 {
