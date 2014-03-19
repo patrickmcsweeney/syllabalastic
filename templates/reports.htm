@@ -1,0 +1,9 @@
+<ul>
+  <li><a href="/report/usage">Usage report</a></li>
+  <li>Textbook reports by faculty</li>
+  <ul>
+    <repeat group="{{@faculties}}" key="{{@code}}" value="{{@name}}">
+    <li><a href="/report/books/{{@code}}">{{@name}}</a></li>
+    </repeat>
+  </ul>
+</ul>

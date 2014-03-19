@@ -725,6 +725,15 @@ function logout($f3)
 	header("Location: /");
 }
 
+function reports($f3)
+{
+	$f3->set("title", "Reports");
+	$f3->set('templates', array('reports.htm'));
+	$module = R::dispense('module');
+	$f3->set("faculties", $module->listFaculties());
+	echo Template::instance()->render("main.htm");
+}
+
 function report_usage($f3)
 {
 	$report_start = strtotime("-1 month");
@@ -743,7 +752,7 @@ function report_usage($f3)
 	$f3->set("report_start", date("Y-m-d",$report_start));
 	$f3->set("report_end", date("Y-m-d",$report_end));
 
-	$f3->set('templates', array('report_usage'));
+	$f3->set('templates', array('report_usage.htm'));
 
 	echo Template::instance()->render("main.htm");
 }
