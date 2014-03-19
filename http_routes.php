@@ -779,6 +779,45 @@ function report_usage($f3)
 
 }
 
+function report_unedited_modules($f3)
+{
+	$report_start = strtotime("-1 month");
+	if($f3->exists("REQUEST.report_start")){
+		$report_start = strtotime($f3->get("REQUEST.report_start"));
+	}
+
+	$start_year = date('Y');
+	$now_month = date('m');
+	if($now_month < 10){
+		$start_year--;
+	}
+	$end_year = $start_year + 1;
+	$end_year = substr($end_year, 2);
+
+	$academic_session = "$start_year$end_year";
+
+	if($f3->exists("REQUEST.academic_session")){
+		$academic_session = $f3->get("REQUEST.academic_session");
+	}
+	$f3->set("academic_session", $academic_session);
+
+	$sql = 'SELECT DISTINCT module.* '.
+		'FROM module LEFT JOIN ('.
+			'SELECT module_id FROM syllabus WHERE timeapproved > ?'.
+		') syls on syls.module_id = module.id '.
+		'WHERE syls.module_id IS NULL and module.session=?';
+	$modules = R::convertToBeans('module', R::getAll($sql,
+		array($report_start, $academic_session)));
+
+	$f3->set("title", "Unedited modules report");
+	$f3->set("modules", $modules);
+	$f3->set("report_start", date("Y-m-d",$report_start));
+
+	$f3->set('templates', array('report_unedited_modules.htm'));
+
+	echo Template::instance()->render("main.htm");
+}
+
 function report_books($f3)
 {
 	$faculty_code = $f3->get("PARAMS.faculty");
