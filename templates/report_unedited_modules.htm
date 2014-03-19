@@ -1,0 +1,9 @@
+<p>
+<form method="GET">Show inactive modules for <input name='academic_session' type="text" value="{{@academic_session}}"/> after <input name="report_start" type="text" value="{{@report_start}}" size="10"/> <input type="submit" value="Show"></p></form>
+
+<p>{{count(@modules)}} module(s) have no recently edited syllabuses.
+<ul>
+	<repeat group="{{@modules}}" value="{{@module}}">
+			<li><strong>{{@module->code}}</strong>
+	</repeat>
+</ul>
