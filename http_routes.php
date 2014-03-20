@@ -763,7 +763,7 @@ function report_unedited_modules($f3)
 	$module = R::dispense('module');
 	$f3->set("faculties", listFaculties());
 	$f3->set("sessions", listSessions());
-	$faculty = "fp"; //TODO
+	$faculty = "fp"; //TODO get user's faculty...
 	if($f3->exists("REQUEST.faculty")){
 		$faculty = $f3->get("REQUEST.faculty");
 	}
@@ -799,10 +799,10 @@ function report_unedited_modules($f3)
 		'FROM module LEFT JOIN ('.
 			'SELECT module_id FROM syllabus WHERE timeapproved > ?'.
 		') syls on syls.module_id = module.id '.
-		'WHERE syls.module_id IS NULL and module.session=?'.
-		'ORDER BY title';
+		'WHERE syls.module_id IS NULL and module.session=? and module.facultycode=?'.
+		'ORDER BY code';
 	$modules = R::convertToBeans('module', R::getAll($sql,
-		array($report_start, $academic_session)));
+		array($report_start, $academic_session, $faculty)));
 
 	$f3->set("title", "Unedited modules report");
 	$f3->set("modules", $modules);
