@@ -730,7 +730,7 @@ function reports($f3)
 	$f3->set("title", "Reports");
 	$f3->set('templates', array('reports.htm'));
 	$module = R::dispense('module');
-	$f3->set("faculties", $module->listFaculties());
+	$f3->set("faculties", listFaculties());
 	echo Template::instance()->render("main.htm");
 }
 
@@ -761,17 +761,18 @@ function report_unedited_modules($f3)
 {
 
 	$module = R::dispense('module');
-	$f3->set("faculties", $module->listFaculties());
-	$f3->set("sessions", $module->listSessions());
+	$f3->set("faculties", listFaculties());
+	$f3->set("sessions", listSessions());
 	$faculty = "fp"; //TODO
-	if($f3->exists("request.faculty")){
-		$faculty = strtotime($f3->get("request.faculty"));
+	if($f3->exists("REQUEST.faculty")){
+		$faculty = $f3->get("REQUEST.faculty");
 	}
+	$f3->set('faculty', $faculty);
 	
 
 	$report_start = strtotime("-1 month");
-	if($f3->exists("request.report_start")){
-		$report_start = strtotime($f3->get("request.report_start"));
+	if($f3->exists("REQUEST.report_start")){
+		$report_start = strtotime($f3->get("REQUEST.report_start"));
 	}
 
 	$report_start = strtotime("-1 month");

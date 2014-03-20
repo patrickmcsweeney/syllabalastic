@@ -207,4 +207,24 @@ function tick($msg = "tick" )
 	$f3->set('last_tick', $mt );
 }
 
+function listFaculties()
+{
+	$things = R::$f->begin()->addSQL(' SELECT DISTINCT facultycode, facultyname ')->from('module')->get();
+
+	$faculties = array();
+	foreach ($things as $pair){
+		$faculties[$pair['facultycode']] = $pair['facultyname'];
+	}
+
+	asort($faculties);
+	return $faculties;
+}
+
+function listSessions()
+{
+	$sessions = R::getCol(' SELECT DISTINCT session FROM module ORDER BY session');
+
+	return $sessions;
+}
+
 ?>
