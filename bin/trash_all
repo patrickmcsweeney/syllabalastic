@@ -1,7 +1,7 @@
 #!/usr/bin/php
 <?php
-$path_to_base_dir = "../";
-require_once(__DIR__."/${path_to_base_dir}includes.php");
+$path_to_base_dir = realpath(__DIR__."/..")."/";
+require_once($path_to_base_dir."includes.php");
 #includes(array("debug"=>1));
 #R::freeze( true );
 

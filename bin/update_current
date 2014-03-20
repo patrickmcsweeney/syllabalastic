@@ -1,6 +1,6 @@
 #!/usr/bin/php
 <?php
-$path_to_base_dir = "../";
+$path_to_base_dir = realpath(__DIR__."/..")."/";
 require_once($path_to_base_dir.'includes.php');
 
 $output = R::exec("UPDATE `syllabus` LEFT JOIN `module` ON `syllabus`.`module_id`=`module`.`id`
