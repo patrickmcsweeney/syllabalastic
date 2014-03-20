@@ -75,8 +75,9 @@ class Model_User extends RedBean_SimpleModel {
 		$this->givenname = $ldap_data[0]['givenname'][0];
 		$this->familyname = $ldap_data[0]['sn'][0];
 		$bits = explode(',',$ldap_data[0]['dn']);
-		$faculty_bits = explode("OU=", $bits[2]);
-		$this->departmentcode = strtoupper($faculty_bits[1]);
+		$dept_bits = explode("OU=", $bits[2]);
+		//$faculty_bits = explode("OU=", $bits[4]); // TODO get an actual list of faculty bits and what faculty to map them to...
+		$this->departmentcode = strtoupper($dept_bits[1]);
 		$this->departmentname = $ldap_data[0]['department'][0];
 			
 		R::store($this);
