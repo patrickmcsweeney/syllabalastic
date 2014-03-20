@@ -753,7 +753,8 @@ function report_usage($f3)
 		$report_end = strtotime($f3->get("REQUEST.report_end"));
 	}
 
-	$academic_session = currentSession();
+	// Add 1 year as we're planning for next year
+	$academic_session = currentSession(1);
 	if($f3->exists("REQUEST.academic_session")){
 		$academic_session = $f3->get("REQUEST.academic_session");
 	}

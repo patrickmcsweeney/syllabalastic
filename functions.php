@@ -227,9 +227,9 @@ function listSessions()
 	return $sessions;
 }
 
-function currentSession()
+function currentSession($offset_years = 0)
 {
-	$start_year = date('Y');
+	$start_year = date('Y') + $offset_years;
 	$now_month = date('m');
 	if($now_month < 10){
 		$start_year--;
