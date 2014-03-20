@@ -759,6 +759,21 @@ function report_usage($f3)
 
 function report_unedited_modules($f3)
 {
+
+	$module = R::dispense('module');
+	$f3->set("faculties", $module->listFaculties());
+	$f3->set("sessions", $module->listSessions());
+	$faculty = "fp"; //TODO
+	if($f3->exists("request.faculty")){
+		$faculty = strtotime($f3->get("request.faculty"));
+	}
+	
+
+	$report_start = strtotime("-1 month");
+	if($f3->exists("request.report_start")){
+		$report_start = strtotime($f3->get("request.report_start"));
+	}
+
 	$report_start = strtotime("-1 month");
 	if($f3->exists("REQUEST.report_start")){
 		$report_start = strtotime($f3->get("REQUEST.report_start"));

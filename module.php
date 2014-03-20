@@ -55,5 +55,12 @@ class Model_Module extends RedBean_SimpleModel
 		return $faculties;
 	}
 
+	public function listSessions()
+	{
+		$sessions = R::getCol(' SELECT DISTINCT session FROM module ORDER BY session');
+
+		return $sessions;
+	}
+
 }
 

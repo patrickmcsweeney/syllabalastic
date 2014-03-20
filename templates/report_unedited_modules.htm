@@ -1,5 +1,28 @@
 <p>
-<form method="GET">Show inactive modules for <input name='academic_session' type="text" value="{{@academic_session}}"/> after <input name="report_start" type="text" value="{{@report_start}}" size="10"/> <input type="submit" value="Show"></p></form>
+<form method="GET">
+  Show inactive modules for
+  <select name='faculty'>
+    <repeat group="{{@faculties}}" key="{{@code}}" value="{{@fac}}">
+    <option value="{{@code}}" <check if="{{@code}} == {{@REQUEST.faculty}}">selected="selected"</check> >{{@fac}}</option>
+    </repeat>
+  </select>
+
+  Academic session:
+  <select name='academic_session'>
+    <repeat group="{{@sessions}}" value="{{@sess}}">
+    <option value="{{@sess}}" <check if="{{@sess}} == {{@academic_session}}">selected="selected"</check> >{{@sess}}</option>
+    </repeat>
+  </select>
+  after: <input class="datepicker" name="report_start" type="text" value="{{@report_start}}" size="10"/> <input type="submit" value="Show"></p>
+</form>
+
+<script language="javascript">
+$(function() {
+   $( ".datepicker" ).datepicker({
+     dateFormat: "yy-mm-dd"
+   });
+});
+</script>
 
 <p>{{count(@modules)}} module(s) have no recently edited syllabuses.
 <ul>
@@ -7,3 +30,4 @@
 			<li><strong>{{@module->code}}</strong>
 	</repeat>
 </ul>
+
