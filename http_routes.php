@@ -738,8 +738,11 @@ function report_usage($f3)
 {
 	$f3->set("faculties", listFaculties());
 	$f3->set("sessions", listSessions());
+
 	$faculty = "fp"; //TODO get user's faculty...
-	if($f3->exists("REQUEST.faculty")){
+	if($f3->exists("PARAMS.faculty")){
+		$faculty = $f3->get("PARAMS.faculty");
+	} elseif($f3->exists("REQUEST.faculty")){
 		$faculty = $f3->get("REQUEST.faculty");
 	}
 	$f3->set('faculty', $faculty);
@@ -785,7 +788,9 @@ function report_unedited_modules($f3)
 	$f3->set("faculties", listFaculties());
 	$f3->set("sessions", listSessions());
 	$faculty = "fp"; //TODO get user's faculty...
-	if($f3->exists("REQUEST.faculty")){
+	if($f3->exists("PARAMS.faculty")){
+		$faculty = $f3->get("PARAMS.faculty");
+	} elseif($f3->exists("REQUEST.faculty")){
 		$faculty = $f3->get("REQUEST.faculty");
 	}
 	$f3->set('faculty', $faculty);

@@ -2,8 +2,8 @@
   <repeat group="{{@faculties}}" key="{{@code}}" value="{{@name}}">
   <li>{{@name}}:
     <ul>
-      <li><a href="/report/usage?faculty={{@code}}">Usage</a></li>
-      <li><a href="/report/unedited_modules?faculty={{@code}}">Unedited modules</a></li>
+      <li><a href="/report/usage/{{@code}}">Usage</a></li>
+      <li><a href="/report/unedited_modules/{{@code}}">Unedited modules</a></li>
       <li><a href="/report/books/{{@code}}">Textbook usage</a></li>
     </ul>
   </li>
