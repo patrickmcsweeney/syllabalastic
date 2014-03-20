@@ -1,10 +1,11 @@
 <ul>
-  <li><a href="/report/usage">Usage report</a> (Syllabuses approved within a date range)</li>
-  <li><a href="/report/unedited_modules">Unedited modules report</a> (Modules with no recently edited syllabuses)</li>
-  <li>Textbook reports by faculty</li>
-  <ul>
-    <repeat group="{{@faculties}}" key="{{@code}}" value="{{@name}}">
-    <li><a href="/report/books/{{@code}}">{{@name}}</a></li>
-    </repeat>
-  </ul>
+  <repeat group="{{@faculties}}" key="{{@code}}" value="{{@name}}">
+  <li>{{@name}}:
+    <ul>
+      <li><a href="/report/usage?faculty={{@code}}">Usage</a></li>
+      <li><a href="/report/unedited_modules?faculty={{@code}}">Unedited modules</a></li>
+      <li><a href="/report/books/{{@code}}">Textbook usage</a></li>
+    </ul>
+  </li>
+  </repeat>
 </ul>

@@ -227,4 +227,19 @@ function listSessions()
 	return $sessions;
 }
 
+function currentSession()
+{
+	$start_year = date('Y');
+	$now_month = date('m');
+	if($now_month < 10){
+		$start_year--;
+	}
+	$end_year = $start_year + 1;
+	$end_year = substr($end_year, 2);
+
+	$academic_session = "$start_year$end_year";
+
+	return $academic_session;
+}
+
 ?>
