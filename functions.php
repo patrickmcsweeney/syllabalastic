@@ -1,6 +1,21 @@
 <?php
 
-##RENAME THIS FILE
+function output_csv($data_table, $headings, $filename)
+{
+        header('Content-Type: application/octet-stream');
+        header("Pragma: ");
+        header("Cache-Control: ");
+        header('Content-Transfer-Encoding: Binary');
+        header('Content-disposition: attachment; filename='.$filename);
+	
+	$fh = fopen ( "php://output", "w" );
+	fputcsv($fh, $headings );
+	foreach($data_table as $row)
+	{
+		fputcsv( $fh, $row );
+	}
+	exit;
+}
 
 function authenticate($f3, $pass_through = null)
 {

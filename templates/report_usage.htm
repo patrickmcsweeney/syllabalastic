@@ -1,5 +1,3 @@
-<p>
-
 <form method="GET" action="/report/usage">
   <p>
   <label for="faculty">Show syllabuses for faculty:</label>
@@ -31,6 +29,9 @@
   <input type="submit" value="Show">
   </p>
 </form>
+
+<p><a href="?csv=1&report_start={{@report_start}}&report_end={{@report_end}}&faculty={{@faculty}}">Download report as CSV</a></p>
+
 <p>{{count(@syllabuses)}} syllabus(es) have been approved between {{@report_start}} and {{@report_end}}.
 <ul>
 	<repeat group="{{@syllabuses}}" value="{{@syllabus}}">
