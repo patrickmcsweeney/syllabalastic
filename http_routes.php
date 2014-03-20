@@ -783,7 +783,8 @@ function report_unedited_modules($f3)
 		'FROM module LEFT JOIN ('.
 			'SELECT module_id FROM syllabus WHERE timeapproved > ?'.
 		') syls on syls.module_id = module.id '.
-		'WHERE syls.module_id IS NULL and module.session=?';
+		'WHERE syls.module_id IS NULL and module.session=?'.
+		'ORDER BY title';
 	$modules = R::convertToBeans('module', R::getAll($sql,
 		array($report_start, $academic_session)));
 
