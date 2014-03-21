@@ -32,22 +32,42 @@
 
 <p><a href="?csv=1&report_start={{@report_start}}&report_end={{@report_end}}&faculty={{@faculty}}">Download report as CSV</a></p>
 
-<p>{{count(@syllabuses)}} syllabus(es) have been approved between {{@report_start}} and {{@report_end}}.
-<ul>
-	<repeat group="{{@syllabuses}}" value="{{@syllabus}}">
-		<check if="{{@syllabus->module}}">
-			<li><strong><a href="/view/syllabus/{{@syllabus->id}}">{{@syllabus->module->code}}</a></strong>
-			<check if="{{@syllabus->approvalnote}}">
-			 - Reason:{{@syllabus->approvalnote}} 
-			</check>
+<!--<p>{{count(@syllabuses)}} syllabus(es) have been approved between {{@report_start}} and {{@report_end}}.-->
 
-			<check if="{{@syllabus->approvedby}}">
-				- {{@syllabus->approvedby}}</li>
-			</check>
-			- {{date("Y-m-d",@syllabus->timeapproved)}}
-		</check>
-	</repeat>
-</ul>
+
+
+<script language="javascript">
+$(document).ready(function(){
+    $('#syllabuses').dataTable({
+        "sDom": '<"wrapper"flipt>',
+        "iDisplayLength" : 25,
+        "aLengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]]
+    });
+});
+</script>
+
+<table cellpadding="0" cellspacing="0" border="0" class="display" id="syllabuses" width="100%">
+	<thead>
+		<tr>
+			<th>Module Code</th>
+			<th>Reason</th>
+			<th>Approver</th>
+			<th>Approval date</th>
+		</tr>
+	</thead>
+	<tbody>
+        <repeat group="{{@syllabuses}}" value="{{@syllabus}}">
+          <check if="{{@syllabus->module}}">
+            <tr>
+                <td><a href="/view/syllabus/{{@syllabus->id}}">{{@syllabus->module->code}}</a></td>
+                <td><check if="{{@syllabus->approvalnote}}">{{@syllabus->approvalnote}}</check></td>
+                <td><check if="{{@syllabus->approvedby}}">{{@syllabus->approvedby}}</check></td>
+                <td>{{date("Y-m-d",@syllabus->timeapproved)}}</td>
+            </tr>
+          </check>
+        </repeat>
+    </tbody>
+</table>
 
 <script language="javascript">
 $(function() {
