@@ -730,12 +730,23 @@ function reports($f3)
 	$f3->set("title", "Reports");
 	$f3->set('templates', array('reports.htm'));
 	$module = R::dispense('module');
-	$f3->set("faculties", $module->listFaculties());
+	$f3->set("faculties", listFaculties());
 	echo Template::instance()->render("main.htm");
 }
 
 function report_usage($f3)
 {
+	$f3->set("faculties", listFaculties());
+	$f3->set("sessions", listSessions());
+
+	$faculty = "fp"; //TODO get user's faculty...
+	if($f3->exists("PARAMS.faculty")){
+		$faculty = $f3->get("PARAMS.faculty");
+	} elseif($f3->exists("REQUEST.faculty")){
+		$faculty = $f3->get("REQUEST.faculty");
+	}
+	$f3->set('faculty', $faculty);
+
 	$report_start = strtotime("-1 month");
 	$report_end = time();
 	if($f3->exists("REQUEST.report_start")){
@@ -745,7 +756,21 @@ function report_usage($f3)
 		$report_end = strtotime($f3->get("REQUEST.report_end"));
 	}
 
-	$syllabuses = R::find('syllabus', " timeapproved > ? and timeapproved < ? ORDER BY timeapproved", array($report_start, $report_end));
+	// Add 1 year as we're planning for next year
+	$academic_session = currentSession(1);
+	if($f3->exists("REQUEST.academic_session")){
+		$academic_session = $f3->get("REQUEST.academic_session");
+	}
+	$f3->set("academic_session", $academic_session);
+
+	//$syllabuses = R::find('syllabus', " timeapproved > ? and timeapproved < ? and module.facultycode = ? ORDER BY timeapproved", array($report_start, $report_end, $faculty));
+	$sql = 'SELECT syllabus.* '.
+		'FROM syllabus INNER JOIN module ON syllabus.module_id = module.id '.
+		'WHERE timeapproved > ? and timeapproved < ? and module.facultycode = ? '.
+		'ORDER BY timeapproved';
+
+	$syllabuses = R::convertToBeans('syllabus', R::getAll($sql,
+		array($report_start, $report_end, $faculty)));
 
 	if(!$f3->exists("REQUEST.csv"))
 	{
@@ -781,21 +806,25 @@ function report_usage($f3)
 
 function report_unedited_modules($f3)
 {
+
+	$f3->set("faculties", listFaculties());
+	$f3->set("sessions", listSessions());
+	$faculty = "fp"; //TODO get user's faculty...
+	if($f3->exists("PARAMS.faculty")){
+		$faculty = $f3->get("PARAMS.faculty");
+	} elseif($f3->exists("REQUEST.faculty")){
+		$faculty = $f3->get("REQUEST.faculty");
+	}
+	$f3->set('faculty', $faculty);
+	
+
 	$report_start = strtotime("-1 month");
 	if($f3->exists("REQUEST.report_start")){
 		$report_start = strtotime($f3->get("REQUEST.report_start"));
 	}
 
-	$start_year = date('Y');
-	$now_month = date('m');
-	if($now_month < 10){
-		$start_year--;
-	}
-	$end_year = $start_year + 1;
-	$end_year = substr($end_year, 2);
-
-	$academic_session = "$start_year$end_year";
-
+	// Add 1 year as we're planning for next year
+	$academic_session = currentSession(1);
 	if($f3->exists("REQUEST.academic_session")){
 		$academic_session = $f3->get("REQUEST.academic_session");
 	}
@@ -805,9 +834,10 @@ function report_unedited_modules($f3)
 		'FROM module LEFT JOIN ('.
 			'SELECT module_id FROM syllabus WHERE timeapproved > ?'.
 		') syls on syls.module_id = module.id '.
-		'WHERE syls.module_id IS NULL and module.session=?';
+		'WHERE syls.module_id IS NULL and module.session=? and module.facultycode=?'.
+		'ORDER BY code';
 	$modules = R::convertToBeans('module', R::getAll($sql,
-		array($report_start, $academic_session)));
+		array($report_start, $academic_session, $faculty)));
 
 	$f3->set("title", "Unedited modules report");
 	$f3->set("modules", $modules);

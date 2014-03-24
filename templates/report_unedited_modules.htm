@@ -1,5 +1,40 @@
 <p>
-<form method="GET">Show inactive modules for <input name='academic_session' type="text" value="{{@academic_session}}"/> after <input name="report_start" type="text" value="{{@report_start}}" size="10"/> <input type="submit" value="Show"></p></form>
+<form method="GET" action="/report/unedited_modules">
+  <p>
+  <label for="faculty">Show inactive modules for faculty:</label>
+  <select id="faculty" name='faculty'>
+    <repeat group="{{@faculties}}" key="{{@code}}" value="{{@fac}}">
+    <option value="{{@code}}" <check if="{{@code}} == {{@faculty}}">selected="selected"</check> >{{@fac}}</option>
+    </repeat>
+  </select>
+  </p>
+
+  <p>
+  <label for="academic_session">In academic session:</label>
+  <select id="academic_session" name='academic_session'>
+    <repeat group="{{@sessions}}" value="{{@sess}}">
+    <option value="{{@sess}}" <check if="{{@sess}} == {{@academic_session}}">selected="selected"</check> >{{@sess}}</option>
+    </repeat>
+  </select>
+  </p>
+
+  <p>
+  <label for="report_start">Not edited since:</label>
+  <input class="datepicker" id="report_start" name="report_start" type="text" value="{{@report_start}}" size="10"/>
+  </p>
+  <p>
+  <input type="submit" value="Show">
+  </p>
+</form>
+</p>
+
+<script language="javascript">
+$(function() {
+   $( ".datepicker" ).datepicker({
+     dateFormat: "yy-mm-dd"
+   });
+});
+</script>
 
 <p>{{count(@modules)}} module(s) have no recently edited syllabuses.
 <ul>
@@ -7,3 +42,4 @@
 			<li><strong>{{@module->code}}</strong>
 	</repeat>
 </ul>
+

@@ -42,18 +42,5 @@ class Model_Module extends RedBean_SimpleModel
 		R::store($this);
 	}
 
-	public function listFaculties()
-	{
-		$things = R::$f->begin()->addSQL(' SELECT DISTINCT facultycode, facultyname ')->from('module')->get();
-
-		$faculties = array();
-		foreach ($things as $pair){
-			$faculties[$pair['facultycode']] = $pair['facultyname'];
-		}
-
-		asort($faculties);
-		return $faculties;
-	}
-
 }
 

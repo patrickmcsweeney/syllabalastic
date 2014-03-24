@@ -222,4 +222,39 @@ function tick($msg = "tick" )
 	$f3->set('last_tick', $mt );
 }
 
+function listFaculties()
+{
+	$things = R::$f->begin()->addSQL(' SELECT DISTINCT facultycode, facultyname ')->from('module')->get();
+
+	$faculties = array();
+	foreach ($things as $pair){
+		$faculties[$pair['facultycode']] = $pair['facultyname'];
+	}
+
+	asort($faculties);
+	return $faculties;
+}
+
+function listSessions()
+{
+	$sessions = R::getCol(' SELECT DISTINCT session FROM module ORDER BY session');
+
+	return $sessions;
+}
+
+function currentSession($offset_years = 0)
+{
+	$start_year = date('Y') + $offset_years;
+	$now_month = date('m');
+	if($now_month < 10){
+		$start_year--;
+	}
+	$end_year = $start_year + 1;
+	$end_year = substr($end_year, 2);
+
+	$academic_session = "$start_year$end_year";
+
+	return $academic_session;
+}
+
 ?>

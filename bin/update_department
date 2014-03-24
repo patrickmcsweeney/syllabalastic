@@ -1,6 +1,6 @@
 #!/usr/bin/php
 <?php
-$path_to_base_dir = "../";
+$path_to_base_dir = realpath(__DIR__."/..")."/";
 require_once($path_to_base_dir.'includes.php');
 
 $modules = R::find("module", " session='201415'");
