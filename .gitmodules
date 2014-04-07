@@ -1,3 +1,6 @@
 [submodule "lib/floraform"]
 	path = lib/floraform
 	url = git@github.com:cgutteridge/FloraForm.git
+[submodule "lib/fatfree-master"]
+	path = lib/fatfree-master
+	url = git@github.com:bcosca/fatfree.git
