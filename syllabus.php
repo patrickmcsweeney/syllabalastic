@@ -552,11 +552,40 @@ class Model_Syllabus extends RedBean_SimpleModel {
 			"title" => "Details" ) );	
 
 
-
 		$s4 = $form->add( "SECTION", array(
+			"title" => "4. Additional Information",
+			));
+		$s4->add( "HTML", array( 
+			"id" => "specialfeatures",
+			"title" => "4.1 Special Features",
+			"description" => "
+		State anything which makes this module special which students should be aware of when choosing it.
+	",
+			"layout" => "section",
+		));
+
+		$s4->add( "HTML", array( 
+			"id" => "costimplications",
+			"title" => "4.2 Cost Implications",
+			"description" => "
+		Please list any cost implications to the student which are not covered by their tuition fees.
+	",
+			"layout" => "section",
+		));
+
+		$s4->add( "HTML", array( 
+			"id" => "healthandsafety",
+			"title" => "4.2 Health and Safety",
+			"description" => "
+		Please briefly describe any health and safety implications of this module.
+	",
+			"layout" => "section",
+		));
+
+		$s5 = $form->add( "SECTION", array(
 			"title" => "4. Changes",
 			));
-		$s4->add( "TEXTAREA", array(
+		$s5->add( "TEXTAREA", array(
 			"id" => "changessummary",
 			"rows"=>5,
 			"description" => "A summary of these changes, and why they were made. If this was in response to student comments, please quote some of them, or the link to the questionnaire data.",

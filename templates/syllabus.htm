@@ -231,6 +231,27 @@
 		</div>
 	</F3:true>
 </F3:check>
+<F3:check if="{{@syllabus->specialfeatures}}">
+	<div class="special-features">
+		<h2>Special Features</h2>
+		{{@syllabus->specialfeatures}}
+
+	</div>
+</F3:check>
+<F3:check if="{{@syllabus->healthandsafety}}">
+	<div class="health-and-safety">
+		<h2>Health and Safety</h2>
+		{{@syllabus->healthandsafety}}
+
+	</div>
+</F3:check>
+<F3:check if="{{@syllabus->costimplications}}">
+	<div class="cost-implications">
+		<h2>Cost Implications</h2>
+		{{@syllabus->costimplications}}
+
+	</div>
+</F3:check>
 
 <h2>Prerequisite information</h2>
 <p>This information comes from banner and can not be edited throught this sytem.</p>

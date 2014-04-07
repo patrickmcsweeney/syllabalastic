@@ -257,9 +257,11 @@ function create_syllabus($f3)
 		$f3->error( 500, "There is no syllabus for this module in the central system.");
 		return;
 	}
-	if($existing_module->provisionalsyllabus)
+	$provisional = $existing_module->getProvisional();
+	if($provisional)
 	{
-		$f3->error( 500, "This syllabus exists already - TODO maybe redirect this to edit?");
+		# if a provisional syllabus already exists redirect to editing that
+		$f3->reroute( "/edit/syllabus/". $provisional->id );
 		return;
 	}
 
@@ -320,6 +322,8 @@ function view_syllabus($f3)
 	$templates = array();
 	if($syllabus->isprovisional){
 		$templates[] = 'provisional.htm';
+	}else{
+		$templates[] = 'livesyllabus.htm';
 	}
 	$templates[] = 'syllabus.htm';
 
@@ -337,6 +341,27 @@ function json_syllabus($f3)
 	}
 	$module = array("module"=>$syllabus->module->export(), "syllabus"=>$syllabus->getData());
 	echo json_encode($module);
+}
+function pdf_syllabus($f3)
+{
+	$syllabus = R::load("syllabus", $f3->get('PARAMS["syllabus_id"]'));
+	if(!$syllabus->id)
+	{
+		$f3->error( 404, "This syllabus id does not exist");
+		return;
+	}
+	$module = $syllabus->module;
+
+        $filename = $module->code."_".$module->session."_syllabus.pdf";
+        $url = $f3->get("SCHEME")."://".$f3->get("HOST")."/view/syllabus/".$syllabus->id;
+
+        header("Pragma: ");
+        header("Cache-Control: ");
+        header('Content-Type: application/octet-stream');
+        header('Content-Transfer-Encoding: Binary');
+        header('Content-disposition: attachment; filename="'.$filename.'"');
+
+        echo shell_exec($f3->get("ROOT")."/lib/wkhtmltox/bin/wkhtmltopdf --margin-top 25mm --margin-bottom 25mm --margin-left 5mm --margin-right 5mm --print-media-type --images --quiet $url - ");
 }
 
 function ecs_syllabus($f3)

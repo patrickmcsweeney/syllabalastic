@@ -98,7 +98,7 @@ function authenticate($f3, $pass_through = null)
 		$f3->error( 403,"Your account appears to be expired. Contact serviceline on x25656.");
 	}
 
-	if(!array_key_exists("extensionattribute9",$info[0]) || $info[0]['extensionattribute9'][0]!='staff')
+	if(!array_key_exists("extensionattribute9",$info[0]) || ($info[0]['extensionattribute9'][0]!='staff' && $info[0]['extensionattribute9'][0]!='generic'))
 	{
 		$f3->error( 403,"Only staff may log into this service");
 	}

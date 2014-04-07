@@ -61,6 +61,12 @@ $REVIEWERS = array(
 			'facultycode' => array("F7", "wf", "fp")
 		)
 	),
+       "fpascqa" => array(
+		'module' => array(
+			'departmentcode' => array("FP", "JF"),
+			'facultycode' => array("F7", "wf", "fp")
+		)
+	),
        "ls7" => array(
 		'module' => array(
 			'departmentcode' => array("FP", "JF"),

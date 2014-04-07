@@ -1,0 +1,34 @@
+.menu, .footer, .notice {
+	display: none;
+} 
+
+.heading {
+	border: 0;
+	padding: 0;
+	width: auto;
+}
+
+div.main-content {
+	float:none;
+	width:auto;
+}
+
+.container {
+	width:auto;
+	padding: 0;
+	margin: 0 2cm;
+}
+
+body {
+	background-color: white;
+	font-size:10pt;
+	margin: 0;
+}
+
+.print-logo {
+        display:block;
+        float:right;
+        width: 6cm;
+        padding-right: 2cm;
+
+}

@@ -1,6 +1,9 @@
 body {
 	background-color: #CCCCCC;
 }
+.print-logo {
+	display:none;
+}
 .syllabus-list form {
 	display: inline;
 }
