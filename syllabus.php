@@ -94,7 +94,14 @@ class Model_Syllabus extends RedBean_SimpleModel {
 		"disciplinespecific"=>"Disciplinary Specific",
 	);
 
-
+	public $GRADUATE_ATTRIBUTES = array(
+		"globalcitizenship"=>"Global Citizenship",
+		"ethicalleadership"=>"Ethical Leadership",
+		"researchandinquiry"=>"Research and Inquiry",
+		"academic" => "Academic",
+		"communcicationskills"=>"Communication Skills",
+		"reflectivelearner"=>"Reflective Learner",
+	);
 
 	public function canEdit()
 	{
@@ -394,6 +401,11 @@ class Model_Syllabus extends RedBean_SimpleModel {
     <p>All other learning outcomes should be written as verb phrases (for
     example, 'compare different narrative modes').</p>
 "));
+		$s2->add("MULTICHOICE", array(
+			"id" => "graduateattributes",
+			"title"=>"Graduate Attributes",
+			"choices" => $this->GRADUATE_ATTRIBUTES,
+		));
 
 		$s2->add( "HTML", array( 
 			"layout" => "section",
