@@ -1,4 +1,11 @@
 <?php
+function is_assoc($array) {
+  foreach (array_keys($array) as $k => $v) {
+    if ($k !== $v)
+      return true;
+  }
+  return false;
+}
 
 function output_csv($data_table, $headings, $filename)
 {

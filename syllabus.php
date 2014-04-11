@@ -184,8 +184,24 @@ class Model_Syllabus extends RedBean_SimpleModel {
 				$this->$field = $value;
 				continue;
 			}
-
+			
+			$field_name = "own".ucfirst($field);
+			$this->$field_name = array();
 			$sub_objects = array();
+			if($field=='graduateattributes'){
+
+				foreach($value as $attribute)
+				{
+					$sub_object = R::dispense($field);
+					$sub_object->$field = $attribute;
+					$sub_objects[] = $sub_object;
+						
+				}
+				$this->$field_name = $sub_objects;
+				continue;
+ 
+			}
+
 			foreach( $value as $sub_object_in_array )
 			{
 				$sub_object = R::dispense($field);
@@ -195,7 +211,6 @@ class Model_Syllabus extends RedBean_SimpleModel {
 				}
 				$sub_objects[] = $sub_object;
 			}
-			$field_name = "own".ucfirst($field);
 			$this->$field_name = $sub_objects;
 
 		}
@@ -209,6 +224,13 @@ class Model_Syllabus extends RedBean_SimpleModel {
 			$property_name = "own".ucfirst($sub_object);
 			$data[$sub_object] = R::exportAll($this->$property_name);
 		}
+		
+		$attributes = array();
+		foreach($this->ownGraduateattributes as $attribute)
+		{
+			$attributes[] = $attribute->graduateattributes;
+		}
+		$data['graduateattributes'] = $attributes;
 
 		return $data;
 	}
@@ -401,18 +423,20 @@ class Model_Syllabus extends RedBean_SimpleModel {
     <p>All other learning outcomes should be written as verb phrases (for
     example, 'compare different narrative modes').</p>
 "));
-		$s2->add("MULTICHOICE", array(
-			"id" => "graduateattributes",
-			"title"=>"Graduate Attributes",
-			"choices" => $this->GRADUATE_ATTRIBUTES,
-		));
-
 		$s2->add( "HTML", array( 
 			"layout" => "section",
 			"id" => "topics", # TODO change field name
 			"rows" => 10,
 			"title" => "1.3 Topics",
 			"description" => "A summary of contents covered, perhaps 10 to 20 bullet points." ) );
+
+		$s2->add("MULTICHOICE", array(
+			"id" => "graduateattributes",
+			"title"=>"1.4 Graduate Attributes",
+			"choices" => $this->GRADUATE_ATTRIBUTES,
+			"description_html" => "Graduate Attributes are the personal qualities, skills and understandings that extend beyond subject specific knowledge. <a href='https://sharepoint.soton.ac.uk/sites/ese/quality_handbook/Handbook/Employability%20Statement.aspx'>Find out more about graduate attributes</a>.",
+		));
+
 
 		### Assessment
 

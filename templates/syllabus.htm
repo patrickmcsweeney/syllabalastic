@@ -131,6 +131,16 @@
 		</false>
 </check>
 
+<check if="{{count(@syllabus->ownGraduateattributes) > 0}}">
+	<div class="graduate-attributes">
+		<h2>Graduate Attributes</h2>
+		<ul>
+		<repeat group="{{@syllabus->ownGraduateattributes}}" value="{{@attribute}}">
+			<li>{{ @getConstant( @syllabus, @attribute->graduateattributes ) }}</li>
+		</repeat>
+		</ul>
+	</div>
+</check>
 
 <F3:check if="{{@syllabus->topics}}">
 	<F3:true>
