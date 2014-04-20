@@ -1,0 +1,7 @@
+<span id="{{@self->fullId('container')}}" class='{{@self->classes()}} ff_{{@self->option("layout")}} software'>
+	<check if="{{@self->hasHtmlOption('title')}}"><true><span id="{{@self->fullId('title')}}" class='ff_title'><label for="{{@self->fullId()}}" id="{{@self->fullId('label')}}">{{@self->htmlOption("title")}}</label>: </span></true></check>
+	{{@self->renderInput( @defaults )}}
+	<script type="text/javascript">
+		software_auto_complete("#{{@self->fullId('container')}} input")		
+	</script>
+</span>

@@ -143,6 +143,7 @@ class Model_Syllabus extends RedBean_SimpleModel {
 		$data = array();
 		#echo "<pre>",htmlentities(print_r($_POST, true)),"</pre>";
 		$this->getForm($flags)->fromForm( $data, $_POST );
+		#print_r($data);exit;
 		$module_info = @$data["module"];
 		unset( $data["module"] );
 		if( $this->module->isprovisional )
@@ -569,23 +570,78 @@ class Model_Syllabus extends RedBean_SimpleModel {
 		$s3 = $form->add( "SECTION", array(
 			"title" => "3. Resources"));
 			
-		$res_combo = $s3->add( "LIST", array(
+		$res_list = $s3->add( "LIST", array(
 			"id" => "resources",
 			"layout" => "section",
-			))->setListType( "COMBO" );
-		$res_combo->add( "CHOICE", array( 
+			));
+
+		$software_combo = $form->factory("COMBO", array(
+					"fields"=>array(
+						array( "TEXT" => array(
+								"id" => "title",
+								"layout" => "block",
+								"surround" => "software_surround.htm",
+								"title" => "Software name (auto completes if currently offered)" ) ),
+						array( "TEXT" => array(
+								"id" => "version",
+								"layout" => "block",
+								"title" => "Prefered version" ) ),
+						array( "TEXTAREA" => array(
+								"description" => "Additional details which might be relevent",
+								"id" => "details",
+								"rows" => 3,
+								"layout" => "block",
+								"title" => "Additional notes" ) )
+						)
+				      ));
+		$other_combo = $form->factory("COMBO", array(
+					"fields"=>array(
+						array( "TEXTAREA" => array(
+								"id" => "details",
+								"rows" => 3,
+								"layout" => "block",
+								"title" => "Details" ) )
+						)
+				      ));
+		$book_combo = $form->factory("COMBO", array(
+					"fields"=>array(
+						array( "TEXT" => array(
+								"id" => "isbn",
+								"title" => "ISBN" ) ),	
+						array( "HTML" => array(
+								"id" => "details",
+								"rows" => 2,
+								"layout" => "block",
+								"title" => "Details" ) )
+						)
+				      )
+		     );
+		$res_cond = $res_list->add( "CONDITIONAL", array(
+					"conditions"=>array(
+						array(
+							"software",$software_combo
+						), 
+						array(
+							"", $book_combo 
+						)
+					)
+				));
+		$res_cond->add( "CHOICE", array( 
 			"id" => "type",
 			"title" => "Type",
 			"choices" => $this->RESOURCE_TYPES,
 			"mode" => "pull-down" ) );
-		$res_combo->add( "TEXT", array(
-			"id" => "isbn",
-			"title" => "ISBN" ) );	
-		$res_combo->add( "HTML", array(
-			"id" => "details",
-			"rows" => 2,
-			"layout" => "block",
-			"title" => "Details" ) );	
+
+
+
+	#	$res_combo->add( "TEXT", array(
+	#		"id" => "isbn",
+	#		"title" => "ISBN" ) );	
+	#	$res_combo->add( "HTML", array(
+	#		"id" => "details",
+	#		"rows" => 2,
+	#		"layout" => "block",
+	#		"title" => "Details" ) );	
 
 
 		$s4 = $form->add( "SECTION", array(
@@ -619,7 +675,7 @@ class Model_Syllabus extends RedBean_SimpleModel {
 		));
 
 		$s5 = $form->add( "SECTION", array(
-			"title" => "4. Changes",
+			"title" => "5. Changes",
 			));
 		$s5->add( "TEXTAREA", array(
 			"id" => "changessummary",

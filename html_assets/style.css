@@ -161,7 +161,16 @@ table.login .login-container {
 	width: 15ex;
 }
 #resources_list .ff_title {
-	width: 6ex;
+/*	width: 6ex;*/
+}
+#resources_list .software .ff_title {
+	width:auto;
+	padding-top: 1em;
+	display:block;
+}
+
+#resources_list .software input {
+	width:80%;
 }
 
 .action, .toggle {
