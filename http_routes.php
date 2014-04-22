@@ -366,7 +366,13 @@ function pdf_syllabus($f3)
 
 function ecs_syllabus($f3)
 {
-	$existing_module = R::findOne("module", "session = ? AND code = ?", array( $f3->get("PARAMS.session"), $f3->get("PARAMS.modulecode") ) );
+	if($f3->exists("PARAMS.session"))
+	{
+		$existing_module = R::findOne("module", "session = ? AND code = ?", array( $f3->get("PARAMS.session"), $f3->get("PARAMS.modulecode") ) );
+	}else{
+		$existing_module = R::findOne("module", " currentsyllabus_id is not null AND code = ? order by session desc ", array( $f3->get("PARAMS.modulecode") ) );
+		
+	}
 	if(!isset($existing_module))
 	{
 		echo json_encode(array("status"=>404));
