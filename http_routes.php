@@ -271,9 +271,13 @@ function create_syllabus($f3)
 	{
 		$syllabus = R::dup($current_syllabus);
 	}
+	elseif($past_module = R::findOne("module", " currentsyllabus_id is not null AND code = ? order by session desc ", array( $input["modulecode"] ) ))
+	{
+		$past_syllabus = $past_module->getCurrent();
+		$syllabus = R::dup($past_syllabus);
+	}
 	else
 	{
-
 		$syllabus = R::dispense("syllabus");
 	}
 
