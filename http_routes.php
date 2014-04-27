@@ -839,6 +839,40 @@ function report_usage($f3)
 
 }
 
+function report_current_syllabus_urls($f3)
+{
+	$module_codes = R::getAll("select code from module where session='201415'");
+	$data_to_csv = array();
+	foreach($module_codes as $results)
+	{
+		$code = $results["code"];
+		if(!preg_match( "/^(COMP|ELEC|INFO|WEBS|PHYS)/", $code ))
+		{
+			continue;
+		}
+		
+		$module_with_syll = R::findOne("module", " currentsyllabus_id is not null AND code = ? order by session desc ", array( $code ) );
+		if(!$module_with_syll){ continue; }
+		$subject_code = substr($code,0,4);
+		$course_number = substr($code,4);
+		$session = $module_with_syll->session;
+		$ecs_session = substr($session, 2);
+		$url = "https://secure.ecs.soton.ac.uk/module/$ecs_session/$code";
+		if($subject_code == "PHYS")
+		{
+			$url = 	"http://www.phys.soton.ac.uk/module/$code";
+		}
+		$approval_date = strtoupper(date("d-M-Y", $module_with_syll->getCurrent()->timeapproved));
+		$data_to_csv[] = array($subject_code, $course_number, $url, $module_with_syll->title, $approval_date);
+		
+		
+
+	}
+	$headings = array("subject code", "course number", "URL", "module title", "creation date");
+	output_csv($data_to_csv, $headings, "syllabus_urls.csv");
+	
+}
+
 function report_unedited_modules($f3)
 {
 
