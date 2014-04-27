@@ -33,7 +33,19 @@
     <h2 class='uos_tab_pane_title'>Aims and Objectives</h2>
 
     <div class='uos_tab' id='tab_pane_aims'>
-	{{@syllabus->learningoutcomes}}
+<check if="{{count(@syllabus->ownItemisedlearningoutcomes) > 0}}">
+                <true>
+                         <include href="itemisedlearningoutcomes.htm" />
+                </true>
+                <false>
+                        <F3:check if="{{@syllabus->learningoutcomes}}">
+                                <F3:true>
+                                                {{@syllabus->learningoutcomes}}
+                                </F3:true>
+                        </F3:check>
+                </false>
+</check>
+
     </div>
 
     <h2 class='uos_tab_pane_title'>Syllabus</h2>
