@@ -1,8 +1,5 @@
 
 <F3:check if="{{@syllabus->isCurrent()}}">
-	<F3:true>
-		<article>
-	</F3:true>
 	<F3:false>
 		<F3:check if="{{@syllabus->isprovisional}}">
 			<F3:true><article class='provisional'></F3:true>
@@ -24,6 +21,7 @@
 	</F3:false>
 </F3:check>
   
+<article>
 
 <F3:check if="{{@syllabus->module->isprovisional}}">
 	<F3:true>
@@ -193,7 +191,6 @@
 			<F3:repeat group="{{@syllabus->ownContinuousassessment}}" value="{{@assessment}}">
 				<div class="assessment">
 					<div class="description"><span class="label">Description:</span> {{@assessment->description}}</div>
-					<div class="frequency"><span class="label">Frequency:</span> {{@assessment->frequency}} hour(s)</div>
 					<div class="percentage"><span class="label">Mark Percentage:</span> {{@assessment->percent}}</div>
 					<div class="type"><span class="label">Assessment Type:</span> {{@getConstant(@syllabus,@assessment->type)}}</div>
 					<div class="week-nos"><span class="label">Weeks carried out:</span> {{@assessment->weeknos}}</div>

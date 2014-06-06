@@ -24,6 +24,19 @@ function output_csv($data_table, $headings, $filename)
 	exit;
 }
 
+function output_pdf($f3, $url, $filename)
+{
+        header("Pragma: ");
+        header("Cache-Control: ");
+        header('Content-Type: application/octet-stream');
+        header('Content-Transfer-Encoding: Binary');
+        header('Content-disposition: attachment; filename="'.$filename.'"');
+
+        echo shell_exec($f3->get("ROOT")."/lib/wkhtmltox/bin/wkhtmltopdf --margin-top 25mm --margin-bottom 25mm --margin-left 5mm --margin-right 5mm --print-media-type --images --quiet $url - ");
+	exit;
+
+}
+
 function authenticate($f3, $pass_through = null)
 {
 

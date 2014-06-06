@@ -1,0 +1,239 @@
+<div class="module-profile">
+	<table>
+		<tbody>
+			<tr>
+				<th>Module title</th>
+				<td>{{@module.title}}</td>
+			</tr>
+			<tr>
+				<th>Module code</th>
+				<td>{{@module.code}}</td>
+			</tr>
+			<tr>
+				<th>Module co-ordinator</th>
+				<td>
+					<ul>
+					<repeat group="{{@module->sharedPerson}}" value="{{@person}}">
+						<li>{{@person->firstname}} {{@person->lastname}}</li>
+					</repeat>
+					</ul>
+				</td>
+			</tr>
+			<tr>
+				<th>Module coordinator profile url:</th>
+				<td></td>
+			</tr>
+			<tr>
+				<th>External Examiner:</th>
+				<td></td>
+			</tr>
+			<tr>
+				<th>Author:</th>
+				<td>{{@author.name}}</td>
+			</tr>
+			<tr>
+				<th>Faculty</th>
+				<td>{{@module.facultyname}}</td>
+			</tr>
+			<tr>
+				<th>Academic unit</th>
+				<td>{{@module.departmentname}}</td>
+			</tr>
+			<tr>
+				<th>Academic session first offered</th>
+				<td>{{@firstoccurence}}</td>
+			</tr>
+			<tr>
+				<th>Credit Points</th>
+				<td>ECTS {{@module.credits/2}} CATS {{@module.credits}}</td>
+			</tr>
+			<tr>
+				<th>Level</th>
+				<td>{{@module.levelcode}}</td>
+			</tr>
+			<tr>
+				<th>When will the module be taught</th>
+				<td>{{@module.semestername}}</td>
+			</tr>
+			<tr>
+				<th>Contact hours</th>
+				<td>Teaching: {{@kis_contact_hours["Total"]}} Placement: 0 Independant: {{@kis_independant_hours["Total"]}}  Total: {{@kis_contact_hours["Total"] + @kis_independant_hours["Total"]}}</td>
+			</tr>
+			<tr>
+				<th>Where will the module be taught</th>
+				<td>{{@module.campusname}}</td>
+			</tr>
+			<tr>
+				<th>Will any other institution be providing teaching on this module?</th>
+				<td></td>
+			</tr>
+			<tr>
+				<th>Pre-requisite and/or co-requisite modules</th>
+				<td></td>
+			</tr>
+			<tr>
+				<th>Programmes in which the module is core</th>
+				<td></td>
+			</tr>
+			<tr>
+				<th>Programmes in which the module is compulsory</th>
+				<td></td>
+			</tr>
+			<tr>
+				<th>Programmes in which the module is optional</th>
+				<td></td>
+			</tr>
+			<tr>
+				<th>Subject specific elective</th>
+				<td></td>
+			</tr>
+			<tr>
+				<th>Free elective</th>
+				<td></td>
+			</tr>
+			<tr>
+				<th>Capped number of places restriction</th>
+				<td></td>
+			</tr>
+			<tr>
+				<th>Date of approval by Faculty Programme Committee:</th>
+				<td></td>
+			</tr>
+		</tbody>
+	</table>
+	
+	<h2>Module overview</h2>
+	{{@syllabus.introduction}}
+
+	<h2>Aims and learning outcomes</h2>
+
+	<check if="{{count(@syllabus->ownItemisedlearningoutcomes) > 0}}">
+                <true>
+                	<include href="itemisedlearningoutcomes.htm" />
+                </true>
+                <false>
+                        <F3:check if="{{@syllabus->learningoutcomes}}">
+                                <F3:true>
+                                	{{@syllabus.learningoutcomes}}
+                                </F3:true>
+                        </F3:check>
+                </false>
+	</check>
+
+	<h2>Graduate Attributes</h2>
+
+	<ul>
+	<repeat group="{{@syllabus->ownGraduateattributes}}" value="{{@attribute}}">
+		<li>{{ @getConstant( @syllabus, @attribute->graduateattributes ) }}</li>
+	</repeat>
+	</ul>
+
+
+	<h2>Summary of syllabus content</h2>
+
+	{{@syllabus.topics}}
+
+	<div class="teaching-activities">
+		<h2>Summary of teaching and learning methods</h2>
+
+		<F3:repeat group="{{@syllabus->ownRegularteaching}}" value="{{@activity}}">
+			<div class="teaching-activity">
+				<div class="type"><span class="label">Type:</span> {{@getConstant(@syllabus, @activity->activitytype)}}</div>
+				<div class="duration"><span class="label">Hours per semester:</span> {{@activity->studenthours}}</div>
+				<div class="group-size"><span class="label">Group Size:</span> {{@activity->groupsize}}</div>
+				<div class="teaching-description"><span class="label">Description:</span> {{@activity->teachingdescription}}</div>
+
+			</div>
+		</F3:repeat>
+	</div>
+
+	<h2>Summary of assessment and Feedback methods</h2>
+
+	<table class="assessment">
+		<tbody>
+			<tr>
+				<th>Assessment Method</th>
+				<th>Number</th>
+				<th>% contribution to final mark</th>
+				<th>Final assessment (&#10004;)</th>
+			</tr>
+                        <F3:repeat group="{{@syllabus->ownContinuousassessment}}" value="{{@assessment}}">
+				<tr>
+					<td>{{@assessment->description}}</td>
+					<td></td>
+					<td>{{@assessment->percent}}%</td>
+					<td></td>
+				</tr>
+                        </F3:repeat>
+                        <F3:repeat group="{{@syllabus->ownExam}}" value="{{@assessment}}">
+				<tr>
+					<td>Exam &nbsp;&nbsp;&nbsp;&nbsp;{{@assessment->description}}</td>
+					<td></td>
+					<td>{{@assessment->percent}}%</td>
+					<td></td>
+				</tr>
+                        </F3:repeat>
+		</tbody>
+	</table>
+
+
+
+	<div class="special-features">
+		<h2>Special Features</h2>
+		{{@syllabus->specialfeatures}}
+
+	</div>
+
+	<F3:check if="{{count(@syllabus->ownResources) > 0}}">
+		<F3:true>
+			<div class="learning-resources">
+				<h2>Learning Resources</h2>
+
+				<F3:repeat group="{{@syllabus->ownResources}}" value="{{@resource}}">
+					<div class="resource">
+						<div class="type"><span class="label">Resource type:</span> {{@getConstant(@syllabus, @resource->type)}}</div>
+						<F3:check if="{{@resource->isbn}}">
+							<div class="isbn"><span class="label">ISBN:</span> {{@resource->isbn}}</div>
+						</F3:check>
+						<div class="details">{{@resource->details}}</div>
+					</div>
+				</F3:repeat>
+			</div>
+		</F3:true>
+	</F3:check>
+
+	<div class="health-and-safety">
+		<h2>Health and Safety</h2>
+		{{@syllabus->healthandsafety}}
+	</div>
+
+	<div class="cost-implications">
+		<h2>Cost Implications</h2>
+		{{@syllabus->costimplications}}
+
+	</div>
+
+	<div class="kis-contact-hours" style="padding-bottom:10px">
+		<h2>Appendix: KIS hours</h2>
+	<table>
+	<tbody>
+		<tr><th>Contact hours for Teaching:</th><td>Hours</td></tr>
+		<F3:repeat group="{{@kis_contact_hours}}" key="{{@row_title}}" value="{{@row_value}}">
+			<tr><th>{{@row_title}}</th><td>{{@row_value}}</td></tr>
+		</F3:repeat>
+	</tbody>
+	</table>
+	</div>
+	
+
+	<div class="kis-independant-hours">
+	<table>
+	<tbody>
+		<tr><th>Independent study</th><td>Hours</td></tr>
+		<F3:repeat group="{{@kis_independant_hours}}" key="{{@row_title}}" value="{{@row_value}}">
+			<tr><th>{{@row_title}}</th><td>{{@row_value}}</td></tr>
+		</F3:repeat>
+	</tbody>
+	</table>
+	</div>
+</div>

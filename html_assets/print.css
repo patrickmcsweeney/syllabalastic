@@ -27,8 +27,14 @@ body {
 
 .print-logo {
         display:block;
-        float:right;
         width: 6cm;
+	float:right;
         padding-right: 2cm;
 
+}
+
+h1 {
+	border-bottom: 3px solid #cccccc;
+	font-family: "Lucinda Sans", sans-serif;
+	clear:both;
 }
