@@ -377,7 +377,7 @@ function view_module_profile($f3)
 	$kis_contact_hours["Seminars (including sessions with outside speakers)"] = 0;
 	$kis_contact_hours["Tutorials"] = 0;
 	$kis_contact_hours["Practical Classes and Workshops (including Boat work)"] = 0;
-	$kis_contact_hours["Project Supervision"] = 0;
+	$kis_contact_hours["Project supervision"] = 0;
 	$kis_contact_hours["Fieldwork"] = 0;
 	$kis_contact_hours["Demonstration Sessions"] = 0;
 	$kis_contact_hours["Supervised time in studios/workshops/laboratories"] = 0;
@@ -394,8 +394,11 @@ function view_module_profile($f3)
 		elseif($type == "Tutorial"){ $key = "Tutorials"; }
 		elseif($type == "Computer Lab"){ $key = "Supervised time in studios/workshops/laboratories"; }
 		else{	$key = $type; }
-		$kis_contact_hours[$key] += $teaching->studenthours;	
-		$kis_contact_hours["Total"] += $teaching->studenthours;
+		if(array_key_exists($key, $kis_contact_hours))
+		{
+			$kis_contact_hours[$key] += $teaching->studenthours;	
+			$kis_contact_hours["Total"] += $teaching->studenthours;
+		}
 	}	
 	$f3->set("kis_contact_hours", $kis_contact_hours);
 	
