@@ -421,7 +421,7 @@ function view_module_profile($f3)
 	{
 		// 140 not 150 because there should be at least 10 hours of independant study left at the end
 		$remaining_time = 140 - ( $total + $kis_contact_hours["Total"] ) ;
-		$assessment_hours = floor($assessment->percent*($remaining_time/100));
+		$assessment_hours = floor((intval(preg_replace('/[^0-9]*/', "", $assessment->percent))/100)*$remaining_time);
 		$kis_independant_hours["Completion of assessment task"] += $assessment_hours;
 		$total +=  $assessment_hours;
 	}
