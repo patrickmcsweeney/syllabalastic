@@ -254,3 +254,35 @@ table.changelog td {
 	float:right;
 	margin-top: -2em;
 }
+
+.module-profile table {
+	border-spacing: 0;
+	width:100%;
+}
+
+.module-profile table td, .module-profile table th {
+	border: 1px solid black;
+	font-weight: normal;
+	text-align: left;
+	margin:0;
+}
+
+.module-profile table th {
+	width: 33%;
+}
+
+.module-profile {
+        font-family: "Lucida Sans", sans-serif;
+}
+
+.module-profile h2 {
+        border-bottom: 3px solid #CCCCCC;
+}
+
+.assessment .percent, .assessment .final, .assessment .number {
+	width: 10%;
+}        
+
+.module-profile table.assessment th {
+	font-weight: bold;
+}
