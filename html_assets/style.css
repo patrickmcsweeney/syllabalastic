@@ -278,4 +278,11 @@ table.changelog td {
 .module-profile h2 {
         border-bottom: 3px solid #CCCCCC;
 }
-         
+
+.assessment .percent, .assessment .final, .assessment .number {
+	width: 10%;
+}        
+
+.module-profile table.assessment th {
+	font-weight: bold;
+}

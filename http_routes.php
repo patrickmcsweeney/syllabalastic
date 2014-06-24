@@ -416,6 +416,15 @@ function view_module_profile($f3)
 		$kis_independant_hours["Completion of assessment task"] += $exam->examduration;
 		$total +=  $revision_per_exam + $exam->examduration;
 	}
+
+	foreach($syllabus->ownContinuousassessment as $assessment)
+	{
+		// 140 not 150 because there should be at least 10 hours of independant study left at the end
+		$remaining_time = 140 - ( $total + $kis_contact_hours["Total"] ) ;
+		$assessment_hours = floor($assessment->percent*($remaining_time/100));
+		$kis_independant_hours["Completion of assessment task"] += $assessment_hours;
+		$total +=  $assessment_hours;
+	}
 	$kis_independant_hours["Wider reading or practice"] = 150 - ( $total + $kis_contact_hours["Total"] ) ;
 	$total += $kis_independant_hours["Wider reading or practice"];
 	$kis_independant_hours["Total"] = $total;

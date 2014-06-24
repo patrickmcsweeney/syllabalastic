@@ -1,4 +1,5 @@
 <div class="module-profile">
+	<p><em>If this document is inaccurate please contact the FPSE CQA team at fpse-cqa@soton.ac.uk</em></p>
 	<table>
 		<tbody>
 			<tr>
@@ -69,19 +70,53 @@
 			</tr>
 			<tr>
 				<th>Pre-requisite and/or co-requisite modules</th>
-				<td></td>
+				<td>
+					<check if="{{ file_exists('templates/prerequisites/'. @module->code .'.html') }}">
+						<include href="{{'prerequisites/'.@module->code.'.html'}}" />
+					</check>
+				</td>
 			</tr>
 			<tr>
 				<th>Programmes in which the module is core</th>
-				<td></td>
+				<td>
+					<F3:repeat group="{{ @syllabus->module->ownModulemajorrelation }}" value="{{@relation}}">
+						<check if="{{@relation->type == 'Core'}}">
+							{{ @relation->major->title }}
+							<check if="{{ @relation->yearofstudy <=5 }}">
+								(year {{ @relation->yearofstudy }})
+							</check>
+							<br />
+						</check>
+					</F3:repeat>
+				</td>
 			</tr>
 			<tr>
 				<th>Programmes in which the module is compulsory</th>
-				<td></td>
+				<td>
+					<F3:repeat group="{{ @syllabus->module->ownModulemajorrelation }}" value="{{@relation}}">
+						<check if="{{@relation->type == 'Compulsory'}}">
+							{{ @relation->major->title }}
+							<check if="{{ @relation->yearofstudy <=5 }}">
+								(year {{ @relation->yearofstudy }})
+							</check>
+							<br />
+						</check>
+					</F3:repeat>
+				</td>
 			</tr>
 			<tr>
 				<th>Programmes in which the module is optional</th>
-				<td></td>
+				<td>
+					<F3:repeat group="{{ @syllabus->module->ownModulemajorrelation }}" value="{{@relation}}">
+						<check if="{{@relation->type == 'Option'}}">
+							{{ @relation->major->title }}
+							<check if="{{ @relation->yearofstudy <=5 }}">
+								(year {{ @relation->yearofstudy }})
+							</check>
+							<br />
+						</check>
+					</F3:repeat>
+				</td>
 			</tr>
 			<tr>
 				<th>Subject specific elective</th>
@@ -97,7 +132,7 @@
 			</tr>
 			<tr>
 				<th>Date of approval by Faculty Programme Committee:</th>
-				<td></td>
+				<td>{{date("jS M Y - g:ia",@syllabus->timeapproved)}}</td>
 			</tr>
 		</tbody>
 	</table>
@@ -122,11 +157,18 @@
 
 	<h2>Graduate Attributes</h2>
 
-	<ul>
-	<repeat group="{{@syllabus->ownGraduateattributes}}" value="{{@attribute}}">
-		<li>{{ @getConstant( @syllabus, @attribute->graduateattributes ) }}</li>
-	</repeat>
-	</ul>
+	<p>Graduate Attributes are the personal qualities, skills and understandings that University of Southampton students have the opportunity to develop. They include but extend beyond subject-specific knowledge of an academic discipline and its technical proficiencies. The Graduate Attributes are achieved through the successful attainment of the learning outcomes of the programmes, and successful engagement with the University’s co-curriculum e.g. the Graduate Passport.</p>
+
+	<p>A checklist for embedding the graduate attributes is available at: <a href="https://sharepoint.soton.ac.uk/sites/ese/quality_handbook/Handbook/Employability%20Statement.aspx">https://sharepoint.soton.ac.uk/sites/ese/quality_handbook/Handbook/Employability%20Statement.aspx</a></p>
+
+	<check if="{{count(@syllabus->ownGraduateattributes) > 0}}"> 
+		<p>This module develops the following graduate attributes:</p>
+		<ul>
+		<repeat group="{{@syllabus->ownGraduateattributes}}" value="{{@attribute}}">
+			<li>{{ @getConstant( @syllabus, @attribute->graduateattributes ) }}</li>
+		</repeat>
+		</ul>
+	</check>
 
 
 	<h2>Summary of syllabus content</h2>
@@ -153,24 +195,27 @@
 		<tbody>
 			<tr>
 				<th>Assessment Method</th>
-				<th>Number</th>
-				<th>% contribution to final mark</th>
-				<th>Final assessment (&#10004;)</th>
+				<th class="number">Number</th>
+				<th class="percent">% contribution to final mark</th>
+				<th class="final">Final assessment (&#10004;)</th>
+				<th class="feedback">Feedback Method</th>
 			</tr>
                         <F3:repeat group="{{@syllabus->ownContinuousassessment}}" value="{{@assessment}}">
 				<tr>
 					<td>{{@assessment->description}}</td>
-					<td></td>
-					<td>{{@assessment->percent}}%</td>
-					<td></td>
+					<td class="number"></td>
+					<td class="percent">{{@assessment->percent}}%</td>
+					<td class="final"></td>
+					<td class="feedback">{{@assessment->feedback}}</td>
 				</tr>
                         </F3:repeat>
                         <F3:repeat group="{{@syllabus->ownExam}}" value="{{@assessment}}">
 				<tr>
 					<td>Exam &nbsp;&nbsp;&nbsp;&nbsp;{{@assessment->description}}</td>
-					<td></td>
-					<td>{{@assessment->percent}}%</td>
-					<td></td>
+					<td class="number"></td>
+					<td class="percent">{{@assessment->percent}}%</td>
+					<td class="final"></td>
+					<td class="feedback"></td>
 				</tr>
                         </F3:repeat>
 		</tbody>
@@ -213,6 +258,7 @@
 
 	</div>
 
+	<p style="page-break-after:always;"><!-- this --></p>
 	<div class="kis-contact-hours" style="padding-bottom:10px">
 		<h2>Appendix: KIS hours</h2>
 	<table>
