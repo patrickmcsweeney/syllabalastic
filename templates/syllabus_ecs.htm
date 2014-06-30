@@ -23,7 +23,7 @@
 	{{@syllabus->introduction}}
 	<h4>Module Details</h4>
 	<p class="col1"><strong>Title:</strong> {{@module->title}}<br><strong>Code:</strong> {{@module->code}}<br></p>
-	<p class="col2"><strong>Credits:</strong> {{@module->credits}}<br><strong>Taught in:</strong> {{@module->semestername}}<br></p>
+	<p class="col2"><strong>Credits:</strong> {{@module->credits/2}} ECTS credits<br><strong>Taught in:</strong> {{@module->semestername}}<br></p>
 	
 	<check if="{{ file_exists('templates/prerequisites/'. @module->code .'.html') }}">
 		<include href="{{'prerequisites/'.@module->code.'.html'}}" />
