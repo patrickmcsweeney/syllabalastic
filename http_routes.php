@@ -522,13 +522,14 @@ function php_module($f3)
 		echo("This module does not exists");
 		exit;
 	}
-	if( ! $existing_module->ownSyllabus )
+	if( $existing_module->getProvisional() )
 	{
-		echo("This module has no syllabus");
-		exit;
-
+		$syllabus = $existing_module->getProvisional();
+	}else
+	{
+		$syllabus = $existing_module->getCurrent();
 	}
-	$syllabus = $existing_module->getCurrent();
+
 	if(!$syllabus)
 	{
 		echo("This syllabus does not exist");
