@@ -58,6 +58,7 @@ class Model_Syllabus extends RedBean_SimpleModel {
 		''=>'',
 		'core'=>"Core textbook",
 		'background'=>"Background textbook",
+		'journals'=>"Journals",
 		'otherlib'=>"Other library support required",
 		'staff'=>"Staff requirements (including teaching assistants and demonstrators)",
 		'teachingspace'=>"Teaching space, layout and equipment required",
@@ -375,7 +376,7 @@ class Model_Syllabus extends RedBean_SimpleModel {
 		$s2->add( "HTML", array( 
 			"layout" => "section",
 			"id" => "introduction", # TODO change field name
-			"title" => "1.1 Introduction",
+			"title" => "1.1 Module overview",
 			"rows" => 10,
 			"description" => "
 	This section should be used to give a summary of the syllabus, its aims, and (for core / compulsory modules) how it fits in with the programme as a whole or (for optional modules) why students might choose to take it. You can also give a general indication of pre-requisite knowledge and skills which are assumed.
@@ -424,19 +425,20 @@ class Model_Syllabus extends RedBean_SimpleModel {
     <p>All other learning outcomes should be written as verb phrases (for
     example, 'compare different narrative modes').</p>
 "));
+		$s2->add("MULTICHOICE", array(
+			"id" => "graduateattributes",
+			"title"=>"1.3 Graduate Attributes",
+			"choices" => $this->GRADUATE_ATTRIBUTES,
+			"description_html" => "Graduate Attributes are the personal qualities, skills and understandings that extend beyond subject specific knowledge. <a target='_blank' href='https://sharepoint.soton.ac.uk/sites/ese/quality_handbook/Handbook/Employability%20Statement.aspx'>Find out more about graduate attributes</a>.",
+		));
+
 		$s2->add( "HTML", array( 
 			"layout" => "section",
 			"id" => "topics", # TODO change field name
 			"rows" => 10,
-			"title" => "1.3 Topics",
+			"title" => "1.4 Summary of syllabus content",
 			"description" => "A summary of contents covered, perhaps 10 to 20 bullet points." ) );
 
-		$s2->add("MULTICHOICE", array(
-			"id" => "graduateattributes",
-			"title"=>"1.4 Graduate Attributes",
-			"choices" => $this->GRADUATE_ATTRIBUTES,
-			"description_html" => "Graduate Attributes are the personal qualities, skills and understandings that extend beyond subject specific knowledge. <a href='https://sharepoint.soton.ac.uk/sites/ese/quality_handbook/Handbook/Employability%20Statement.aspx'>Find out more about graduate attributes</a>.",
-		));
 
 
 		### Assessment
@@ -448,7 +450,7 @@ class Model_Syllabus extends RedBean_SimpleModel {
 		$reg_combo = $s1->add( "LIST", array( 
 			"id" => "regularteaching",
 			"layout" => "section",
-			"title" => "2.1 Scheduled Teaching Activities",
+			"title" => "2.1 Summary of teaching and learning methods",
 			"description" => "This section allows you to provide data for timetabling purposes and key information sets. For each scheduled activity, please indicate the nature of the activity, its duration, and its frequency (ie the number of sessions).  If the class divides into groups for this activity, please give the (maximum) group size; in this case, the frequency should be given from the student perspective. Otherwise, leave this field blank. ") )->setListType( "COMBO" );
 		$reg_combo->add( "CHOICE", array(
 			"id" => "activitytype",
@@ -483,7 +485,7 @@ class Model_Syllabus extends RedBean_SimpleModel {
 		$exam_combo = $s1->add( "LIST", array( 
 			"id" => "exam",
 			"layout" => "section",
-			"title" => "2.2 Examination",
+			"title" => "2.2 Examination method",
 			"description_html" => "
 	This section is required for key information sets. Note that the total percentages across examination and other assessment activities (below) should add up to 100. For an exam, give the planned duration. </i>
 	" ) )->setListType( "COMBO", array( "layout" ));
@@ -502,7 +504,7 @@ class Model_Syllabus extends RedBean_SimpleModel {
 		$ass_combo = $s1->add( "LIST", array( 
 			"id" => "continuousassessment",
 			"layout" => "section",
-			"title" => "2.2 Other Assessment",
+			"title" => "2.2 Other assessment method",
 			"description_html" => "
 	This section allows you to provide data for student workload monitoring, and key information sets. Note that the total percentages across all assessment activities and examination (above) should add up to 100. Please indicate the week or weeks of the semester assessment is planed to occur. Week 1 is the start of teaching, and week 12 is the last week before exams, which is typically reserved for revision. Note that assignment deadlines should therefore not occur during weeks 12 to 15.  Finally, indicate when and how you will provide feedback on assignments -- for example, you might state that <i>after 2 weeks individual feedback sheets will be returned, and a generic feedback will be provided in-class.</i>
 	" ) )->setListType( "COMBO", array( "layout" ));
@@ -538,6 +540,7 @@ class Model_Syllabus extends RedBean_SimpleModel {
 			"id" => "referral",
 			"layout" => "section",
 			"title" => "2.3 Referral Policy",
+			"surround"=>"floraform/component_surround.htm",
 			"description" => "
 	Each syllabus must have a defined referral policy, which must apply to all students who refer.
 	University policy requires that failure should be redeemable, so students need an opportunity to correct any failure (typically during the summer break, but possibly also within the academic year itself, or if neither of these is possible, then the following year).
@@ -560,6 +563,15 @@ class Model_Syllabus extends RedBean_SimpleModel {
 			"title" => "2.5 Timetabling Requirements",
 			"description" => "
 	If there are special timetabling requirements, for example, a specific venue or specialist facilities are needed, please indicate these in this field.  This information is provided to the Central Timetabling Unit, and is not visible to students.
+	",
+			"layout" => "section",
+		));
+
+		$s1->add( "HTML", array( 
+			"id" => "specialfeatures",
+			"title" => "2.6 Special Features",
+			"description" => "
+		State anything which makes this module special which students should be aware of when choosing it.
 	",
 			"layout" => "section",
 		));
@@ -647,18 +659,10 @@ class Model_Syllabus extends RedBean_SimpleModel {
 		$s4 = $form->add( "SECTION", array(
 			"title" => "4. Additional Information",
 			));
-		$s4->add( "HTML", array( 
-			"id" => "specialfeatures",
-			"title" => "4.1 Special Features",
-			"description" => "
-		State anything which makes this module special which students should be aware of when choosing it.
-	",
-			"layout" => "section",
-		));
 
 		$s4->add( "HTML", array( 
 			"id" => "costimplications",
-			"title" => "4.2 Cost Implications",
+			"title" => "4.1 Cost Implications",
 			"description" => "
 		Please list any cost implications to the student which are not covered by their tuition fees.
 	",
