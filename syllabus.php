@@ -88,6 +88,7 @@ class Model_Syllabus extends RedBean_SimpleModel {
 	);
 	public $OUTCOME_TYPES = array(
 		""=>"",
+		"aim"=>"Aim",
 		"knowledge"=>"Knowledge and Understanding",
     		"subjectintelectual"=>"Subject Specific Intellectual",
     		"transferable"=>"Transferable and Generic",
