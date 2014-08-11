@@ -1,0 +1,23 @@
+<table>
+	<tbody>
+		<tr>
+			<th>Assessment Method</th>
+			<th>Hours</th>
+			<th>% contribution to final mark</th>
+		</tr>
+		<F3:repeat group="{{@syllabus->ownRegularteaching}}" value="{{@activity}}">
+			<tr>
+				<td>{{@activity->teachingdescription}}</td>
+				<td>{{@activity->studenthours}}</td>
+				<td>{{@activity->percent}}%</td>
+			</tr>
+		</F3:repeat>
+		<F3:repeat group="{{@syllabus->ownExam}}" value="{{@assessment}}">
+			<tr>
+				<td>Exam</td>
+				<td>{{@assessment->examduration}} hour(s)</td>
+				<td>{{@assessment->percent}}%</td>
+			</tr>
+		</F3:repeat>
+	</tbody>
+</table>

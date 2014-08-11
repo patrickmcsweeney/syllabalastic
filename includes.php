@@ -43,7 +43,7 @@ if($f3->get('api_key')) {
 $REVIEWERS = array(
         "pm5c08" => array(
 		'module' => array(
-			'facultycode' => array("F7", "wf", "fp"),
+			'facultycode' => array( "F2", "F7", "wf", "fp"),
 			'departmentcode' => array("FP", "JF")
 #			'themecode' => array(),
 #			'code' => array()

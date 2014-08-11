@@ -29,7 +29,7 @@ while( $line = fgets($file) )
 	$info[$line[0]][$line[10]]["semestercode"] = $line[17];
 	$info[$line[0]][$line[10]]["semestername"] = $line[18];
 	$info[$line[0]][$line[10]]["levelcode"] = $line[35];
-	$info[$line[0]][$line[10]]["credits"] = $line[19];
+	$info[$line[0]][$line[10]]["credits"] = $line[19]/2;
 	if($staff_id = trim($line[29]))
 	{
 		$info[$line[0]][$line[10]]["people"][$staff_id] = 1;

@@ -707,4 +707,72 @@ class Model_Syllabus extends RedBean_SimpleModel {
 		if( !$current ) { return false; }
 		return ( $this->id == $current->id );
 	}
+
+	function kisContactHours()
+	{
+		$kis_contact_hours = array();
+		$kis_contact_hours["Lectures"] = 0;
+		$kis_contact_hours["Seminars (including sessions with outside speakers)"] = 0;
+		$kis_contact_hours["Tutorials"] = 0;
+		$kis_contact_hours["Practical Classes and Workshops (including Boat work)"] = 0;
+		$kis_contact_hours["Project supervision"] = 0;
+		$kis_contact_hours["Fieldwork"] = 0;
+		$kis_contact_hours["Demonstration Sessions"] = 0;
+		$kis_contact_hours["Supervised time in studios/workshops/laboratories"] = 0;
+		$kis_contact_hours["External Visits"] = 0;
+		$kis_contact_hours["Summer Workshops"] = 0;
+		$kis_contact_hours["Work Based Learning"] = 0;
+		$kis_contact_hours["Total"] = 0;
+
+		foreach($this->ownRegularteaching as $teaching)
+		{
+			$type = $this->getConstant($teaching->activitytype);
+			$key = "";
+			if($type == "Lecture"){ $key = "Lectures"; }
+			elseif($type == "Tutorial"){ $key = "Tutorials"; }
+			elseif($type == "Computer Lab"){ $key = "Supervised time in studios/workshops/laboratories"; }
+			else{   $key = $type; }
+			if(array_key_exists($key, $kis_contact_hours))
+			{
+				$kis_contact_hours[$key] += $teaching->studenthours;
+				$kis_contact_hours["Total"] += $teaching->studenthours;
+			}
+		}
+		return $kis_contact_hours;
+	}
+	
+	function kisIndependantHours()
+	{
+		$total = 0;
+		$kis_contact_hours = $this->kisContactHours();
+		$kis_independant_hours = array();
+		$kis_independant_hours["Preparation for scheduled sessions"] = $kis_contact_hours["Lectures"]/2;
+		$kis_independant_hours["Follow-up work"] = $kis_contact_hours["Lectures"]/2;
+
+		$kis_independant_hours["Revision"] = 0;
+		$total += $kis_contact_hours["Lectures"];
+		$kis_independant_hours["Wider reading or practice"] = 0; 
+		$kis_independant_hours["Completion of assessment task"] = 0;
+
+		$revision_per_exam = 10;
+		foreach($this->ownExam as $exam)
+		{
+			$kis_independant_hours["Revision"] += $revision_per_exam;
+			$kis_independant_hours["Completion of assessment task"] += $exam->examduration;
+			$total +=  $revision_per_exam + $exam->examduration;
+		}
+
+		foreach($this->ownContinuousassessment as $assessment)
+		{
+			// 140 not 150 because there should be at least 10 hours of independant study left at the end
+			$remaining_time = 140 - ( $total + $kis_contact_hours["Total"] ) ;
+			$assessment_hours = floor((intval(preg_replace('/[^0-9]*/', "", $assessment->percent))/100)*$remaining_time);
+			$kis_independant_hours["Completion of assessment task"] += $assessment_hours;
+			$total +=  $assessment_hours;
+		}
+		$kis_independant_hours["Wider reading or practice"] = 150 - ( $total + $kis_contact_hours["Total"] ) ;
+		$total += $kis_independant_hours["Wider reading or practice"];
+		$kis_independant_hours["Total"] = $total;
+		return $kis_independant_hours;
+	}
 }

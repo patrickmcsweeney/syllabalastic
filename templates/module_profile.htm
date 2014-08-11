@@ -264,7 +264,7 @@
 	<table>
 	<tbody>
 		<tr><th>Contact hours for Teaching:</th><td>Hours</td></tr>
-		<F3:repeat group="{{@kis_contact_hours}}" key="{{@row_title}}" value="{{@row_value}}">
+		<F3:repeat group="{{@syllabus->kisContactHours()}}" key="{{@row_title}}" value="{{@row_value}}">
 			<tr><th>{{@row_title}}</th><td>{{@row_value}}</td></tr>
 		</F3:repeat>
 	</tbody>

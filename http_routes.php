@@ -372,67 +372,10 @@ function view_module_profile($f3)
 	$first_occurence = R::findOne("module", " code = ? ORDER BY session ASC ", array($module->code) );
 	$f3->set("firstoccurence", $first_occurence->session);
 
-	$kis_contact_hours = array();
-	$kis_contact_hours["Lectures"] = 0;
-	$kis_contact_hours["Seminars (including sessions with outside speakers)"] = 0;
-	$kis_contact_hours["Tutorials"] = 0;
-	$kis_contact_hours["Practical Classes and Workshops (including Boat work)"] = 0;
-	$kis_contact_hours["Project supervision"] = 0;
-	$kis_contact_hours["Fieldwork"] = 0;
-	$kis_contact_hours["Demonstration Sessions"] = 0;
-	$kis_contact_hours["Supervised time in studios/workshops/laboratories"] = 0;
-	$kis_contact_hours["External Visits"] = 0;
-	$kis_contact_hours["Summer Workshops"] = 0;
-	$kis_contact_hours["Work Based Learning"] = 0;
-	$kis_contact_hours["Total"] = 0;
+	$kis_contact_hours =  $syllabus->kisContactHours();
+	$f3->set("kis_contact_hours", $syllabus->kisContactHours());
 	
-	foreach($syllabus->ownRegularteaching as $teaching)
-	{
-		$type = $syllabus->getConstant($teaching->activitytype);
-		$key = "";
-		if($type == "Lecture"){ $key = "Lectures"; }
-		elseif($type == "Tutorial"){ $key = "Tutorials"; }
-		elseif($type == "Computer Lab"){ $key = "Supervised time in studios/workshops/laboratories"; }
-		else{	$key = $type; }
-		if(array_key_exists($key, $kis_contact_hours))
-		{
-			$kis_contact_hours[$key] += $teaching->studenthours;	
-			$kis_contact_hours["Total"] += $teaching->studenthours;
-		}
-	}	
-	$f3->set("kis_contact_hours", $kis_contact_hours);
-	
-	$total = 0;
-	$kis_independant_hours = array();
-	$kis_independant_hours["Preparation for scheduled sessions"] = $kis_contact_hours["Lectures"]/2;
-	$kis_independant_hours["Follow-up work"] = $kis_contact_hours["Lectures"]/2;
-
-	$kis_independant_hours["Revision"] = 0;
-	$total += $kis_contact_hours["Lectures"];
-	$kis_independant_hours["Wider reading or practice"] = 0; 
-	$kis_independant_hours["Completion of assessment task"] = 0;
-
-	$revision_per_exam = 10;
-	foreach($syllabus->ownExam as $exam)
-	{
-		$kis_independant_hours["Revision"] += $revision_per_exam;
-		$kis_independant_hours["Completion of assessment task"] += $exam->examduration;
-		$total +=  $revision_per_exam + $exam->examduration;
-	}
-
-	foreach($syllabus->ownContinuousassessment as $assessment)
-	{
-		// 140 not 150 because there should be at least 10 hours of independant study left at the end
-		$remaining_time = 140 - ( $total + $kis_contact_hours["Total"] ) ;
-		$assessment_hours = floor((intval(preg_replace('/[^0-9]*/', "", $assessment->percent))/100)*$remaining_time);
-		$kis_independant_hours["Completion of assessment task"] += $assessment_hours;
-		$total +=  $assessment_hours;
-	}
-	$kis_independant_hours["Wider reading or practice"] = 150 - ( $total + $kis_contact_hours["Total"] ) ;
-	$total += $kis_independant_hours["Wider reading or practice"];
-	$kis_independant_hours["Total"] = $total;
-
-	$f3->set("kis_independant_hours", $kis_independant_hours);
+	$f3->set("kis_independant_hours", $syllabus->kisIndependantHours());
 	
 	$templates = array();
 	$templates[] = 'module_profile.htm';
@@ -511,6 +454,67 @@ function ecs_syllabus($f3)
 	$alias = "module/".$existing_module->code;
 	$module = array("title"=>$title, "body"=>$content, "alias"=>$alias, "status"=>"200");
 	echo json_encode($module);
+}
+
+#returns nice digestible xml for site publisher
+function site_publisher_module($f3)
+{
+	$existing_module = R::findOne("module", " currentsyllabus_id is not null AND code = ? order by session desc ", array( $f3->get("PARAMS.modulecode") ) );
+		
+	if(!isset($existing_module))
+	{
+		$f3->error(404, "No module with this code found");
+		return;
+	}
+	$syllabus = $existing_module->getCurrent();
+	if(!$syllabus)
+	{
+		$f3->error( 404, "This syllabus id does not exist");
+		return;
+	}
+
+	header( "content-type: application/xml; charset=utf-8" );
+
+	$xml = new DOMDocument( "1.0", "utf-8" );
+
+	$xml_module = $xml->createElement( "Module" );
+	$xml_module->setAttribute("manuallyUpdated", "no");
+	$xml->appendChild($xml_module);
+	$xml_module->appendChild($xml->createElement("Current", "yes"));
+	$xml_module->appendChild($xml->createElement("Code", $existing_module->code));
+	$xml_module->appendChild($xml->createElement("Title", $existing_module->title));
+	if($existing_module->modulemajorrelation)
+	{
+		$xml_module->appendChild($xml->createElement("CourseYear", $existing_module->ownModulemajorrelation[0]->yearofstudy));
+	}
+	$xml_module->appendChild($xml->createElement("Semester", $existing_module->semestername));
+	$xml_module->appendChild($xml->createElement("CreditRating", $existing_module->credits*2));
+	
+	$levels = array("UG"=>"Undergraduate", "PR"=>"Postgraduate Research", "PC" => "Postgraduate Taught");
+	$level = @$levels[$existing_module->levelcode];
+	$xml_module->appendChild($xml->createElement("Level", $level));
+	$contact = $syllabus->kisContactHours();
+	$xml_module->appendChild($xml->createElement("ContactHours", $contact["Total"]));
+	$independant = $syllabus->kisIndependantHours();
+	$xml_module->appendChild($xml->createElement("NonContactHours", $independant["Total"]));
+
+	$xml_module->appendChild($xml->createElement("Description", $syllabus->introduction));
+	$xml_module->appendChild($xml->createElement("Overview", $syllabus->introduction));
+
+	$f3->set("syllabus", $syllabus);
+	$assessment = Template::instance()->render("assessment.htm");
+	$xml_module->appendChild($xml->createElement("Assessment", $assessment));
+
+	$aims = Template::instance()->render("itemisedlearningoutcomes.htm");
+	$xml_module->appendChild($xml->createElement("AimsAndObjectives", $aims));
+	$xml_module->appendChild($xml->createElement("Syllabus", $syllabus->topics));
+	$xml_module->appendChild($xml->createElement("SpecialFeatures", $syllabus->specialfeatures));
+	$resources = Template::instance()->render("resources.htm");
+	$xml_module->appendChild($xml->createElement("Resources", $resources));
+	
+	$output = $xml->saveXML();
+
+	echo preg_replace('/&rsquo;/', "'" ,$output);
 }
 
 function php_module($f3)
