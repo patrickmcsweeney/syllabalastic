@@ -329,7 +329,13 @@ function view_syllabus($f3)
 	}else{
 		$templates[] = 'livesyllabus.htm';
 	}
-	$templates[] = 'syllabus.htm';
+	#$templates[] = 'syllabus.htm';
+	$f3->set("kis_contact_hours", $syllabus->kisContactHours());
+	
+	$f3->set("kis_independant_hours", $syllabus->kisIndependantHours());
+	
+$templates[] = 'module_profile.htm';
+	
 
 	$f3->set('templates', $templates);
 	echo Template::instance()->render("main.htm");

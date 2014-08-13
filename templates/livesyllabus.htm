@@ -5,3 +5,26 @@
 
 	<p><a href="/view/modules/{{ @module->session }}">&larr; Return to module list</a> or <a href="/create/syllabus/?modulecode={{@syllabus->module->code}}&session={{@syllabus->module->session}}">Edit this syllabus</a>.</p>
 </div>
+
+<F3:check if="{{@syllabus->iscurrent()}}">
+        <F3:false>
+                <F3:check if="{{@syllabus->isprovisional}}">
+                        <F3:true><article class='provisional'></F3:true>
+                        <F3:false><article class='deprecated'></F3:false>
+                </F3:check>
+                <div class='notice'><strong>THIS IS NOT THE CURRENT VERSION FOR {{@syllabus->module->session}}.</strong>
+                <F3:check if="{{@syllabus->module->getCurrent()}}">
+                        <p>
+                        <F3:true>
+                                <a href='/view/syllabus/{{@syllabus->module->getCurrent()->id}}'>View the current version for {{@syllabus->module->session}}</a>
+                        </F3:true>
+                        <F3:false>
+                                <p>No current version availible.</p>
+                        </F3:false>
+                        or <a href='/history/module/{{ @syllabus->module->code }}'>view the entire history for {{@syllabus->module->code}}</a>.
+                        </p>
+                </F3:check>
+                </div>
+        </F3:false>
+</F3:check>
+
