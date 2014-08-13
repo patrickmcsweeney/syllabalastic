@@ -30,7 +30,7 @@
 			</tr>
 			<tr>
 				<th>Author:</th>
-				<td>{{@author.name}}</td>
+				<td><check if="{{isset(@author)}}">{{@author.name}}</check></td>
 			</tr>
 			<tr>
 				<th>Faculty</th>
@@ -42,7 +42,7 @@
 			</tr>
 			<tr>
 				<th>Academic session first offered</th>
-				<td>{{@firstoccurence}}</td>
+				<td><check if="{{isset(@firstoccurence)}}">{{@firstoccurence}}</check></td>
 			</tr>
 			<tr>
 				<th>Credit Points</th>
