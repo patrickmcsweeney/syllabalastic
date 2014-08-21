@@ -6,7 +6,7 @@
 	<F3:true>
 		<div class="provisional-module">
 			<h2>Provisional Module Information</h3>
-			<div class="credits"><span class="label">Credits:</span> {{@syllabus->module->provisionalcredits}}</div>
+			<div class="credits"><span class="label">ECTS:</span> {{@syllabus->module->provisionalcredits}}</div>
 			<div class="code"><span class="label">Code:</span> {{@syllabus->module->provisionalcode}}</div>
 			<div class="title"><span class="label">Title:</span> {{@syllabus->module->provisionaltitle}}</div>
 			<div class="semester"><span class="label">Semester:</span> {{@syllabus->module->semestername}}</div>
@@ -42,7 +42,7 @@
 	</F3:true>
 	<F3:false>
 		<div class="banner">
-			<div class="credits"><span class="label">Credits:</span> {{@syllabus->module->credits}}</div>
+			<div class="credits"><span class="label">ECTS:</span> {{@syllabus->module->credits}}</div>
 			<div class="semester"><span class="label">Semester:</span> {{@syllabus->module->semestername}}</div>
 		</div>
 		<F3:check if="{{ @syllabus->module->ownModulemajorrelation }}"><F3:true>
