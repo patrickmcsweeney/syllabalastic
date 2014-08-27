@@ -68,7 +68,7 @@
 <F3:check if="{{count(@module->sharedPerson) > 0}}">
 	<F3:true>
 		<div class="people">
-			<h2>Teaching Staff</h2>
+			<h2>Module Lead</h2>
 
 			<ul>
 				<F3:repeat group="{{@module->sharedPerson}}" value="{{@person}}">
@@ -92,7 +92,7 @@
 <check if="{{count(@syllabus->ownItemisedlearningoutcomes) > 0}}">
 		<true>
 			<div class="learning-outcomes">
-				<h2>Learning Outcomes</h2>
+				<h2>Aims and Learning Outcomes</h2>
 				<include href="itemisedlearningoutcomes.htm" />
 			</div>
 		</true>
@@ -122,7 +122,7 @@
 <F3:check if="{{@syllabus->topics}}">
 	<F3:true>
 		<div class="topics-covered">
-			<h2>Topics Covered</h2>
+			<h2>Summary of Syllabus Content</h2>
 			{{@syllabus->topics}}
 		</div>
 	</F3:true>
@@ -154,7 +154,7 @@
 			<F3:repeat group="{{@syllabus->ownExam}}" value="{{@assessment}}">
 				<div class="assessment">
 					<div class="description"><span class="label">Description:</span> Exam</div>
-					<div class="percentage"><span class="label">Mark Percentage:</span> {{@assessment->percent}}</div>
+					<div class="percentage"><span class="label">% contribution to final mark:</span> {{@assessment->percent}}</div>
 					<div class="duration"><span class="label">Exam Duration:</span> {{@assessment->examduration}} hour(s)</div>
 				</div>
 			</F3:repeat>
@@ -170,7 +170,7 @@
 			<F3:repeat group="{{@syllabus->ownContinuousassessment}}" value="{{@assessment}}">
 				<div class="assessment">
 					<div class="description"><span class="label">Description:</span> {{@assessment->description}}</div>
-					<div class="percentage"><span class="label">Mark Percentage:</span> {{@assessment->percent}}</div>
+					<div class="percentage"><span class="label">% contibution to final mark:</span> {{@assessment->percent}}</div>
 					<div class="type"><span class="label">Assessment Type:</span> {{@getConstant(@syllabus,@assessment->type)}}</div>
 					<div class="week-nos"><span class="label">Weeks carried out:</span> {{@assessment->weeknos}}</div>
 					<div class="feedback"><span class="label">Feedback:</span> {{@assessment->feedback}}</div>

@@ -397,9 +397,9 @@ class Model_Syllabus extends RedBean_SimpleModel {
 			"id" => "itemisedlearningoutcomes",
 			"layout" => "section",
 			"min-items" => 5,
-			"title" => "1.2 Learning Outcomes",
+			"title" => "1.2 Aims and Learning Outcomes",
 			"description_html" => '
-<p>This section should be used to list the intended learning outcomes of the syllabus. You can refer to <a href=r"https://sharepoint.soton.ac.uk/sites/ese/quality_handbook/default.aspx">guidance in the quality handbook</a> for advice on these. For a standard 15 credit syllabus, 5 to 8 outcomes should be sufficient. Please do not repeat the list of topics for the syllabus, which are given in the following section.</p>
+<p>This section should be used to list the intended learning outcomes of the syllabus. You can refer to <a href="https://sharepoint.soton.ac.uk/sites/ese/quality_handbook/default.aspx">guidance in the quality handbook</a> for advice on these. For a standard 15 credit syllabus, 5 to 8 outcomes should be sufficient. Please do not repeat the list of topics for the syllabus, which are given in the following section.</p>
 <div class="deprecated">
 <h4>Your previous learning outcomes were</h4>
 '.$this->learningoutcomes.'
