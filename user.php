@@ -70,6 +70,7 @@ class Model_User extends RedBean_SimpleModel {
 	#on login, pull all ldap data through
 	function update_from_ldap_data($ldap_data)
 	{
+		global $department_map;
 		$this->staffid = $ldap_data[0]['employeenumber'][0];
 		$this->username = $ldap_data[0]['name'][0];
 		$this->givenname = $ldap_data[0]['givenname'][0];
@@ -79,7 +80,8 @@ class Model_User extends RedBean_SimpleModel {
 		//$faculty_bits = explode("OU=", $bits[4]); // TODO get an actual list of faculty bits and what faculty to map them to...
 		$this->departmentcode = strtoupper($dept_bits[1]);
 		$this->departmentname = $ldap_data[0]['department'][0];
-			
+		$this->facultycode = $department_map[$this->departmentcode];
+
 		R::store($this);
 	}
 

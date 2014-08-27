@@ -58,25 +58,25 @@ function modules_by_year($f3)
 	$templates = array('year.htm');
 	
 	$user = current_user($f3);
-	$f3->set('userdepartmentcode', $user->departmentcode);
+	$f3->set('userfacultycode', $user->facultycode);
 	#TODO dont hard code the department code...
-	if($f3->exists("REQUEST.allmodules") || !isset($user->departmentcode))
+	if($f3->exists("REQUEST.allmodules") || !isset($user->facultycode))
 	{
 		$modules = R::find('module', "session = ? ORDER BY code", array($f3->get('PARAMS.session')));
 	}else{
 		$templates[] = "seeallmodules.htm";
-		$modules = R::find('module', "session = ? and departmentcode = ? ORDER BY code", array($f3->get('PARAMS.session'), $user->departmentcode));
+		$modules = R::find('module', "session = ? and facultycode = ? ORDER BY code", array($f3->get('PARAMS.session'), $user->facultycode));
 	}
 	
 	$modules_by_faculty = array();
 	foreach($modules as $module)
 	{
-		if(!array_key_exists($module->departmentcode, $modules_by_faculty))
+		if(!array_key_exists($module->facultycode, $modules_by_faculty))
 		{
-			$modules_by_faculty[$module->departmentcode]['name'] = $module->departmentname;
-			$modules_by_faculty[$module->departmentcode]['modules'] = array();
+			$modules_by_faculty[$module->facultycode]['name'] = $module->facultyname;
+			$modules_by_faculty[$module->facultycode]['modules'] = array();
 		}
-		array_push($modules_by_faculty[$module->departmentcode]['modules'], $module);
+		array_push($modules_by_faculty[$module->facultycode]['modules'], $module);
 	}
 
 	$f3->set('modules', $modules_by_faculty);
@@ -983,6 +983,17 @@ function report_current_syllabus_urls($f3)
 	$headings = array("subject code", "course number", "URL", "module title", "creation date");
 	output_csv($data_to_csv, $headings, "syllabus_urls.csv");
 	
+}
+
+function report_module_profiles($f3)
+{
+	header("Pragma: ");
+        header("Cache-Control: ");
+        header('Content-Type: application/octet-stream');
+        header('Content-Transfer-Encoding: Binary');
+        header('Content-disposition: attachment; filename="module_profiles.zip"');
+
+	echo file_get_contents($f3->get("ROOT")."/tmp/moduleprofiles/".$f3->get("PARAMS.faculty")."_module_profiles.zip");
 }
 
 function report_unedited_modules($f3)

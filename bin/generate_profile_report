@@ -12,43 +12,51 @@ if(!is_dir($profile_dir))
 {
 	mkdir($profile_dir);
 }
-foreach($modules as $module)
-{
-	$faculty_dir = $profile_dir."/".$module->facultycode;
-	$profile_file = $faculty_dir."/". $module->code.".pdf";
-	$profile_url = $f3->get("SCHEME")."://syllabus.soton.ac.uk/".$f3->get("BASE")."/pdf/moduleprofile/".$module->code;
-	if(!is_dir($faculty_dir))
-	{
-		mkdir($faculty_dir);
-	}
-	file_put_contents($profile_file, @file_get_contents($profile_url));
-
-}
+#foreach($modules as $module)
+#{
+#	$faculty_dir = $profile_dir."/".$module->facultycode;
+#	$profile_file = $faculty_dir."/". $module->code.".pdf";
+#	$profile_url = $f3->get("SCHEME")."://syllabus.soton.ac.uk/".$f3->get("BASE")."/pdf/moduleprofile/".$module->code;
+#	if(!is_dir($faculty_dir))
+#	{
+#		mkdir($faculty_dir);
+#	}
+#	file_put_contents($profile_file, @file_get_contents($profile_url));
+#
+#}
 
 foreach(scandir($profile_dir) as $faculty_dir)
 {
+	$faculty_path = $profile_dir."/".$faculty_dir;
+	if(!is_dir($faculty_path) || preg_match('#^\.#', $faculty_dir))
+	{
+		continue;
+	}
+	echo $faculty_dir, "\n";
 	$faculty_zip = $profile_dir."/".$faculty_dir."_module_profiles.zip";
 	$zip = new ZipArchive;
-	if(file_exists($faculty_zip)
+	if(file_exists($faculty_zip))
 	{
 		unlink($faculty_zip);
 	}
 	$zip->open( $faculty_zip, ZipArchive::CREATE );
 
-	// Initialize empty "delete list"
-
 	// Create recursive directory iterator
 	$files = new RecursiveIteratorIterator(
-	    new RecursiveDirectoryIterator($faculty_dir),
+	    new RecursiveDirectoryIterator($faculty_path),
 	    RecursiveIteratorIterator::LEAVES_ONLY
 	);
 
 	foreach ($files as $name => $file) {
-	    // Get real path for current file
-	    $filePath = $file->getRealPath();
+		// Get real path for current file
+		$filePath = $file->getRealPath();
 
-	    // Add current file to archive
-	    $zip->addFile($filePath);
+		if(file_exists($filePath))
+		{
+			// Add current file to archive
+			$zipPath = str_replace($profile_dir, "", $filePath);
+			$zip->addFile($filePath, $zipPath);
+		}
 
 	}
 	$zip->close();

@@ -20,6 +20,9 @@ $includes = array
         'user.php',
         'lib/floraform/FloraForm.php'
 );
+
+$department_map = unserialize(file_get_contents(__DIR__."/etc/departments.php")); 
+
 foreach ($includes as $file)
 {
 #path_to_base_dir should be set by the script which does the include
