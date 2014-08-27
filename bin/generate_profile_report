@@ -1,0 +1,55 @@
+#!/usr/bin/php
+<?php 
+$path_to_base_dir = realpath(__DIR__."/..")."/";
+require_once($path_to_base_dir.'includes.php');
+
+$session = date_as_session();
+
+$modules = R::find("module", " module.currentsyllabus_id is not null and session = ?  order by module.code ", array_keys($session));
+$modules_by_faculty = array();
+$profile_dir = $f3->get("ROOT")."/tmp/moduleprofiles/";
+if(!is_dir($profile_dir))
+{
+	mkdir($profile_dir);
+}
+foreach($modules as $module)
+{
+	$faculty_dir = $profile_dir."/".$module->facultycode;
+	$profile_file = $faculty_dir."/". $module->code.".pdf";
+	$profile_url = $f3->get("SCHEME")."://syllabus.soton.ac.uk/".$f3->get("BASE")."/pdf/moduleprofile/".$module->code;
+	if(!is_dir($faculty_dir))
+	{
+		mkdir($faculty_dir);
+	}
+	file_put_contents($profile_file, @file_get_contents($profile_url));
+
+}
+
+foreach(scandir($profile_dir) as $faculty_dir)
+{
+	$faculty_zip = $profile_dir."/".$faculty_dir."_module_profiles.zip";
+	$zip = new ZipArchive;
+	if(file_exists($faculty_zip)
+	{
+		unlink($faculty_zip);
+	}
+	$zip->open( $faculty_zip, ZipArchive::CREATE );
+
+	// Initialize empty "delete list"
+
+	// Create recursive directory iterator
+	$files = new RecursiveIteratorIterator(
+	    new RecursiveDirectoryIterator($faculty_dir),
+	    RecursiveIteratorIterator::LEAVES_ONLY
+	);
+
+	foreach ($files as $name => $file) {
+	    // Get real path for current file
+	    $filePath = $file->getRealPath();
+
+	    // Add current file to archive
+	    $zip->addFile($filePath);
+
+	}
+	$zip->close();
+}
