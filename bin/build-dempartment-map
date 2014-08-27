@@ -1,0 +1,30 @@
+#!/usr/bin/php
+<?php
+
+	$departments = array();
+	$orgchart = json_decode(file_get_contents("http://data.southampton.ac.uk/dumps/org/2014-07-01/org.json"), true);
+	foreach($orgchart as $org)
+	{
+		if(!@$org["hr_code"])
+		{
+			continue;
+		}
+
+		preg_match('/^(..)(..)/',$org["hr_code"],$matches);
+		if(!preg_match('/^F/', $matches[1]))
+		{
+			continue;
+		}
+		else{
+			#echo $matches[1], " ", $matches[2],"\n";
+		}
+		$departments[$matches[2]] = $matches[1];
+		# foreach faculty there is a department with the same code which admin staff go in
+		$departments[$matches[1]] = $matches[1];
+		
+	}
+
+	$departments["TD"] = "F1";
+	$departments["JF"] = "F7";
+
+	file_put_contents(__DIR__."/../etc/departments.php", serialize($departments));
