@@ -80,7 +80,11 @@ class Model_User extends RedBean_SimpleModel {
 		//$faculty_bits = explode("OU=", $bits[4]); // TODO get an actual list of faculty bits and what faculty to map them to...
 		$this->departmentcode = strtoupper($dept_bits[1]);
 		$this->departmentname = $ldap_data[0]['department'][0];
-		$this->facultycode = $department_map[$this->departmentcode];
+		$this->facultycode = "F8"; 
+		if(array_key_exists($this->departmentcode, $department_map))
+		{
+			$this->facultycode = $department_map[$this->departmentcode];
+		}
 
 		R::store($this);
 	}
