@@ -518,9 +518,9 @@ class Model_Syllabus extends RedBean_SimpleModel {
 			"mode" => "radio" ) );
 		
 
-		$ass_combo->add( "TEXT", array(
+		$ass_combo->add( "TEXTAREA", array(
 			"id" => "description",
-			"layout" => "vertical",
+			"layout" => "block",
 			"title" => "Description" ));
 
 		$ass_combo->add( "TEXT", array(
