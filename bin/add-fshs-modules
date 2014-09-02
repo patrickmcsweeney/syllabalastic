@@ -1,0 +1,38 @@
+#!/usr/bin/php
+<?php
+$path_to_base_dir = realpath(__DIR__."/..")."/";
+require_once($path_to_base_dir.'includes.php');
+#R::debug(true);
+#R::freeze(true);
+
+if (count($argv) < 2)
+{
+        echo "you must specifiy a file to import\n";
+        exit;
+}
+$file = fopen( $argv[1], "r" ) or die("file does not exist");
+$info = array();
+
+tick("started spreadsheet");
+fgetcsv($file); # chuck the headings away
+
+$session = "201415";
+while( $bits = fgetcsv($file) )
+{
+	$module_code = $bits[1];
+	$dept_code = $bits[0];
+	$title = $bits[2];
+	$module = R::findOne("module", "session = ? AND code = ?", array( $session, $module_code ) );
+	
+	if(!isset($module)){
+		print "$module_code \n";
+		$module = R::dispense('module');
+		$module->code = $module_code;
+		$module->session = $session;
+		$module->departmentcode = $dept_code;
+	}
+	$module->title = $title;
+
+	R::store($module);
+	
+}
