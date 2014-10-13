@@ -3,7 +3,7 @@
 $path_to_base_dir = realpath(__DIR__."/..")."/";
 require_once($path_to_base_dir.'includes.php');
 
-$session = date_as_session();
+$session = date_as_session(strtotime("+1 year"));
 
 $modules = R::find("module", " module.currentsyllabus_id is not null and session = ?  order by module.code ", array_keys($session));
 $modules_by_faculty = array();
@@ -12,18 +12,18 @@ if(!is_dir($profile_dir))
 {
 	mkdir($profile_dir);
 }
-#foreach($modules as $module)
-#{
-#	$faculty_dir = $profile_dir."/".$module->facultycode;
-#	$profile_file = $faculty_dir."/". $module->code.".pdf";
-#	$profile_url = $f3->get("SCHEME")."://syllabus.soton.ac.uk/".$f3->get("BASE")."/pdf/moduleprofile/".$module->code;
-#	if(!is_dir($faculty_dir))
-#	{
-#		mkdir($faculty_dir);
-#	}
-#	file_put_contents($profile_file, @file_get_contents($profile_url));
-#
-#}
+foreach($modules as $module)
+{
+	$faculty_dir = $profile_dir."/".$module->facultycode;
+	$profile_file = $faculty_dir."/". $module->code.".pdf";
+	$profile_url = $f3->get("SCHEME")."://syllabus.soton.ac.uk/".$f3->get("BASE")."/pdf/moduleprofile/".$module->code;
+	if(!is_dir($faculty_dir))
+	{
+		mkdir($faculty_dir);
+	}
+	file_put_contents($profile_file, @file_get_contents($profile_url));
+
+}
 
 foreach(scandir($profile_dir) as $faculty_dir)
 {

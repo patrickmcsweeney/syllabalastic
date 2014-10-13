@@ -22,6 +22,7 @@ while( $bits = fgetcsv($file) )
 	$module_code = $bits[1];
 	$dept_code = $bits[0];
 	$title = $bits[2];
+	$fac_code = "F8";
 	$module = R::findOne("module", "session = ? AND code = ?", array( $session, $module_code ) );
 	
 	if(!isset($module)){
@@ -31,6 +32,7 @@ while( $bits = fgetcsv($file) )
 		$module->session = $session;
 		$module->departmentcode = $dept_code;
 	}
+	$module->facultycode = $fac_code;
 	$module->title = $title;
 
 	R::store($module);
