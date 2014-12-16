@@ -217,6 +217,7 @@ class Model_Syllabus extends RedBean_SimpleModel {
 			}
 			if($field=='repeatyear'){
 
+				$sub_opbjects = array();
 				foreach($value as $attribute)
 				{
 					$sub_object = R::dispense($field);
@@ -262,7 +263,7 @@ class Model_Syllabus extends RedBean_SimpleModel {
 		$repeat_year = array();
 		foreach($this->ownRepeatyear as $repeat)
 		{
-			$repeat[] = $repeat->repeatyear;
+			$repeat_year[] = $repeat->repeatyear;
 		}
 		$data['repeatyear'] = $repeat_year;
 

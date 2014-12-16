@@ -183,7 +183,7 @@
 		<div class="summary-of-teaching">
 			{{@syllabus.teachingandlearningtext}}
 		</div>
-
+<exclude>
 		<F3:repeat group="{{@syllabus->ownRegularteaching}}" value="{{@activity}}">
 			<div class="teaching-activity">
 				<div class="type"><span class="label">Type:</span> {{@getConstant(@syllabus, @activity->activitytype)}}</div>
@@ -193,6 +193,7 @@
 
 			</div>
 		</F3:repeat>
+</exclude>
 	</div>
 
 	<h2>Summary of assessment and Feedback methods</h2>
@@ -217,7 +218,7 @@
                         </F3:repeat>
                         <F3:repeat group="{{@syllabus->ownExam}}" value="{{@assessment}}">
 				<tr>
-					<td>Exam &nbsp;&nbsp;&nbsp;&nbsp;{{@assessment->description}}</td>
+					<td>Exam &nbsp;&nbsp;&nbsp;&nbsp;{{@assessment->description}} (Duration:{{@assessment->examduration}} <check if="{{@assessment->examduration < 5}}"><true>hours<true><false>minutes</false></check>)</td>
 					<td class="number"></td>
 					<td class="percent">{{@assessment->percent}}%</td>
 					<td class="final"></td>
@@ -226,14 +227,29 @@
                         </F3:repeat>
 		</tbody>
 	</table>
+	
+	<check if="{{@syllabus->assessmentnotes}}">
+		<h2>Other Assessment Notes</h2>
+		<div class="assessment-notes">
+			{{@syllabus->assessmentnotes}}
+		</div>
+	</check>
 
+	<h2>Referral Method</h2>
+	<p>{{@getConstant(@syllabus,@syllabus.referral)}}</p>
 
+	<h2>Method of Repeat Year</h2>
+	<repeat group="{{@syllabus.ownRepeatyear}}" value="{{@year}}">
+		<p>{{@getConstant(@syllabus, @year->repeatyear)}}</p>
+	</repeat>
 
+	<check if="{{@syllabus->specialfeatures}}">
 	<div class="special-features">
 		<h2>Special Features</h2>
 		{{@syllabus->specialfeatures}}
 
 	</div>
+	</check>
 
 	<F3:check if="{{count(@syllabus->ownResources) > 0}}">
 		<F3:true>
@@ -254,16 +270,20 @@
 		</F3:true>
 	</F3:check>
 
+	<check if="{{@syllabus->healthandsafety}}">
 	<div class="health-and-safety">
 		<h2>Health and Safety</h2>
 		{{@syllabus->healthandsafety}}
 	</div>
+	</check>
 
+	<check if="{{@syllabus->costimplications}}">
 	<div class="cost-implications">
 		<h2>Cost Implications</h2>
 		{{@syllabus->costimplications}}
 
 	</div>
+	</check>
 
 	<p style="page-break-after:always;"><!-- this --></p>
 	<div class="kis-contact-hours" style="padding-bottom:10px">
