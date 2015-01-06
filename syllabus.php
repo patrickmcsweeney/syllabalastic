@@ -337,6 +337,11 @@ class Model_Syllabus extends RedBean_SimpleModel {
 				"title"=>"Module Code",
 				"layout"=>"vertical"
 			));
+			$mod_combo->add( "TEXT", array( 
+				"id"=>"provisionalmodulelead",
+				"title"=>"Staff id of module lead",
+				"layout"=>"vertical",
+			));
 			$mod_combo->add( "CHOICE", array( 
 				"id"=>"provisionalsemestercode",
 				"choices" => $this->SEMESTER_TYPES,
@@ -347,6 +352,21 @@ class Model_Syllabus extends RedBean_SimpleModel {
 			$mod_combo->add( "TEXT", array( 
 				"id"=>"provisionalcredits",
 				"title"=>"ECTS Credits",
+				"layout"=>"vertical",
+			));
+			$mod_combo->add( "TEXT", array( 
+				"id"=>"provisionalmodulereplacement",
+				"title"=>"Replacement module (specify module which can be discontinued if applicable)",
+				"layout"=>"vertical",
+			));
+			$mod_combo->add( "TEXT", array( 
+				"id"=>"provisionalexternalexaminer",
+				"title"=>"Name of external examiner",
+				"layout"=>"vertical",
+			));
+			$mod_combo->add( "TEXT", array( 
+				"id"=>"provisionallevel",
+				"title"=>"Level (4,5,6,7,8 in the FHEQ)",
 				"layout"=>"vertical",
 			));
 			$mod_combo->add( "HTML", array( 
@@ -753,6 +773,9 @@ class Model_Syllabus extends RedBean_SimpleModel {
 		$total += $kis_contact_hours["Lectures"];
 		$kis_independant_hours["Wider reading or practice"] = 0; 
 		$kis_independant_hours["Completion of assessment task"] = 0;
+		$kis_independant_hours["Placement Hours"] = 0;
+		$kis_independant_hours["Year Placement"] = 0;
+		$kis_independant_hours["6 Month Placement"] = 0;
 
 		$revision_per_exam = 10;
 		foreach($this->ownExam as $exam)
