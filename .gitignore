@@ -1,3 +1,4 @@
 passwords.ini
 tmp/*
 templates/prerequisites/*
+etc/*

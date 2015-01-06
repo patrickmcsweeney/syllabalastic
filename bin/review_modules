@@ -1,0 +1,53 @@
+#!/usr/bin/php
+<?php
+$path_to_base_dir = realpath(__DIR__."/..")."/";
+require_once($path_to_base_dir.'includes.php');
+#R::debug(true);
+#R::freeze(true);
+
+if (count($argv) < 4)
+{
+	echo "Usage <filename> <username> <approvername> \n";
+	exit;
+}
+
+$file = fopen($argv[1], "r");
+
+#chuck headings
+fgetcsv($file);
+
+while($line = fgetcsv($file))
+{
+	$code = $line[0];
+	$module = R::findOne("module", " session= ? and code = ? ", array("201415", $code));
+	if(!isset($module))
+	{
+		echo "module $code does not exist\n";
+		continue;
+	}
+	echo  "module with code $code ";
+	$syllabus = $module->getCurrent();
+	if($module->getProvisional())
+	{
+		$syllabus = $module->getProvisional();
+	}	
+
+	if(!$syllabus) {
+		continue;
+	}
+
+	$syllabus->isprovisional = 0;
+	$syllabus->isunderreview = 0;
+	$syllabus->timeapproved = time();
+	$syllabus->approvedby = $argv[2];
+	$syllabus->approvedname = $argv[3]; 
+	$syllabus->approvalnote = "Approved after transition from Word docs";
+	$module = $syllabus->module;
+	$module->currentsyllabus_id = $syllabus->id;
+	echo "syllabus id = ".$syllabus->id."\n";
+	unset($module->provisionalsyllabus);
+	R::store($syllabus);
+	R::store($module);
+
+	echo " stored \n";	
+}

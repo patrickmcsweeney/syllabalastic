@@ -17,6 +17,12 @@ class Model_Syllabus extends RedBean_SimpleModel {
 		"NOTES"=>"See notes below" 
 	);
 
+	private $REPEAT_YEAR = array(
+		"internal"=>"Repeat year internally",
+		"external"=>"Repeat year externally",
+	);
+
+
 	private $SA_TYPES = array( 
 		""=>"",
 		"lecture"=>"Lecture",
@@ -103,6 +109,11 @@ class Model_Syllabus extends RedBean_SimpleModel {
 		"academic" => "Academic",
 		"communcicationskills"=>"Communication Skills",
 		"reflectivelearner"=>"Reflective Learner",
+	);
+	public $LEVEL_CODES = array(
+		"UG" => "Undergraduate",
+		"PC" => "Postgraduate taught",
+		"PR" => "Postgraduate research",
 	);
 
 	public function canEdit()
@@ -204,6 +215,20 @@ class Model_Syllabus extends RedBean_SimpleModel {
 				continue;
  
 			}
+			if($field=='repeatyear'){
+
+				$sub_opbjects = array();
+				foreach($value as $attribute)
+				{
+					$sub_object = R::dispense($field);
+					$sub_object->$field = $attribute;
+					$sub_objects[] = $sub_object;
+						
+				}
+				$this->$field_name = $sub_objects;
+				continue;
+ 
+			}
 
 			foreach( $value as $sub_object_in_array )
 			{
@@ -234,6 +259,13 @@ class Model_Syllabus extends RedBean_SimpleModel {
 			$attributes[] = $attribute->graduateattributes;
 		}
 		$data['graduateattributes'] = $attributes;
+		
+		$repeat_year = array();
+		foreach($this->ownRepeatyear as $repeat)
+		{
+			$repeat_year[] = $repeat->repeatyear;
+		}
+		$data['repeatyear'] = $repeat_year;
 
 		return $data;
 	}
@@ -298,12 +330,12 @@ class Model_Syllabus extends RedBean_SimpleModel {
 		if( ! $this->module->isprovisional )
 		{
 			$intro = $form->add( "SECTION", array( 
-				"title" => "Basic information", 
+				"title" => "Module information", 
 				"layout" => "section" ));
 			$syllabus_data = "";
 			$syllabus_data.= "<p>Title: ".htmlentities($this->module->title)."</p>";
 			$syllabus_data.= "<p>Code and Session: ".htmlentities($this->module->code)." (".$this->module->session.")</p>";
-			$syllabus_data.= "<p>Credits: ".htmlentities($this->module->credits)."</p>";
+			$syllabus_data.= "<p>ECTS Credits: ".htmlentities($this->module->credits)."</p>";
 			$syllabus_data.= "<p>".htmlentities($this->module->semestername)."</p>";
 
 			$semesters = array();
@@ -392,12 +424,12 @@ class Model_Syllabus extends RedBean_SimpleModel {
 
 
 		$s2 = $form->add( "SECTION", array(
-			"title" => "1. Description",
+			"title" => "Description",
 			));
 		$s2->add( "HTML", array( 
 			"layout" => "section",
 			"id" => "introduction", # TODO change field name
-			"title" => "1.1 Module overview",
+			"title" => "Module overview",
 			"rows" => 10,
 			"description" => "
 	This section should be used to give a summary of the syllabus, its aims, and (for core / compulsory modules) how it fits in with the programme as a whole or (for optional modules) why students might choose to take it. You can also give a general indication of pre-requisite knowledge and skills which are assumed.
@@ -417,7 +449,7 @@ class Model_Syllabus extends RedBean_SimpleModel {
 			"id" => "itemisedlearningoutcomes",
 			"layout" => "section",
 			"min-items" => 5,
-			"title" => "1.2 Aims and Learning Outcomes",
+			"title" => "Aims and Learning Outcomes",
 			"description_html" => '
 <p>This section should be used to list the intended learning outcomes of the syllabus. You can refer to <a href="https://sharepoint.soton.ac.uk/sites/ese/quality_handbook/default.aspx">guidance in the quality handbook</a> for advice on these. For a standard 15 credit syllabus, 5 to 8 outcomes should be sufficient. Please do not repeat the list of topics for the syllabus, which are given in the following section.</p>
 <div class="deprecated">
@@ -446,86 +478,43 @@ class Model_Syllabus extends RedBean_SimpleModel {
     <p>All other learning outcomes should be written as verb phrases (for
     example, 'compare different narrative modes').</p>
 "));
-		$s2->add("MULTICHOICE", array(
+		$s2->add("INFO", array(
 			"id" => "graduateattributes",
-			"title"=>"1.3 Graduate Attributes",
+			"title"=>"Graduate Attributes",
 			"choices" => $this->GRADUATE_ATTRIBUTES,
-			"description_html" => "Graduate Attributes are the personal qualities, skills and understandings that extend beyond subject specific knowledge. <a target='_blank' href='https://sharepoint.soton.ac.uk/sites/ese/quality_handbook/Handbook/Employability%20Statement.aspx'>Find out more about graduate attributes</a>.",
+			"description_html" => "<p>Graduate Attributes are the personal qualities, skills and understandings that University of Southampton students have the opportunity to develop. They include but extend beyond subject-specific knowledge of an academic discipline and its technical proficiencies. The Graduate Attributes are achieved through the successful attainment of the learning outcomes of the programmes, and successful engagement with the University’s co-curriculum e.g. the Graduate Passport.</p>
+
+        <p>A checklist for embedding the graduate attributes is available at: <a href='https://sharepoint.soton.ac.uk/sites/ese/quality_handbook/Handbook/Employability%20Statement.aspx'>https://sharepoint.soton.ac.uk/sites/ese/quality_handbook/Handbook/Employability%20Statement.aspx</a></p>
+",
 		));
 
 		$s2->add( "HTML", array( 
 			"layout" => "section",
 			"id" => "topics", # TODO change field name
 			"rows" => 10,
-			"title" => "1.4 Summary of syllabus content",
+			"title" => "Summary of syllabus content",
 			"description" => "A summary of contents covered, perhaps 10 to 20 bullet points." ) );
+
+		$s2->add( "HTML", array( 
+			"layout" => "section",
+			"id" => "teachingandlearningtext", # TODO change field name
+			"rows" => 10,
+			"title" => "Summary of teaching and learning methods",
+			"description" => "A free text summary of the teaching and learning methods used on this module. Please do not go into specific detail as this is covered in 'Breakdown of teaching and learning months' section" ) );
 
 
 
 		### Assessment
 
 		$s1 = $form->add( "SECTION", array(
-			"title" => "2. Basic Information",
+			"title" => "Summary of Assessment and Feedback Methods",
 			));
-
-		$reg_combo = $s1->add( "LIST", array( 
-			"id" => "regularteaching",
-			"layout" => "section",
-			"title" => "2.1 Summary of teaching and learning methods",
-			"description" => "This section allows you to provide data for timetabling purposes and key information sets. For each scheduled activity, please indicate the nature of the activity, its duration, and its frequency (ie the number of sessions).  If the class divides into groups for this activity, please give the (maximum) group size; in this case, the frequency should be given from the student perspective. Otherwise, leave this field blank. ") )->setListType( "COMBO" );
-		$reg_combo->add( "CHOICE", array(
-			"id" => "activitytype",
-			"title" => "Type",
-			"choices" => $this->SA_TYPES,
-			"mode" => "pull-down" ) );
-		$reg_combo->add( "TEXT", array( 
-			"id" => "groupsize",
-			"size" => 2,
-			"title" => "Maximum Group Size" ));
-		$reg_combo->add( "TEXT", array(
-			"id" => "studenthours",
-			"title" => "Hours per semester a student will spend on this activity",
-			"size"=> 2 ) );
-#TODO upgrade to new Flora form so we dont have to add this little hack in textarea should render its own title.
-		$reg_combo->add( "TEXTAREA", array(
-			"id" => "teachingdescription",
-			"rows" => "2",
-			"layout" => "block",
-			"title" => "Description" ));
-# too complicated and not flexible enough for what people want to be able to say
-#		$reg_combo->add( "CHOICE", array(
-#			"id" => "duration",
-#			"title" => "Duration",
-#			"choices" => $this->SA_DURATIONS,
-#			"mode" => "pull-down" ) );
-#		$reg_combo->add( "CHOICE", array(
-#			"id" => "frequency",
-#			"title" => "Frequency",
-#			"choices" => $this->SA_FREQUENCIES,
-#			"mode" => "pull-down" ) );
-		$exam_combo = $s1->add( "LIST", array( 
-			"id" => "exam",
-			"layout" => "section",
-			"title" => "2.2 Examination method",
-			"description_html" => "
-	This section is required for key information sets. Note that the total percentages across examination and other assessment activities (below) should add up to 100. For an exam, give the planned duration. </i>
-	" ) )->setListType( "COMBO", array( "layout" ));
-		$exam_combo->add( "TEXT", array(
-			"id" => "percent",
-			"size" => 1,
-			"suffix" => "%",
-			"title" => "Total Percentage" ));
-		$exam_combo->add( "TEXT", array(
-			"id" => "examduration",
-			"size" => 1,
-			"suffix"=>" hours",
-			"title" => "Exam Duration" ));
 
 
 		$ass_combo = $s1->add( "LIST", array( 
 			"id" => "continuousassessment",
 			"layout" => "section",
-			"title" => "2.2 Other assessment method",
+			"title" => "Other assessment methods",
 			"description_html" => "
 	This section allows you to provide data for student workload monitoring, and key information sets. Note that the total percentages across all assessment activities and examination (above) should add up to 100. Please indicate the week or weeks of the semester assessment is planed to occur. Week 1 is the start of teaching, and week 12 is the last week before exams, which is typically reserved for revision. Note that assignment deadlines should therefore not occur during weeks 12 to 15.  Finally, indicate when and how you will provide feedback on assignments -- for example, you might state that <i>after 2 weeks individual feedback sheets will be returned, and a generic feedback will be provided in-class.</i>
 	" ) )->setListType( "COMBO", array( "layout" ));
@@ -557,10 +546,28 @@ class Model_Syllabus extends RedBean_SimpleModel {
 			"rows" => "3",
 			"layout" => "block",
 			"title" => "Feedback" ));
+
+		$exam_combo = $s1->add( "LIST", array( 
+			"id" => "exam",
+			"layout" => "section",
+			"title" => "Examination method",
+			"description_html" => "
+	This section is required for key information sets. Note that the total percentages across examination and other assessment activities (below) should add up to 100. For an exam, give the planned duration. </i>
+	" ) )->setListType( "COMBO", array( "layout" ));
+		$exam_combo->add( "TEXT", array(
+			"id" => "percent",
+			"size" => 1,
+			"suffix" => "%",
+			"title" => "Total Percentage" ));
+		$exam_combo->add( "TEXT", array(
+			"id" => "examduration",
+			"size" => 1,
+			"suffix"=>" hours",
+			"title" => "Exam Duration" ));
 		$s1->add( "CHOICE", array( 
 			"id" => "referral",
 			"layout" => "section",
-			"title" => "2.3 Referral Policy",
+			"title" => "Referral Policy",
 			"surround"=>"floraform/component_surround.htm",
 			"description" => "
 	Each syllabus must have a defined referral policy, which must apply to all students who refer.
@@ -570,9 +577,18 @@ class Model_Syllabus extends RedBean_SimpleModel {
 			"choices" => $this->REFERRAL_OPTIONS,
 			"mode" => "pull-down" ) );
 
+		$s1->add( "MULTICHOICE", array( 
+			"id" => "repeatyear",
+			"title" => "Method of repeat year",
+			"description" => "
+	Indicate whether a module can be repeated externally, or if it is only possible to repeat internally by ticking the appropriate boxes.
+	",
+			"choices" => $this->REPEAT_YEAR,
+			"mode" => "pull-down" ) );
+
 		$s1->add( "HTML", array( 
 			"id" => "assessmentnotes",
-			"title" => "2.4 Assessment Notes",
+			"title" => "Assessment Notes",
 			"description_html" => "
 	If there are special aspects related to assessment, please state them here.  As one possible example, <i>where there are multiple worksheets, the best 8 out of 10 marks will be taken; or if a minimum attendance of 8 out of 10 laboratory sessions is required before a mark can be returned.</i>  Finally, if there is a field trip, please state the arrangements and cost implications.
 	",
@@ -580,17 +596,8 @@ class Model_Syllabus extends RedBean_SimpleModel {
 		));
 
 		$s1->add( "HTML", array( 
-			"id" => "timetablenotes",
-			"title" => "2.5 Timetabling Requirements",
-			"description" => "
-	If there are special timetabling requirements, for example, a specific venue or specialist facilities are needed, please indicate these in this field.  This information is provided to the Central Timetabling Unit, and is not visible to students.
-	",
-			"layout" => "section",
-		));
-
-		$s1->add( "HTML", array( 
 			"id" => "specialfeatures",
-			"title" => "2.6 Special Features",
+			"title" => "Special Features",
 			"description" => "
 		State anything which makes this module special which students should be aware of when choosing it.
 	",
@@ -601,7 +608,7 @@ class Model_Syllabus extends RedBean_SimpleModel {
 
 
 		$s3 = $form->add( "SECTION", array(
-			"title" => "3. Resources"));
+			"title" => "Resources"));
 			
 		$res_list = $s3->add( "LIST", array(
 			"id" => "resources",
@@ -678,7 +685,7 @@ class Model_Syllabus extends RedBean_SimpleModel {
 
 
 		$s4 = $form->add( "SECTION", array(
-			"title" => "4. Additional Information",
+			"title" => "3. Additional Information",
 			));
 
 		$s4->add( "HTML", array( 
@@ -692,15 +699,64 @@ class Model_Syllabus extends RedBean_SimpleModel {
 
 		$s4->add( "HTML", array( 
 			"id" => "healthandsafety",
-			"title" => "4.2 Health and Safety",
+			"title" => "Health and Safety",
 			"description" => "
 		Please briefly describe any health and safety implications of this module.
 	",
 			"layout" => "section",
 		));
 
+		$s6 = $form->add( "SECTION", array(
+			"title" => "KIS hours",
+			));
+
+		$reg_combo = $s6->add( "LIST", array( 
+			"id" => "regularteaching",
+			"layout" => "section",
+			"title" => "Breakdown of teaching and learning methods",
+			"description" => "This section allows you to provide data for timetabling purposes and key information sets. For each scheduled activity, please indicate the nature of the activity, its duration, and its frequency (ie the number of sessions).  If the class divides into groups for this activity, please give the (maximum) group size; in this case, the frequency should be given from the student perspective. Otherwise, leave this field blank. ") )->setListType( "COMBO" );
+		$reg_combo->add( "CHOICE", array(
+			"id" => "activitytype",
+			"title" => "Type",
+			"choices" => $this->SA_TYPES,
+			"mode" => "pull-down" ) );
+		$reg_combo->add( "TEXT", array( 
+			"id" => "groupsize",
+			"size" => 2,
+			"title" => "Maximum Group Size" ));
+		$reg_combo->add( "TEXT", array(
+			"id" => "studenthours",
+			"title" => "Hours per semester a student will spend on this activity",
+			"size"=> 2 ) );
+#TODO upgrade to new Flora form so we dont have to add this little hack in textarea should render its own title.
+		$reg_combo->add( "TEXTAREA", array(
+			"id" => "teachingdescription",
+			"rows" => "2",
+			"layout" => "block",
+			"title" => "Description" ));
+# too complicated and not flexible enough for what people want to be able to say
+#		$reg_combo->add( "CHOICE", array(
+#			"id" => "duration",
+#			"title" => "Duration",
+#			"choices" => $this->SA_DURATIONS,
+#			"mode" => "pull-down" ) );
+#		$reg_combo->add( "CHOICE", array(
+#			"id" => "frequency",
+#			"title" => "Frequency",
+#			"choices" => $this->SA_FREQUENCIES,
+#			"mode" => "pull-down" ) );
+		$s6->add( "HTML", array( 
+			"id" => "timetablenotes",
+			"title" => "Timetabling Requirements",
+			"description" => "
+	If there are special timetabling requirements, for example, a specific venue or specialist facilities are needed, please indicate these in this field.  This information is provided to the Central Timetabling Unit, and is not visible to students.
+	",
+			"layout" => "section",
+		));
+
+
 		$s5 = $form->add( "SECTION", array(
-			"title" => "5. Changes",
+			"title" => "Changes",
 			));
 		$s5->add( "TEXTAREA", array(
 			"id" => "changessummary",

@@ -46,7 +46,7 @@ if($f3->get('api_key')) {
 $REVIEWERS = array(
         "pm5c08" => array(
 		'module' => array(
-			'facultycode' => array( "F2", "F7", "wf", "fp"),
+			'facultycode' => array( "F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "wf", "fp"),
 			'departmentcode' => array("FP", "JF")
 #			'themecode' => array(),
 #			'code' => array()
@@ -207,6 +207,11 @@ $REVIEWERS = array(
 			'facultycode' => array("F7", "wf", "fp")
 		)
 	),
+        "ajbird" => array(
+		'module' => array(
+			'facultycode' => array("F7", "wf", "fp")
+		)
+	),
         "gbw" => array(
 		'module' => array(
 			'departmentcode' => array("FP", "JF"),
@@ -233,6 +238,11 @@ $REVIEWERS = array(
 			'facultycode' => array("F2")
 		)
 	),
+        "cdb1a13" => array(
+		'module' => array(
+			'facultycode' => array("F2")
+		)
+	),
         "bl2" => array(
 		'module' => array(
 			'facultycode' => array("F2")
@@ -253,17 +263,6 @@ $REVIEWERS = array(
 			'facultycode' => array("F8")
 		)
 	),
-        "cs1m12" => array(
-		'module' => array(
-			'facultycode' => array("F8")
-		)
-	),
-        "cgw1g13" => array(
-		'module' => array(
-			'facultycode' => array("F8")
-		)
-	),
-
         "af05v" => array(
 		'module' => array(
 			'facultycode' => array("F7", "wf", "fp")
@@ -273,7 +272,52 @@ $REVIEWERS = array(
 		'module' => array(
 			'facultycode' => array("F7", "wf", "fp")
 		)
-	)
+	),
+        "ch" => array(
+		'module' => array(
+			'facultycode' => array("F8")
+		)
+	),
+        "ch" => array(
+		'module' => array(
+			'facultycode' => array("F8")
+		)
+	),
+        "saw4" => array(
+		'module' => array(
+			'facultycode' => array("F8")
+		)
+	),
+        "jet" => array(
+		'module' => array(
+			'facultycode' => array("F8")
+		)
+	),
+        "cgw1c13" => array(
+		'module' => array(
+			'facultycode' => array("F8")
+		)
+	),
+        "cs1m12" => array(
+		'module' => array(
+			'facultycode' => array("F8")
+		)
+	),
+        "jer1e13" => array(
+		'module' => array(
+			'facultycode' => array("F8")
+		)
+	),
+        "trs1m13" => array(
+		'module' => array(
+			'facultycode' => array("F8")
+		)
+	),
+        "ajf1u10" => array(
+		'module' => array(
+			'facultycode' => array("F8")
+		)
+	),
 );
 
 
