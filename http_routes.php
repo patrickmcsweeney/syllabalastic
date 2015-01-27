@@ -323,6 +323,9 @@ function view_syllabus($f3)
 	$f3->set("module", $module);
 	$f3->set("syllabus", $syllabus);
 
+	$first_occurence = R::findOne("module", " code = ? ORDER BY session ASC ", array($module->code) );
+	$f3->set("firstoccurence", $first_occurence->session);
+
 	$templates = array();
 	if($syllabus->isprovisional){
 		$templates[] = 'provisional.htm';

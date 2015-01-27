@@ -325,7 +325,7 @@ class Model_Syllabus extends RedBean_SimpleModel {
 		{
 			$form->add( "HIDDEN", array( "id"=>"secret"));
 		}
-
+		$intro = "";
 		# Section 1.
 		if( ! $this->module->isprovisional )
 		{
@@ -421,6 +421,17 @@ class Model_Syllabus extends RedBean_SimpleModel {
 			));
 		}
 
+		$intro->add( "TEXT", array( 
+				"id"=>"moduleleadprofileurl",
+				"title"=>"Module Lead Profile URL",
+				"layout"=>"vertical",
+			));
+
+		$intro->add( "TEXT", array( 
+				"id"=>"externalexaminer",
+				"title"=>"External Examiner",
+				"layout"=>"vertical",
+			));
 
 
 		$s2 = $form->add( "SECTION", array(
@@ -451,7 +462,7 @@ class Model_Syllabus extends RedBean_SimpleModel {
 			"min-items" => 5,
 			"title" => "Aims and Learning Outcomes",
 			"description_html" => '
-<p>This section should be used to list the intended learning outcomes of the syllabus. You can refer to <a href="https://sharepoint.soton.ac.uk/sites/ese/quality_handbook/default.aspx">guidance in the quality handbook</a> for advice on these. For a standard 15 credit syllabus, 5 to 8 outcomes should be sufficient. Please do not repeat the list of topics for the syllabus, which are given in the following section.</p>
+<p>This section should be used to list the intended learning outcomes of the syllabus. You can refer to <a href="http://www.southampton.ac.uk/quality/">guidance in the quality handbook</a> for advice on these. For a standard 7.5 ECTS syllabus, 5 to 8 outcomes should be sufficient. Please do not repeat the list of topics for the syllabus, which are given in the following section.</p>
 <div class="deprecated">
 <h4>Your previous learning outcomes were</h4>
 '.$this->learningoutcomes.'
@@ -591,6 +602,15 @@ class Model_Syllabus extends RedBean_SimpleModel {
 			"title" => "Assessment Notes",
 			"description_html" => "
 	If there are special aspects related to assessment, please state them here.  As one possible example, <i>where there are multiple worksheets, the best 8 out of 10 marks will be taken; or if a minimum attendance of 8 out of 10 laboratory sessions is required before a mark can be returned.</i>  Finally, if there is a field trip, please state the arrangements and cost implications.
+	",
+			"layout" => "section",
+		));
+
+		$s1->add( "HTML", array( 
+			"id" => "referralnotes",
+			"title" => "Referral Notes",
+			"description_html" => "
+	If there is specific information about the referral which is not captured above please state it here. For example <i>This module only refers the exam (50%) and 'Road surfaces essay'(50%) it does retake the lab work</i>. You may need to specify the new percentage values of the assessment components here.
 	",
 			"layout" => "section",
 		));

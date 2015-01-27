@@ -5,6 +5,9 @@
 	<check if="{{@module.facultycode=='F2'}}">
 		<p><em>If this document is inaccurate please contact the FEE CQA team at cqa-fee@soton.ac.uk</em></p>
 	</check>
+	<check if="{{@module.facultycode=='F8'}}">
+		<p><em>If this document is inaccurate please contact the FSHS CQA team at cqafshs@soton.ac.uk</em></p>
+	</check>
 	<table>
 		<tbody>
 			<tr>
@@ -31,10 +34,10 @@
 				<th>External Examiner:</th>
 				<td></td>
 			</tr>
-			<tr>
+			<exclude><tr>
 				<th>Author:</th>
 				<td><check if="{{isset(@author)}}">{{@author.name}}</check></td>
-			</tr>
+			</tr></exclude>
 			<tr>
 				<th>Faculty</th>
 				<td>{{@module.facultyname}}</td>
@@ -59,18 +62,20 @@
 				<th>When will the module be taught</th>
 				<td>{{@module.semestername}}</td>
 			</tr>
+			<check if="{{@module.facultycode=='F8'}}">
 			<tr>
 				<th>Contact hours</th>
 				<td>Teaching: {{@kis_contact_hours["Total"]}} Placement: 0 Independent: {{@kis_independant_hours["Total"]}}  Total: {{@kis_contact_hours["Total"] + @kis_independant_hours["Total"]}}</td>
 			</tr>
-			<tr>
+			</check>
+			<exclude><tr>
 				<th>Where will the module be taught</th>
 				<td>{{@module.campusname}}</td>
-			</tr>
-			<tr>
+			</tr></exclude>
+			<exclude><tr>
 				<th>Will any other institution be providing teaching on this module?</th>
 				<td></td>
-			</tr>
+			</tr></exclude>
 			<tr>
 				<th>Pre-requisite and/or co-requisite modules</th>
 				<td>
@@ -121,6 +126,7 @@
 					</F3:repeat>
 				</td>
 			</tr>
+			<exclude>
 			<tr>
 				<th>Subject specific elective</th>
 				<td></td>
@@ -132,9 +138,9 @@
 			<tr>
 				<th>Capped number of places restriction</th>
 				<td></td>
-			</tr>
+			</tr></exclude>
 			<tr>
-				<th>Date of approval by Faculty Programme Committee:</th>
+				<th>Date of last edit</th>
 				<td>{{date("jS M Y - g:ia",@syllabus->timeapproved)}}</td>
 			</tr>
 		</tbody>
@@ -237,6 +243,9 @@
 
 	<h2>Referral Method</h2>
 	<p>{{@getConstant(@syllabus,@syllabus.referral)}}</p>
+	<div class="referralnotes">
+		{{@syllabus.referralnotes}}
+	</div>
 
 	<h2>Method of Repeat Year</h2>
 	<repeat group="{{@syllabus.ownRepeatyear}}" value="{{@year}}">
@@ -285,28 +294,30 @@
 	</div>
 	</check>
 
-	<p style="page-break-after:always;"><!-- this --></p>
-	<div class="kis-contact-hours" style="padding-bottom:10px">
-		<h2>Appendix: KIS hours</h2>
-	<table>
-	<tbody>
-		<tr><th>Contact hours for Teaching:</th><td>Hours</td></tr>
-		<F3:repeat group="{{@syllabus->kisContactHours()}}" key="{{@row_title}}" value="{{@row_value}}">
-			<tr><th>{{@row_title}}</th><td>{{@row_value}}</td></tr>
-		</F3:repeat>
-	</tbody>
-	</table>
-	</div>
-	
+	<check if="{{@module.facultycode!='F8'}}">
+		<p style="page-break-after:always;"><!-- this --></p>
+		<div class="kis-contact-hours" style="padding-bottom:10px">
+			<h2>Appendix: KIS hours</h2>
+		<table>
+		<tbody>
+			<tr><th>Contact hours for Teaching:</th><td>Hours</td></tr>
+			<F3:repeat group="{{@syllabus->kisContactHours()}}" key="{{@row_title}}" value="{{@row_value}}">
+				<tr><th>{{@row_title}}</th><td>{{@row_value}}</td></tr>
+			</F3:repeat>
+		</tbody>
+		</table>
+		</div>
+		
 
-	<div class="kis-independant-hours">
-	<table>
-	<tbody>
-		<tr><th>Independent study</th><td>Hours</td></tr>
-		<F3:repeat group="{{@kis_independant_hours}}" key="{{@row_title}}" value="{{@row_value}}">
-			<tr><th>{{@row_title}}</th><td>{{@row_value}}</td></tr>
-		</F3:repeat>
-	</tbody>
-	</table>
-	</div>
+		<div class="kis-independant-hours">
+		<table>
+		<tbody>
+			<tr><th>Independent study</th><td>Hours</td></tr>
+			<F3:repeat group="{{@kis_independant_hours}}" key="{{@row_title}}" value="{{@row_value}}">
+				<tr><th>{{@row_title}}</th><td>{{@row_value}}</td></tr>
+			</F3:repeat>
+		</tbody>
+		</table>
+		</div>
+	</check>
 </div>
