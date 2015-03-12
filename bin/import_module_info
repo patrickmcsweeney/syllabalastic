@@ -21,7 +21,7 @@ while( $line = fgets($file) )
 	$line = explode("|", $line);
 	if(!is_array($line) or count($line) < 10){ print("Something is wrong this line has no data\n"); continue; }
 	####### TODO, reading the data file should be abstracted, this is blatently something which will change
-	$info[$line[0]][$line[10]]["title"] = $line[44];
+	$info[$line[0]][$line[10]]["title"] = $line[44] ?: $line[15];
 	$info[$line[0]][$line[10]]["departmentcode"] = $line[6];
 	$info[$line[0]][$line[10]]["departmentname"] = $line[7];
 	$info[$line[0]][$line[10]]["facultycode"] = $line[4];
