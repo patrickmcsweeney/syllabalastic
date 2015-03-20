@@ -2,6 +2,10 @@
 	<p>This syllabus is live. Edits to this syllabus will need to go through review before they are made live. </p>
 	
 	<p>You can <a href="/pdf/moduleprofile/{{@module->code}}">download the module profile pdf</a>.</p>
+	<F3:check if="{{ ! @syllabus->module->isprovisional }}">
+		<p><a href='/history/module/{{ @syllabus->module->code }}'>View module history</a></p>
+	</F3:check>
+
 
 	<p><a href="/view/modules/{{ @module->session }}">&larr; Return to module list</a> or <a href="/create/syllabus/?modulecode={{@syllabus->module->code}}&session={{@syllabus->module->session}}">Edit this syllabus</a>.</p>
 </div>
