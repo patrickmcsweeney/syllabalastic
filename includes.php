@@ -320,4 +320,6 @@ $REVIEWERS = array(
 	),
 );
 
+$EMAIL_ALERTS = array( "pm5c08" );
+#$EMAIL_ALERTS = array( "pm5c08" ); #uncomment for testing
 
