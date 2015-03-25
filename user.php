@@ -144,7 +144,6 @@ class Model_User extends RedBean_SimpleModel {
 			ORDER BY
 				module.code";
 
-
 		$values = array();
 		$values[] = $session; //we review for next years modules not this years
 		$values = array_merge($values, $review_groups['values']);
@@ -155,6 +154,31 @@ class Model_User extends RedBean_SimpleModel {
 		return $syllabuses;
 	}
 
+	function send_review_email($f3)
+	{
+		$headers = "From: syllabus-noreply@soton.ac.uk\r\n";
+		$headers .= "MIME-Version: 1.0\r\n";
+		$headers .= "Content-Type: text/html; charset=utf-8\r\n";
+			
+		$syllabuses = $this->syllabuses_awaiting_review();
+
+		$to = $this->username ."@soton.ac.uk";		
+		
+		if(!$f3->exists("LIVESITE"))
+		{
+			# on the dev sites all emails go to patrick
+			$to = "pm5c08@soton.ac.uk";
+		}
+
+		$subject = count($syllabuses) . " syllabus(es) are awaiting review";
+
+		$f3->set("syllabuses", $syllabuses);
+		$email_body = Template::instance()->render("review_email.htm");
+
+		mail($to, $subject, $email_body, $headers);
+		echo $email_body;
+		
+	}
 
 
 }

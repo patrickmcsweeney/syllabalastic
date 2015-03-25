@@ -1,1 +1,23 @@
+#!/usr/bin/php
+<?php
+$path_to_base_dir = realpath(__DIR__."/..")."/";
+require_once($path_to_base_dir.'includes.php');
+
+foreach($EMAIL_ALERTS as $user)
+{
+	$user = R::findOne("user", " username = ? ", array($user));
+	if(!$user->is_reviewer())
+	{
+		continue;
+	}
+
+	$syllabuses = $user->syllabuses_awaiting_review("201516");
+
+	if(count($syllabuses) > 0)
+	{
+		$user->send_review_email($f3);
+	}
+
+}
+
 #code goes here
