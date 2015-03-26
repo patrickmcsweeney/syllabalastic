@@ -21,6 +21,9 @@ $includes = array
         'lib/floraform/FloraForm.php'
 );
 
+$url = $f3->get("SCHEME")."://".$f3->get("HOST").$f3->get("BASE");
+$f3->set("BASEURL", $url);
+
 $department_map = unserialize(file_get_contents(__DIR__."/etc/departments.php")); 
 
 foreach ($includes as $file)
@@ -320,4 +323,5 @@ $REVIEWERS = array(
 	),
 );
 
+$EMAIL_ALERTS = array( "pm5c08", "cqafee", "cqafshs" );
 

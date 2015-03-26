@@ -71,7 +71,7 @@
 <F3:check if="{{count(@syllabus->ownContinuousassessment) > 0}}">
         <F3:true>
 		<F3:repeat group="{{@syllabus->ownContinuousassessment}}" value="{{@assessment}}">
-        		<li style='margin-bottom:0.5em'>{{@assessment->percent}}% - {{@assessment->description}}. Frequency: {{@assessment->frequency}}</li>
+        		<li style='margin-bottom:0.5em'>{{@assessment->percent}}% - {{@assessment->description}}. <check if="{{!empty(@assessment->frequency)}}">Frequency: {{@assessment->frequency}}</check></li>
 		</F3:repeat>
         </F3:true>
 </F3:check>

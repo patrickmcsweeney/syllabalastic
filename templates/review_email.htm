@@ -1,0 +1,14 @@
+
+<p>You currently have {{count(@syllabuses)}} syllabus(es) awaiting review</p>
+
+<ul>
+	<repeat group="{{@syllabuses}}" value="{{@syllabus}}">
+		<li>{{@syllabus->module->code}} - {{@syllabus->module->title}} i
+[<a href="{{@BASEURL}}/view/syllabus/{{@syllabus->id}}">view</a>] 
+[<a href="{{@BASEURL}}/review/syllabus/{{@syllabus->id}}">review</a>]</li>
+	</repeat>
+</ul>
+
+<p>For more information about modules awaiting review you <a href="{{@BASEURL}}/review/dashboard">can visit your review dashboard</a>.</p>
+
+<p>If you are receiving this email in error or wish to stop receiving these emails please <a href="mailto:serviceline@soton.ac.uk">send an email to ServiceLine</a>.</p>
