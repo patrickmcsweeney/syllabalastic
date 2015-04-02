@@ -19,7 +19,7 @@ function error_page($f3)
 		$title .= "Error";
 	}
 	$f3->set('title', $title );
-	if( $f3->get( "ERROR.code" ) == "404" )
+	if( !$f3->exists("ERROR.text") && $f3->get( "ERROR.code" ) == "404" )
 	{
 		$f3->set( "ERROR.text", "The page or resource you requested does not exist." );
 	}
@@ -286,6 +286,7 @@ function create_syllabus($f3)
 	$syllabus->isunderreview = false;
 	$syllabus->educationboardreviewed = false;
 	$syllabus->cqareviewed = false;
+	$syllabus->bigreview = false;
 	$syllabus->courseleaderreviewed = false;
 	$syllabus->quinquenialreviewed = false;
 	$syllabus->approvedby = "";
@@ -311,10 +312,15 @@ function create_syllabus($f3)
 
 function view_syllabus($f3)
 {
-	$syllabus = R::load("syllabus", $f3->get('PARAMS["syllabus_id"]'));
-	if(!$syllabus->id)
+	if( $f3->exists('PARAMS["modulecode"]')){
+		$module = R::findOne("module", " code = ? ", array( $f3->get('PARAMS["modulecode"]') ) );
+		$syllabus = $module->getCurrent();
+	}else{
+		$syllabus = R::load("syllabus", $f3->get('PARAMS["syllabus_id"]'));
+	}
+	if(!$syllabus || !$syllabus->id)
 	{
-		$f3->error( 404, "This syllabus id does not exist");
+		$f3->error( 404, "This syllabus does not exist or this module has no current syllabus");
 		return;
 	}
 	$content = "";
@@ -475,52 +481,54 @@ function site_publisher_module($f3)
 		$f3->error(404, "No module with this code found");
 		return;
 	}
-	$syllabus = $existing_module->getCurrent();
-	if(!$syllabus)
-	{
-		$f3->error( 404, "This syllabus id does not exist");
-		return;
-	}
+
+
+	$xml = 	$existing_module->sitePublisherXML($f3);
+
+	$output = $xml->saveXML();
 
 	header( "content-type: application/xml; charset=utf-8" );
 
-	$xml = new DOMDocument( "1.0", "utf-8" );
+	echo preg_replace('/&rsquo;/', "'" ,$output);
+}
 
-	$xml_module = $xml->createElement( "Module" );
-	$xml_module->setAttribute("manuallyUpdated", "no");
-	$xml->appendChild($xml_module);
-	$xml_module->appendChild($xml->createElement("Current", "yes"));
-	$xml_module->appendChild($xml->createElement("Code", $existing_module->code));
-	$xml_module->appendChild($xml->createElement("Title", $existing_module->title));
-	if($existing_module->modulemajorrelation)
+function site_publisher_list($f3)
+{
+	$module_list;
+	if($f3->exists("PARAMS.site"))
 	{
-		$xml_module->appendChild($xml->createElement("CourseYear", $existing_module->ownModulemajorrelation[0]->yearofstudy));
+		$site_modules = json_decode(file_get_contents(__DIR__."/etc/modulessites.json"), true);
+		$modules = @$site_modules[$f3->get("PARAMS.site")];
+		if(!$modules){
+			$f3->error(400,"No modules in this site. Check site identifier");
+		}
+		$module_list = $existing_module = R::find("module", " currentsyllabus_id is not null and code in (".R::genSlots($modules).") order by session desc", $modules);
+	}else{
+		$module_list = $existing_module = R::find("module", " currentsyllabus_id is not null order by session desc");
 	}
-	$xml_module->appendChild($xml->createElement("Semester", $existing_module->semestername));
-	$xml_module->appendChild($xml->createElement("CreditRating", $existing_module->credits*2));
-	
-	$levels = array("UG"=>"Undergraduate", "PR"=>"Postgraduate Research", "PC" => "Postgraduate Taught");
-	$level = @$levels[$existing_module->levelcode];
-	$xml_module->appendChild($xml->createElement("Level", $level));
-	$contact = $syllabus->kisContactHours();
-	$xml_module->appendChild($xml->createElement("ContactHours", $contact["Total"]));
-	$independant = $syllabus->kisIndependantHours();
-	$xml_module->appendChild($xml->createElement("NonContactHours", $independant["Total"]));
 
-	$xml_module->appendChild($xml->createElement("Description", $syllabus->introduction));
-	$xml_module->appendChild($xml->createElement("Overview", $syllabus->introduction));
+	$xml = new DOMDocument( "1.0", "utf-8" );
+	$xml_list = $xml->createElement("Modules");
+	$xml->appendChild($xml_list);
+	$codes_complete = array();
+	foreach($module_list as $module)
+	{
+		if(in_array($module->code, $codes_complete))
+		{
+			continue;
+		}
+		$codes_complete[] = $module->code;
 
-	$f3->set("syllabus", $syllabus);
-	$assessment = Template::instance()->render("assessment.htm");
-	$xml_module->appendChild($xml->createElement("Assessment", $assessment));
+		$module_xml = $module->sitePublisherXML($f3);		
 
-	$aims = Template::instance()->render("itemisedlearningoutcomes.htm");
-	$xml_module->appendChild($xml->createElement("AimsAndObjectives", $aims));
-	$xml_module->appendChild($xml->createElement("Syllabus", $syllabus->topics));
-	$xml_module->appendChild($xml->createElement("SpecialFeatures", $syllabus->specialfeatures));
-	$resources = Template::instance()->render("resources.htm");
-	$xml_module->appendChild($xml->createElement("Resources", $resources));
-	
+		if($module_xml){
+			$module_xml = $xml->importNode( $module_xml->documentElement , true );
+		
+			$xml_list->appendChild($module_xml);
+		}
+
+	}
+
 	$output = $xml->saveXML();
 
 	echo preg_replace('/&rsquo;/', "'" ,$output);
@@ -776,47 +784,25 @@ function approve_syllabus($f3)
 		return;
 	}
 
-	#TODO need to check that the user is a quinquenial reviewer
-	if($_POST["reviewtype"] == "quinquenial")
+	$syllabus->cqareviewed = true;
+
+	if(@$_POST["bigreview"])
 	{
-		$syllabus->quinquenialreviewed = true;
+		$syllabus->bigreview = true;
 	}
 
-	#TODO need to check that the user is a quinquenial reviewer
-	if($_POST["reviewtype"] == "courseleader")
-	{
-		$syllabus->courseleaderreviewed = true;
-	}
+	$user = current_user($f3);
+	$syllabus->isprovisional = 0;
+	$syllabus->isunderreview = 0;
+	$syllabus->timeapproved = time();
+	$syllabus->approvedby = $user->username;
+	$syllabus->approvedname = $user->familyname.", ".$user->givenname;
+	$syllabus->approvalnote = $_POST["approvalnote"];
+	$module = $syllabus->module;
+	$module->currentsyllabus_id = $syllabus->id;
+	unset($module->provisionalsyllabus);
+	R::store($module);
 
-	if($_POST["reviewtype"] == "cqa")
-	{
-		$syllabus->cqareviewed = true;
-	}
-
-	if($_POST["reviewtype"] == "educationboard")
-	{
-		$syllabus->educationboardreviewed = true;
-	}
-
-	R::store($syllabus);
-
-	# this is far too complicated for users to actually do. bottom line is if CQA says its ok then it is
-	#if($syllabus->quinquenialreviewed && $syllabus->courseleaderreviewed && $syllabus->cqareviewed && $syllabus->educationboardreviewed)
-	if($syllabus->cqareviewed)
-	{
-		$user = current_user($f3);
-		$syllabus->isprovisional = 0;
-		$syllabus->isunderreview = 0;
-		$syllabus->timeapproved = time();
-		$syllabus->approvedby = $user->username;
-		$syllabus->approvedname = $user->familyname.", ".$user->givenname;
-		$syllabus->approvalnote = $_POST["approvalnote"];
-		$module = $syllabus->module;
-		$module->currentsyllabus_id = $syllabus->id;
-		unset($module->provisionalsyllabus);
-		R::store($module);
-
-	}
 
 	R::store($syllabus);
 
