@@ -508,7 +508,7 @@ function site_publisher_list($f3)
 	}
 
 	$xml = new DOMDocument( "1.0", "utf-8" );
-	$xml_list = $xml->createElement("modules");
+	$xml_list = $xml->createElement("Modules");
 	$xml->appendChild($xml_list);
 	$codes_complete = array();
 	foreach($module_list as $module)
