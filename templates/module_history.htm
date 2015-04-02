@@ -1,5 +1,5 @@
 
-<p>This page each approved version of each syllabus each year. Only the approved version of each is stored</p>
+<p>This page shows each approved version of each syllabus each year. Only the approved version of each is stored</p>
 <F3:repeat group="{{ @modules }}" value="{{ @module }}">
 	<h3>{{ @module->title }} - {{ @module->session }}</h3>
 
@@ -11,7 +11,10 @@
 
 		<F3:check if="{{ @syllabus->approvedby }}">
 			Approved {{ date( "D, d M Y H:i", @syllabus->timeapproved ) }} by
-			{{ @syllabus->approvedname }} ({{ @syllabus->approvedby }})
+			{{ @syllabus->approvedname }} ({{ @syllabus->approvedby }}).
+		</F3:check>
+		<F3:check if="{{ @syllabus->bigreview }}">
+			<b>This part of programme validation</b>.
 		</F3:check>
 		</p>
 		{{ @syllabus->changessummary }}

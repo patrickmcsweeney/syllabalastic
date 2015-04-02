@@ -874,4 +874,5 @@ class Model_Syllabus extends RedBean_SimpleModel {
 		$kis_independant_hours["Total"] = $total;
 		return $kis_independant_hours;
 	}
+	
 }

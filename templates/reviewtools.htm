@@ -7,6 +7,7 @@
 			<check if="{{ !@syllabus->cqareviewed }}">
 				<form action="/approve/syllabus/{{@syllabus->id}}" method="POST">
 				<input type="hidden" name="reviewtype" value="cqa" />
+				<p><input type="checkbox" name="bigreview" /> This review is part of program validation</p>
 				<div class="review-note">
 					<p>Please leave a note explaining your reason for approval. For example: "Less than 20% of the module has changed."</p>
 					<textarea id="approval-note" name="approvalnote"></textarea>
