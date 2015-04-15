@@ -489,7 +489,9 @@ function site_publisher_module($f3)
 
 	header( "content-type: application/xml; charset=utf-8" );
 
-	echo preg_replace('/&rsquo;/', "'" ,$output);
+	#echo preg_replace('/&rsquo;/', "'" ,$output);
+	# site publisher has some pretty creative tastes about whats xml
+	echo iconv('UTF-8', 'ASCII//TRANSLIT', $output);
 }
 
 function site_publisher_list($f3)
@@ -531,7 +533,11 @@ function site_publisher_list($f3)
 
 	$output = $xml->saveXML();
 
-	echo preg_replace('/&rsquo;/', "'" ,$output);
+	header( "content-type: application/xml; charset=utf-8" );
+
+	#echo preg_replace('/&rsquo;/', "'" ,$output);
+	# site publisher has some pretty creative tastes about whats xml
+	echo iconv('UTF-8', 'ASCII//TRANSLIT', $output);
 }
 
 function php_module($f3)
