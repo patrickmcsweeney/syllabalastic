@@ -71,15 +71,15 @@ class Model_User extends RedBean_SimpleModel {
 	function update_from_ldap_data($ldap_data)
 	{
 		global $department_map;
-		$this->staffid = $ldap_data[0]['employeenumber'][0];
-		$this->username = $ldap_data[0]['name'][0];
-		$this->givenname = $ldap_data[0]['givenname'][0];
-		$this->familyname = $ldap_data[0]['sn'][0];
-		$bits = explode(',',$ldap_data[0]['dn']);
+		$this->staffid = @$ldap_data[0]['employeenumber'][0];
+		$this->username = @$ldap_data[0]['name'][0];
+		$this->givenname = @$ldap_data[0]['givenname'][0];
+		$this->familyname = @$ldap_data[0]['sn'][0];
+		$bits = explode(',',@$ldap_data[0]['dn']);
 		$dept_bits = explode("OU=", $bits[2]);
 		//$faculty_bits = explode("OU=", $bits[4]); // TODO get an actual list of faculty bits and what faculty to map them to...
-		$this->departmentcode = strtoupper($dept_bits[1]);
-		$this->departmentname = $ldap_data[0]['department'][0];
+		$this->departmentcode = @strtoupper($dept_bits[1]);
+		$this->departmentname = @$ldap_data[0]['department'][0];
 		$this->facultycode = "F8"; 
 		if(array_key_exists($this->departmentcode, $department_map))
 		{

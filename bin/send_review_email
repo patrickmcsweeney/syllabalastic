@@ -6,7 +6,7 @@ require_once($path_to_base_dir.'includes.php');
 foreach($EMAIL_ALERTS as $user)
 {
 	$user = R::findOne("user", " username = ? ", array($user));
-	if(!$user->is_reviewer())
+	if(!$user || !$user->is_reviewer())
 	{
 		continue;
 	}
