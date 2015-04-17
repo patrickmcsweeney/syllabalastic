@@ -73,16 +73,16 @@ class Model_Module extends RedBean_SimpleModel
                 $independant = $syllabus->kisIndependantHours();
                 $xml_module->appendChild($xml->createElement("NonContactHours", $independant["Total"]));
 
-                $xml_module->appendChild($xml->createElement("Description"))->appendChild($xml->createTextNode($syllabus->introduction));
-                $xml_module->appendChild($xml->createElement("Overview"))->appendChild($xml->createTextNode($syllabus->introduction));
+                $xml_module->appendChild($xml->createElement("Description"))->appendChild($xml->createTextNode(remove_empty_html_tags($syllabus->introduction)));
+                $xml_module->appendChild($xml->createElement("Overview"))->appendChild($xml->createTextNode(remove_empty_html_tags($syllabus->introduction)));
 
                 $f3->set("syllabus", $syllabus);
                 $assessment = Template::instance()->render("assessment.htm");
                 $xml_module->appendChild($xml->createElement("Assessment"))->appendChild($xml->createTextNode($assessment));
 
                 $aims = Template::instance()->render("itemisedlearningoutcomes.htm");
-                $xml_module->appendChild($xml->createElement("AimsAndObjectives"))->appendChild($xml->createTextNode($aims));
-                $xml_module->appendChild($xml->createElement("Syllabus"))->appendChild($xml->createTextNode($syllabus->topics));
+                $xml_module->appendChild($xml->createElement("AimsAndObjectives"))->appendChild($xml->createTextNode(remove_empty_html_tags($aims)));
+                $xml_module->appendChild($xml->createElement("Syllabus"))->appendChild($xml->createTextNode(remove_empty_html_tags($syllabus->topics)));
                 $xml_module->appendChild($xml->createElement("SpecialFeatures"))->appendChild($xml->createTextNode( $syllabus->specialfeatures));
                 $resources = Template::instance()->render("resources.htm");
                 $xml_module->appendChild($xml->createElement("Resources"))->appendChild($xml->createTextNode($resources));

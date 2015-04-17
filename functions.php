@@ -7,6 +7,12 @@ function is_assoc($array) {
   return false;
 }
 
+function remove_empty_html_tags($string)
+{
+	$string = preg_replace('/<[^\/>][^>]*>\s*<\/[^>]+>/s', '', $string);
+	return preg_replace('/^\s*/s', '', $string);
+}
+
 function output_csv($data_table, $headings, $filename)
 {
         header('Content-Type: application/octet-stream');
