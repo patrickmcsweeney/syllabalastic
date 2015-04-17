@@ -1,4 +1,9 @@
 <?php
+function remove_escaped_html_comments($string)
+{
+	return preg_replace('/&lt;!--.*?--&gt;/s', '', $string);
+}
+
 function is_assoc($array) {
   foreach (array_keys($array) as $k => $v) {
     if ($k !== $v)
