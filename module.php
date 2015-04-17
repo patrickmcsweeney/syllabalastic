@@ -57,7 +57,11 @@ class Model_Module extends RedBean_SimpleModel
                 $xml->appendChild($xml_module);
                 $xml_module->appendChild($xml->createElement("Current", "yes"));
                 $xml_module->appendChild($xml->createElement("Code", $this->code));
-                $xml_module->appendChild($xml->createElement("Title"))->appendChild($xml->createTextNode( $this->title));
+	
+		#site publisher doesnt like & in titles?
+		$title = preg_replace('/&/', " and ", $this->title);
+
+                $xml_module->appendChild($xml->createElement("Title"))->appendChild($xml->createTextNode($title));
                 if($this->modulemajorrelation)
                 {
                         $xml_module->appendChild($xml->createElement("CourseYear"))->appendChild($xml->createTextNode( $this->ownModulemajorrelation[0]->yearofstudy));
