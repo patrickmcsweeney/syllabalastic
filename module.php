@@ -82,7 +82,10 @@ class Model_Module extends RedBean_SimpleModel
 
                 $f3->set("syllabus", $syllabus);
                 $assessment = Template::instance()->render("assessment.htm");
-                $xml_module->appendChild($xml->createElement("Assessment"))->appendChild($xml->createTextNode($assessment));
+                $xml_module->appendChild($xml->createElement("Assessment"))->appendChild($xml->createTextNode(clean_html($assessment)));
+		
+		$teaching_and_learning = Template::instance()->render("teachingandlearning.htm");
+                $xml_module->appendChild($xml->createElement("LearningAndTeaching"))->appendChild($xml->createTextNode(clean_html($teaching_and_learning)));
 
                 $aims = Template::instance()->render("itemisedlearningoutcomes.htm");
                 $xml_module->appendChild($xml->createElement("AimsAndObjectives"))->appendChild($xml->createTextNode(clean_html($aims)));

@@ -1,0 +1,11 @@
+<div>
+	{{@syllabus->teachingandlearningtext}}
+</div>
+<check if="{{count(@syllabus->ownRegularteaching) > 0}}">
+	<table><tbody>
+		<tr><th>Activity</th><th>Description</th><th>Hours</th></tr>
+	<repeat group="{{@syllabus->ownRegularteaching}}" value="{{@activity}}">
+		<tr><td>{{@getConstant(@syllabus, @activity->activitytype)}}</td><td>{{@activity->teachingdescription}}</td><td>{{@activity->studenthours}}</td></tr>
+	</repeat>
+	</tbody></table>
+</check>
