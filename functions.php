@@ -1,4 +1,9 @@
 <?php
+function remove_escaped_html_comments($string)
+{
+	return preg_replace('/&lt;!--.*?--&gt;/s', '', $string);
+}
+
 function is_assoc($array) {
   foreach (array_keys($array) as $k => $v) {
     if ($k !== $v)
@@ -7,9 +12,15 @@ function is_assoc($array) {
   return false;
 }
 
-function remove_empty_html_tags($string)
+function clean_html($string)
 {
-	$string = preg_replace('/<[^\/>][^>]*>\s*<\/[^>]+>/s', '', $string);
+	#remove comments
+	$string = preg_replace('/<!--.*?-->/s', '', $string);
+	#remove style attributes
+	$string = preg_replace('/(<[^>]+) style=".*?"/i', '$1', $string);
+	#remove empty html tags
+	$string = preg_replace('/<([^\/>][^>]*)>\s*<\/\1>/s', '', $string);
+	
 	return preg_replace('/^\s*/s', '', $string);
 }
 
