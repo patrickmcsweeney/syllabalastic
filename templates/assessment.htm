@@ -5,10 +5,14 @@
 			<th>Hours</th>
 			<th>% contribution to final mark</th>
 		</tr>
-		<F3:repeat group="{{@syllabus->ownRegularteaching}}" value="{{@activity}}">
+		<F3:repeat group="{{@syllabus->ownContinuousassessment}}" value="{{@activity}}">
 			<tr>
-				<td>{{@activity->teachingdescription}}</td>
-				<td>{{@activity->studenthours}}</td>
+				<td><F3:check if="{{@getConstant(@syllabus, @activity->type)==@activity->description}}">
+					<true>{{@activity->description}}</true>
+					<false><strong>{{@getConstant(@syllabus, @activity->type)}}</strong> {{@activity->description}}
+					</false>
+				</check></td>
+				<td>&nbsp;</td>
 				<td>{{@activity->percent}}%</td>
 			</tr>
 		</F3:repeat>

@@ -313,7 +313,7 @@ function create_syllabus($f3)
 function view_syllabus($f3)
 {
 	if( $f3->exists('PARAMS["modulecode"]')){
-		$module = R::findOne("module", " code = ? ", array( $f3->get('PARAMS["modulecode"]') ) );
+		$module = R::findOne("module", " code = ? and currentsyllabus_id is not null order by session desc ", array( $f3->get('PARAMS["modulecode"]') ) );
 		$syllabus = $module->getCurrent();
 	}else{
 		$syllabus = R::load("syllabus", $f3->get('PARAMS["syllabus_id"]'));
