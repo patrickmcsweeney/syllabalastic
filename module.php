@@ -73,9 +73,9 @@ class Model_Module extends RedBean_SimpleModel
                 $level = @$levels[$this->levelcode];
                 $xml_module->appendChild($xml->createElement("Level", $level));
                 $contact = $syllabus->kisContactHours();
-                $xml_module->appendChild($xml->createElement("ContactHours", $contact["Total"]));
+                $xml_module->appendChild($xml->createElement("ContactHours"));
                 $independant = $syllabus->kisIndependantHours();
-                $xml_module->appendChild($xml->createElement("NonContactHours", $independant["Total"]));
+                $xml_module->appendChild($xml->createElement("NonContactHours"));
 
                 $xml_module->appendChild($xml->createElement("Description"))->appendChild($xml->createTextNode(clean_html($syllabus->introduction)));
                 $xml_module->appendChild($xml->createElement("Overview"))->appendChild($xml->createTextNode(clean_html($syllabus->introduction)));
