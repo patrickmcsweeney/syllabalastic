@@ -84,13 +84,13 @@ class Model_Module extends RedBean_SimpleModel
                 $assessment = Template::instance()->render("assessment.htm");
                 $xml_module->appendChild($xml->createElement("Assessment"))->appendChild($xml->createTextNode(clean_html($assessment)));
 		
-		$teaching_and_learning = Template::instance()->render("teachingandlearning.htm");
-                $xml_module->appendChild($xml->createElement("LearningAndTeaching"))->appendChild($xml->createTextNode(clean_html($teaching_and_learning)));
 
                 $aims = Template::instance()->render("itemisedlearningoutcomes.htm");
                 $xml_module->appendChild($xml->createElement("AimsAndObjectives"))->appendChild($xml->createTextNode(clean_html($aims)));
                 $xml_module->appendChild($xml->createElement("Syllabus"))->appendChild($xml->createTextNode(clean_html($syllabus->topics)));
                 $xml_module->appendChild($xml->createElement("SpecialFeatures"))->appendChild($xml->createTextNode( $syllabus->specialfeatures));
+		$teaching_and_learning = Template::instance()->render("teachingandlearning.htm");
+                $xml_module->appendChild($xml->createElement("LearningAndTeaching"))->appendChild($xml->createTextNode(clean_html($teaching_and_learning)));
                 $resources = Template::instance()->render("resources.htm");
                 $xml_module->appendChild($xml->createElement("Resources"))->appendChild($xml->createTextNode($resources));
                 return $xml;
