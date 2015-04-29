@@ -952,27 +952,28 @@ function report_usage($f3)
 
 function report_current_syllabus_urls($f3)
 {
-	$module_codes = R::getAll("select code from module where session='201415'");
+	$session = key(dates_as_sessions());
+	$module_codes = array();
+	
+	if($f3->exists("PARAMS.faculty"))
+	{
+		$module_codes= R::getAll("select code from module where session=? and facultycode=?", array($session, $f3->get("PARAMS.faculty")));
+	}
+	else
+	{
+		$module_codes = R::getAll("select code from module where session=? ", array($session));
+	}
+
 	$data_to_csv = array();
 	foreach($module_codes as $results)
 	{
 		$code = $results["code"];
-		if(!preg_match( "/^(COMP|ELEC|INFO|WEBS|PHYS)/", $code ))
-		{
-			continue;
-		}
 		
 		$module_with_syll = R::findOne("module", " currentsyllabus_id is not null AND code = ? order by session desc ", array( $code ) );
 		if(!$module_with_syll){ continue; }
 		$subject_code = substr($code,0,4);
 		$course_number = substr($code,4);
-		$session = $module_with_syll->session;
-		$ecs_session = substr($session, 2);
-		$url = "https://secure.ecs.soton.ac.uk/module/$ecs_session/$code";
-		if($subject_code == "PHYS")
-		{
-			$url = 	"http://www.phys.soton.ac.uk/module/$code";
-		}
+		$url = "https://syllabus.soton.ac.uk/view/module_profile/$code";
 		$approval_date = strtoupper(date("d-M-Y", $module_with_syll->getCurrent()->timeapproved));
 		$data_to_csv[] = array($subject_code, $course_number, $url, $module_with_syll->title, $approval_date);
 		
