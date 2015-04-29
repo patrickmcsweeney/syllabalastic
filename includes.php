@@ -321,6 +321,21 @@ $REVIEWERS = array(
 			'facultycode' => array("F8")
 		)
 	),
+	        "mgb1f14" => array(
+		'module' => array(
+			'facultycode' => array("F8")
+		)
+	),
+	        "gg1v14" => array(
+		'module' => array(
+			'facultycode' => array("F8")
+		)
+	),
+	        "bgs1m14" => array(
+		'module' => array(
+			'facultycode' => array("F8")
+		)
+	),
 );
 
 $EMAIL_ALERTS = array( "pm5c08", "cqafee", "cqafshs" );
