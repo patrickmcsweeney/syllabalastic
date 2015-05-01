@@ -492,7 +492,7 @@ function site_publisher_module($f3)
 	$output = remove_escaped_html_comments($output);
 	#echo preg_replace('/&rsquo;/', "'" ,$output);
 	# site publisher has some pretty creative tastes about whats xml
-	echo iconv('UTF-8', 'ASCII//TRANSLIT', $output);
+	echo preg_replace('/\so\s/','',iconv('UTF-8', 'ASCII//TRANSLIT', $output));
 }
 
 function site_publisher_list($f3)
@@ -540,7 +540,8 @@ function site_publisher_list($f3)
 
 	#echo preg_replace('/&rsquo;/', "'" ,$output);
 	# site publisher has some pretty creative tastes about whats xml
-	echo iconv('UTF-8', 'ASCII//TRANSLIT', $output);
+	# it transliterates bullet marks into o so remove them.
+	echo preg_replace('/\so\s/','',iconv('UTF-8', 'ASCII//TRANSLIT', $output));
 }
 
 function php_module($f3)
