@@ -27,3 +27,12 @@
 	</tbody>
 </table>
 </F3:check>
+
+<p>Referral Method: {{@getConstant(@syllabus,@syllabus.referral)}}</p>
+<div class="referralnotes">
+        {{@syllabus.referralnotes}}
+</div>
+
+<repeat group="{{@syllabus.ownRepeatyear}}" value="{{@year}}">
+        <p>Method of Repeat Year: {{@getConstant(@syllabus, @year->repeatyear)}}</p>
+</repeat>

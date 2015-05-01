@@ -5,6 +5,7 @@ class Model_Module extends RedBean_SimpleModel
 
 	public $provisionalsyllabus = false;
 	public $currentsyllabus = false;
+	static $staff_to_url;
 
 	public function getProvisional() 
 	{
@@ -48,6 +49,11 @@ class Model_Module extends RedBean_SimpleModel
 		if(!$syllabus)
 		{
 			return null;
+		}
+
+		if(!isset($staff_to_url))
+		{
+			$staff_to_url = json_decode(file_get_contents(__DIR__."/etc/idtourl.json"), true);
 		}
                 $xml = new DOMDocument( "1.0", "utf-8" );
 
@@ -93,6 +99,21 @@ class Model_Module extends RedBean_SimpleModel
                 $xml_module->appendChild($xml->createElement("LearningAndTeaching"))->appendChild($xml->createTextNode(clean_html($teaching_and_learning)));
                 $resources = Template::instance()->render("resources.htm");
                 $xml_module->appendChild($xml->createElement("Resources"))->appendChild($xml->createTextNode($resources));
+		if($this->sharedPerson)
+		{
+			$coordinators = $xml_module->appendChild($xml->createElement("Coordinators"));
+			foreach($this->sharedPerson as $staff)
+			{
+				if(@$staff_to_url[$staff->staffid])
+				{
+					$staff_url = trim($staff_to_url[$staff->staffid]);
+					$coordinator = $coordinators->appendChild($xml->createElement("Coordinator"));
+					$coordinator->appendChild($xml->createTextNode($staff_url));
+				}
+			}
+
+		}
+
                 return $xml;
         }
 
