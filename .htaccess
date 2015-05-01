@@ -31,6 +31,10 @@ RewriteRule var/.*$ - [R=404]
 RewriteCond %{REQUEST_FILENAME} lib/.*$
 RewriteRule lib/.*$ - [R=404]
 
+#.DS_Store files which mac leaves lying around are an attack vector it seems.
+RewriteCond %{REQUEST_FILENAME} .[Dd][Ss]_
+RewriteRule .[Dd][Ss]_ - [R=404]
+
 #RewriteCond %{REQUEST_URI} \.html?$
 #RewriteRule \.html?$ - [R=404]
 

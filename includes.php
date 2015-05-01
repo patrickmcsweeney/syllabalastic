@@ -340,3 +340,6 @@ $REVIEWERS = array(
 
 $EMAIL_ALERTS = array( "pm5c08", "cqafee", "cqafshs" );
 
+$f3->set('getConstant',function($syllabus, $key){
+        return $syllabus->getConstant("$key");
+});

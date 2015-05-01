@@ -973,7 +973,7 @@ function report_current_syllabus_urls($f3)
 		if(!$module_with_syll){ continue; }
 		$subject_code = substr($code,0,4);
 		$course_number = substr($code,4);
-		$url = "https://syllabus.soton.ac.uk/view/module_profile/$code";
+		$url = "https://syllabus.soton.ac.uk/view/moduleprofile/$code";
 		$approval_date = strtoupper(date("d-M-Y", $module_with_syll->getCurrent()->timeapproved));
 		$data_to_csv[] = array($subject_code, $course_number, $url, $module_with_syll->title, $approval_date);
 		
