@@ -58,7 +58,6 @@ class Model_Module extends RedBean_SimpleModel
                 $xml = new DOMDocument( "1.0", "utf-8" );
 
                 $xml_module = $xml->createElement( "Module" );
-                $xml_module->setAttribute("manuallyUpdated", "no");
                 $xml_module->setAttribute("id", $this->code);
                 $xml->appendChild($xml_module);
                 $xml_module->appendChild($xml->createElement("Current", "yes"));
