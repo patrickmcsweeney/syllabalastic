@@ -59,7 +59,7 @@ function modules_by_year($f3)
 	
 	$user = current_user($f3);
 	$f3->set('userfacultycode', $user->facultycode);
-	#TODO dont hard code the department code...
+
 	if($f3->exists("REQUEST.allmodules") || !isset($user->facultycode))
 	{
 		$modules = R::find('module', "session = ? ORDER BY code", array($f3->get('PARAMS.session')));

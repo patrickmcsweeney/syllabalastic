@@ -176,7 +176,6 @@ class Model_User extends RedBean_SimpleModel {
 		$email_body = Template::instance()->render("review_email.htm");
 
 		mail($to, $subject, $email_body, $headers);
-		echo $email_body;
 		
 	}
 
