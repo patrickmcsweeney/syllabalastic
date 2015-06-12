@@ -985,6 +985,45 @@ function report_current_syllabus_urls($f3)
 	
 }
 
+function report_current_syllabus_learning_outcomes($f3)
+{
+	$session = key(dates_as_sessions());
+	$module_codes = array();
+	
+	if($f3->exists("PARAMS.faculty"))
+	{
+		$module_codes= R::getAll("select code from module where session=? and facultycode=?", array($session, $f3->get("PARAMS.faculty")));
+	}
+	else
+	{
+		$module_codes = R::getAll("select code from module where session=? ", array($session));
+	}
+
+	$data_to_csv = array();
+	foreach($module_codes as $results)
+	{
+		$code = $results["code"];
+		
+		$module_with_syl = R::findOne("module", " currentsyllabus_id is not null AND code = ? order by session desc ", array( $code ) );
+		if(!$module_with_syl){ continue; }
+
+		$syllabus = $module_with_syl->getCurrent();
+		$outcomes = $syllabus->getLearningOutcomes();
+		foreach($outcomes as $outcome_type => $outcome_set)
+		{
+			foreach($outcome_set as $outcome)
+			{
+				$data_to_csv[] = array($module_with_syl->code, $module_with_syl->session, $outcome_type, $outcome);
+			}
+		}	
+		
+
+	}
+	$headings = array("module code", "session", "outcome type", "outcome");
+	output_csv($data_to_csv, $headings, "syllabus_outcomes.csv");
+	
+}
+
 function report_module_profiles($f3)
 {
 	header("Pragma: ");
