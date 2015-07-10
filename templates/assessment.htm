@@ -20,7 +20,14 @@
 		<F3:repeat group="{{@syllabus->ownExam}}" value="{{@assessment}}">
 			<tr>
 				<td>Exam</td>
-				<td>{{@assessment->examduration}} hour(s)</td>
+				<check if="{{@assessment->examduration > 5}}">
+				<false>
+					<td>{{@assessment->examduration}} hour(s)</td>
+				</false>
+				<true>
+					<td>{{@assessment->examduration}} minutes</td>
+				</true>
+				</check>
 				<td>{{@assessment->percent}}%</td>
 			</tr>
 		</F3:repeat>
