@@ -85,6 +85,12 @@
       </ul>
 
       <p><strong>Referral policy:</strong> {{@getConstant(@syllabus, @syllabus->referral)}} </p>
+	
+<check if="{{@syllabus->referralnotes}}">
+	<div>
+		{{@syllabus->referralnotes}}
+	</div>
+</check>
 
 <F3:check if="{{@syllabus->assessmentnotes}}">
         <F3:true>

@@ -5,6 +5,7 @@
 			<th>Assessment Method</th>
 			<th>Hours</th>
 			<th>% contribution to final mark</th>
+			<th>Feedback</th>
 		</tr>
 		<F3:repeat group="{{@syllabus->ownContinuousassessment}}" value="{{@activity}}">
 			<tr>
@@ -15,6 +16,7 @@
 				</check></td>
 				<td>&nbsp;</td>
 				<td>{{@activity->percent}}%</td>
+				<td>{{@activity->feedback}}</td>
 			</tr>
 		</F3:repeat>
 		<F3:repeat group="{{@syllabus->ownExam}}" value="{{@assessment}}">
@@ -22,6 +24,7 @@
 				<td>Exam</td>
 				<td>{{@assessment->examduration}} hour(s)</td>
 				<td>{{@assessment->percent}}%</td>
+				<td> </td>
 			</tr>
 		</F3:repeat>
 	</tbody>
@@ -32,7 +35,10 @@
 <div class="referralnotes">
         {{@syllabus.referralnotes}}
 </div>
-
-<repeat group="{{@syllabus.ownRepeatyear}}" value="{{@year}}">
-        <p>Method of Repeat Year: {{@getConstant(@syllabus, @year->repeatyear)}}</p>
-</repeat>
+<check if="{{count(@syllabus.ownRepeatyear) > 0}}">
+<p>Method of Repeat Year: 
+	<repeat group="{{@syllabus.ownRepeatyear}}" value="{{@year}}">
+		{{@getConstant(@syllabus, @year->repeatyear)}}.
+	</repeat>
+</p>
+</check>
