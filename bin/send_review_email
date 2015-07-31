@@ -16,8 +16,8 @@ foreach($EMAIL_ALERTS as $user)
 	if(count($syllabuses) > 0)
 	{
 		$user->send_review_email($f3);
+		
 	}
 
 }
 
-#code goes here

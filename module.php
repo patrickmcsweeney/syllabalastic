@@ -82,7 +82,7 @@ class Model_Module extends RedBean_SimpleModel
                 $independant = $syllabus->kisIndependantHours();
                 $xml_module->appendChild($xml->createElement("NonContactHours"));
 
-                $xml_module->appendChild($xml->createElement("Description"))->appendChild($xml->createTextNode(clean_html($syllabus->introduction)));
+                $xml_module->appendChild($xml->createElement("Description"))->appendChild($xml->createTextNode(substr(clean_html($syllabus->introduction),0,3500)));
                 $xml_module->appendChild($xml->createElement("Overview"))->appendChild($xml->createTextNode(clean_html($syllabus->introduction)));
 
                 $f3->set("syllabus", $syllabus);
@@ -100,15 +100,21 @@ class Model_Module extends RedBean_SimpleModel
                 $xml_module->appendChild($xml->createElement("Resources"))->appendChild($xml->createTextNode($resources));
 		if($this->sharedPerson)
 		{
-			$coordinators = $xml_module->appendChild($xml->createElement("Coordinators"));
+			$add_coordinators = false;
+			$coordinators = $xml->createElement("Coordinators");
 			foreach($this->sharedPerson as $staff)
 			{
 				if(@$staff_to_url[$staff->staffid])
 				{
+					$add_coordinators = true;
 					$staff_url = trim($staff_to_url[$staff->staffid]);
 					$coordinator = $coordinators->appendChild($xml->createElement("Coordinator"));
 					$coordinator->appendChild($xml->createTextNode($staff_url));
-				}
+				 }
+			}
+			if($add_coordinators)
+			{
+				$coordinators = $xml_module->appendChild($coordinators);	
 			}
 
 		}

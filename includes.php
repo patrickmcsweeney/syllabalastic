@@ -20,9 +20,6 @@ $includes = array
         'lib/floraform/FloraForm.php'
 );
 
-$url = $f3->get("SCHEME")."://".$f3->get("HOST").$f3->get("BASE");
-$f3->set("BASEURL", $url);
-
 $department_map = unserialize(file_get_contents(__DIR__."/etc/departments.php")); 
 
 foreach ($includes as $file)
@@ -47,6 +44,14 @@ if($f3->get('api_key')) {
 
 $REVIEWERS = array(
         "pm5c08" => array(
+		'module' => array(
+			'facultycode' => array( "F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "wf", "fp"),
+			'departmentcode' => array("FP", "JF")
+#			'themecode' => array(),
+#			'code' => array()
+		)
+	),
+        "pm2" => array(
 		'module' => array(
 			'facultycode' => array( "F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "wf", "fp"),
 			'departmentcode' => array("FP", "JF")
@@ -338,6 +343,7 @@ $REVIEWERS = array(
 );
 
 $EMAIL_ALERTS = array( "pm5c08", "cqafee", "cqafshs" );
+#$EMAIL_ALERTS = array( "pm5c08", "pm2" );
 
 $f3->set('getConstant',function($syllabus, $key){
         return $syllabus->getConstant("$key");

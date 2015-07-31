@@ -18,8 +18,8 @@ function clean_html($string)
 	$string = preg_replace('/<!--.*?-->/s', '', $string);
 	#remove style attributes
 	$string = preg_replace('/(<[^>]+) style=".*?"/i', '$1', $string);
-	#remove empty html tags
-	$string = preg_replace('/<([^\/>][^>]*)>\s*<\/\1>/s', '', $string);
+	#remove empty html tags except ones with t in (tr, td, tbody)
+	$string = preg_replace('/<([^t\/>][^>]*)>\s*<\/\1>/s', '', $string);
 	
 	return preg_replace('/^\s*/s', '', $string);
 }
