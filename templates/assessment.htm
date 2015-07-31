@@ -35,6 +35,12 @@
 </table>
 </F3:check>
 
+<F3:check if="{{@syllabus.assessmentnotes}}">
+	<div class="assessmentnotes">
+		{{@assessmentnotes}}
+	</div>
+</F3:check>
+
 <p>Referral Method: {{@getConstant(@syllabus,@syllabus.referral)}}</p>
 <div class="referralnotes">
         {{@syllabus.referralnotes}}
