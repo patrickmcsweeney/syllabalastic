@@ -252,10 +252,11 @@ function tick($msg = "tick" )
 {
 	$f3 = Base::instance();
 	$mt = microtime(true);
-	print sprintf( "<p>%s: %0.3f since start. %0.3f since last tick.</p>\n",
+	print sprintf( "<p>%s: %0.3f since start. %0.3f since last tick. Memory used: %si MBi. </p>\n",
 		$msg,
 		$mt - $f3->get('page_load_start' ),
-		$mt - $f3->get('last_tick' ) );
+		$mt - $f3->get('last_tick' ),
+		memory_get_usage()/ 1000000 );
 	$f3->set('last_tick', $mt );
 }
 
