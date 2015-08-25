@@ -16,7 +16,7 @@ if (count($argv) < 2)
 $input_file_name = $argv[1];
 
 
-tick("started spreadsheet");
+#tick("started spreadsheet");
 if(!spreadsheet_is_correct_layout($input_file_name))
 {
 	print "Spreadsheet layout is incorrect. Not starting!\n";
@@ -27,16 +27,19 @@ $module_data =  $people_data = $program_data = $major_data = array();
 
 populate_data_from_spreadsheet($input_file_name, $module_data, $people_data, $program_data, $major_data);
 
-tick("finished spreadsheet");
+#tick("finished spreadsheet");
 
 people_import($people_data);
-tick("people in the db now");
+#tick("people in the db now");
+
 module_import($module_data);
-tick("after storing all modules");
+#tick("after storing all modules");
+
 program_import($program_data);
-tick("after storing programs");
+#tick("after storing programs");
+
 major_import($major_data);
-tick("after storing majors");
+#tick("after storing majors");
 
 function spreadsheet_is_correct_layout($file_name)
 {
