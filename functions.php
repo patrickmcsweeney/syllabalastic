@@ -298,6 +298,10 @@ function currentSession($offset_years = 0)
 function last_known_current_syllabus($module_code)
 {
 	$existing_module = R::findOne("module", " currentsyllabus_id is not null AND code = ? order by session desc ", array( $module_code ) );
+	if(!$existing_module)
+	{
+		return null;
+	}
 	return $existing_module->getCurrent();
 
 }
