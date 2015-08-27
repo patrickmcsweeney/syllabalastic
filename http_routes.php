@@ -500,17 +500,19 @@ function site_publisher_list($f3)
 	$module_list;
 	if($f3->exists("PARAMS.site"))
 	{
+		$site_modules = json_decode(file_get_contents(__DIR__."/etc/modulessites.json"), true);
+
 		if($f3->get("PARAMS.site") == "engineeringug")
 		{
-			$module_list = R::find("module", " currentsyllabus_id is not null and facultycode='F2' order by session desc ");
+     			$modules = R::getCol( ' SELECT code FROM module where session=201516 and facultycode="F2" ' );
 		}else{
-			$site_modules = json_decode(file_get_contents(__DIR__."/etc/modulessites.json"), true);
 			$modules = @$site_modules[$f3->get("PARAMS.site")];
-			if(!$modules){
-				$f3->error(400,"No modules in this site. Check site identifier");
-			}
-			$module_list = R::find("module", " currentsyllabus_id is not null and code in (".R::genSlots($modules).") order by session desc", $modules);
 		}
+
+		if(!$modules){
+			$f3->error(400,"No modules in this site. Check site identifier");
+		}
+		$module_list = R::find("module", " currentsyllabus_id is not null and code in (".R::genSlots($modules).") order by session desc", $modules);
 	}else{
 		$module_list = R::find("module", " currentsyllabus_id is not null order by session desc");
 	}
