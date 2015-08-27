@@ -5,246 +5,296 @@ require_once($path_to_base_dir.'includes.php');
 #R::debug(true);
 #R::freeze(true);
 
+define("RECORD_SEPERATOR", '|');
+
 if (count($argv) < 2)
 {
-	echo "you must specifiy a file to import\n";
+	echo "You must specifiy a file to import\n";
 	exit;
 }
-$file = fopen( $argv[1], "r" ) or die("file does not exist");
-$info = array();
 
-tick("started spreadsheet");
-fgets($file); # chuck the headings away
+$input_file_name = $argv[1];
 
-while( $line = fgets($file) )
+
+#tick("started spreadsheet");
+if(!spreadsheet_is_correct_layout($input_file_name))
 {
-	$line = explode("|", $line);
-	if(!is_array($line) or count($line) < 10){ print("Something is wrong this line has no data\n"); continue; }
-	####### TODO, reading the data file should be abstracted, this is blatently something which will change
-	$info[$line[0]][$line[10]]["title"] = $line[44] ?: $line[15];
-	$info[$line[0]][$line[10]]["departmentcode"] = $line[6];
-	$info[$line[0]][$line[10]]["departmentname"] = $line[7];
-	$info[$line[0]][$line[10]]["facultycode"] = $line[4];
-	$info[$line[0]][$line[10]]["facultyname"] = $line[5];
-	$info[$line[0]][$line[10]]["semestercode"] = $line[17];
-	$info[$line[0]][$line[10]]["semestername"] = $line[18];
-	$info[$line[0]][$line[10]]["levelcode"] = $line[35];
-	$info[$line[0]][$line[10]]["credits"] = $line[19]/2;
-	if($staff_id = trim($line[29]))
-	{
-		$info[$line[0]][$line[10]]["people"][$staff_id] = 1;
-		$people[$staff_id]["first_name"] = trim($line[31]);
-		$people[$staff_id]["last_name"] = trim($line[30]);
-	}
-
-	if($program_code = trim($line[36]))
-	{
-		$programs[$line[0]][$program_code]["title"] = $line[37];
-	}
-	if($major_code = trim($line[38]))
-	{
-		# 10 - course_code
-		# 40 - year_of_study
-		# 43 - module_type
-		# 38 = major_code
-		# 39 = major_desc (title)
-		# 0 = session
-		$majors[$line[0]][$major_code]["title"] = $line[39];
-		$majors[$line[0]][$major_code]["programcode"] = trim($line[36]);
-		$majors[$line[0]][$major_code]["modules"][$line[10]] = array(
-			"yearofstudy"=>$line[40],
-			"type"=>$line[43] );
-	}
-}
-tick("finished spreadsheet");
-print "People import\n";
-$dbpeople = R::findAll("person");
-$persondbhash =array();
-foreach($dbpeople as $person)
-{
-	$persondbhash[$person->staffid] = $person;
+	print "Spreadsheet layout is incorrect. Not starting!\n";
+	exit;
 }
 
-foreach( $people as $staff_id => $people_properties )
+$module_data =  $people_data = $program_data = $major_data = array();
+
+populate_data_from_spreadsheet($input_file_name, $module_data, $people_data, $program_data, $major_data);
+
+#tick("finished spreadsheet");
+
+people_import($people_data);
+#tick("people in the db now");
+
+module_import($module_data);
+#tick("after storing all modules");
+
+program_import($program_data);
+#tick("after storing programs");
+
+major_import($major_data);
+#tick("after storing majors");
+
+function spreadsheet_is_correct_layout($file_name)
 {
-	#$person = R::findOne("person", "staffid = ?", array( $staff_id ) );
-	$person = @$persondbhash[$staff_id];
-	if(!isset($person))
+	if(!file_exists($file_name)) { die("file $file_name does not exist"); }
+
+	$file_contents = explode("\n", file_get_contents( $file_name ));
+	$spreadsheet_is_ok = true;
+	if(count($file_contents) < 1000)
 	{
-		$person = R::dispense("person");
-		$person->staffid = $staff_id;
-		$persondbhash[$staff_id] = $person;
+		print "Suspiciously low line count in input file: $file_name \n";
+		$spreadsheet_is_ok = false;
 	}
-#always update staff name for cases of name change in data. This could be optimized if necessary.
-	$person->firstname = $people[$staff_id]["first_name"];
-	$person->lastname = $people[$staff_id]["last_name"];
 	
-	#R::store($person);
-}
-echo count(array_values($persondbhash))." - people\n";
-tick("people objects changed");
-#R::storeAll(array_values($persondbhash));
-tick("people in the db now");
-$module_beans = array();
-print "Modules import\n";
+	$theoretical_headings = array('TERM_CODE', 'CAMPUS_CODE', 'CRN', 'COURSE_EFF_TERM_CODE', 'COLL_CODE', 'COLL_DESC', 'DEPT_CODE', 'DEPT_DESC', 'SUBJ_CODE', 'CRSE_NUMBER', 'COURSE_CODE', 'CSTA_CODE', 'CSTA_DESC', 'SSTS_CODE', 'SSTS_DESC', 'SECTION_TITLE', 'COURSE_TITLE', 'PTRM_CODE', 'PTRM_DESC', 'CREDIT_HOURS', 'GRADABLE_IND', 'GRADE_SCALE', 'GRADE_SCALE_DESC', 'BEST_OF_COMP', 'SUBSET_OF_COMP', 'MODULE_TOTAL_WEIGHT', 'MODULE_NONREFERAL_WEIGHT', 'MODULE_REFERAL_WEIGHT', 'PROBABLE_RATIO', 'INSTRUCTOR1_ID', 'INSTRUCTOR1_LAST_NAME', 'INSTRUCTOR1_FIRST_NAME', 'INSTRUCTOR1_MIDDLE_NAME', 'HAS_COMPONENTS', 'CURRENT_TERM', 'LEVEL_CODE', 'PROGRAMME', 'PROGRAMME_DESC', 'MAJOR_CODE', 'MAJOR_DESC', 'YEAR_OF_STUDY', 'AREA', 'CAMPUS_DESC', 'MODULE_TYPE', 'LONG_TITLE', 'UCAS_COURSE', 'MAJR_COLL_CODE', 'MAJR_DEPT_CODE', 'LONG_MAJR_DESC'); 
+	$headings = explode(RECORD_SEPERATOR, chop($file_contents[0]));
 
-$moduledb = R::findAll("module");
-$moduledbhash = array();
-foreach($moduledb as $module)
-{
-	$moduledbhash[$module->session][$module->code] = $module;
-}
-
-foreach( $info as $session => $modules)
-{
-	foreach($modules as $module_code => $properties )
+	foreach($theoretical_headings as $heading)
 	{
-		#$module = R::findOne("module", "session = ? AND code = ?", array( $session, $module_code ) );
-		$module = @$moduledbhash[$session][$module_code];
+		if(!in_array($heading, $headings))
+		{
+			print "Heading:$heading is missing from input file: $file_name.\n";
+			$spreadsheet_is_ok = false;
+		}
+	}
+
+	return $spreadsheet_is_ok;
+}
+
+function populate_data_from_spreadsheet($file_name, &$modules, &$people, &$programs, &$majors)
+{
+	$file = fopen($file_name, "r") or die("Could not open file ". $file_name);
+	$empty_lines = 0;
+	$headings = explode(RECORD_SEPERATOR, chop(fgets($file)));
+	while( $line = fgets($file) )
+	{
+		$line = explode(RECORD_SEPERATOR, chop($line));
+		if(!is_array($line) or count($line) < 10){ $empty_lines++; continue; }
 		
-		if(!isset($module)){
-			$module = R::dispense('module');
-			$module->code = $module_code;
-			$module->session = $session;
-			$moduledbhash[$session][$module_code] = $module;
+		$line_data = array();
+		
+		for($i=0; $i < count($headings); $i++)
+		{
+			$line_data[$headings[$i]] = $line[$i]; 
 		}
 
-		$module->title = $properties["title"];
-		$module->facultycode = $properties["facultycode"];
-		$module->facultyname = $properties["facultyname"];
-		$module->semestercode = $properties["semestercode"];
-		$module->semestername = $properties["semestername"];
-		$module->departmentcode = $properties["departmentcode"];
-		$module->departmentname = $properties["departmentname"];
-		$module->levelcode = $properties["levelcode"];
-		$module->credits = $properties["credits"];
-		$module->sharedPerson = array();
-		if( !empty($properties["people"]) )
-		{	
-			$people = array_keys($properties["people"]);
-			foreach($people as $person)
+		$modules[$line_data['TERM_CODE']][$line_data['COURSE_CODE']]["title"] = $line_data['LONG_TITLE'] ?: $line_data['COURSE_TITLE'];
+		$modules[$line_data['TERM_CODE']][$line_data['COURSE_CODE']]["departmentcode"] = $line_data['DEPT_CODE'];
+		$modules[$line_data['TERM_CODE']][$line_data['COURSE_CODE']]["departmentname"] = $line_data['DEPT_DESC'];
+		$modules[$line_data['TERM_CODE']][$line_data['COURSE_CODE']]["facultycode"] = $line_data['COLL_CODE'];
+		$modules[$line_data['TERM_CODE']][$line_data['COURSE_CODE']]["facultyname"] = $line_data['COLL_DESC'];
+		$modules[$line_data['TERM_CODE']][$line_data['COURSE_CODE']]["semestercode"] = $line_data['PTRM_CODE'];
+		$modules[$line_data['TERM_CODE']][$line_data['COURSE_CODE']]["semestername"] = $line_data['PTRM_DESC'];
+		$modules[$line_data['TERM_CODE']][$line_data['COURSE_CODE']]["levelcode"] = $line_data['LEVEL_CODE'];
+		$modules[$line_data['TERM_CODE']][$line_data['COURSE_CODE']]["credits"] = $line_data['CREDIT_HOURS']/2;
+		if($staff_id = trim($line_data['INSTRUCTOR1_ID']))
+		{
+			$modules[$line_data['TERM_CODE']][$line_data['COURSE_CODE']]["people"][$staff_id] = 1;
+			$people[$staff_id]["first_name"] = trim($line_data['INSTRUCTOR1_FIRST_NAME']);
+			$people[$staff_id]["last_name"] = trim($line_data['INSTRUCTOR1_LAST_NAME']);
+		}
+
+		if($program_code = trim($line_data['PROGRAMME']))
+		{
+			$programs[$line_data['TERM_CODE']][$program_code]["title"] = $line_data['PROGRAMME_DESC'];
+		}
+		if($major_code = trim($line_data['MAJOR_CODE']))
+		{
+			$majors[$line_data['TERM_CODE']][$major_code]["title"] = $line_data['MAJOR_DESC'];
+			$majors[$line_data['TERM_CODE']][$major_code]["programcode"] = trim($line_data['PROGRAMME']);
+			$majors[$line_data['TERM_CODE']][$major_code]["modules"][$line_data['COURSE_CODE']] = array(
+				"yearofstudy"=>$line_data['YEAR_OF_STUDY'],
+				"type"=>$line_data['MODULE_TYPE'] );
+		}
+	}
+
+	if($empty_lines > 1000)
+	{
+		print "There are $empty_lines empty lines in the input file.\n";
+	}
+}
+
+function people_import($people_data)
+{
+	$dbpeople = R::findAll("person");
+	$persondbhash =array();
+
+	foreach($dbpeople as $person)
+	{
+		$persondbhash[$person->staffid] = $person;
+	}
+
+	foreach( $people_data as $staff_id => $people_properties )
+	{
+		$person = @$persondbhash[$staff_id];
+		if(!isset($person))
+		{
+			$person = R::dispense("person");
+			$person->staffid = $staff_id;
+			$persondbhash[$staff_id] = $person;
+		}
+	#always update staff name for cases of name change in data. This could be optimized if necessary.
+		$person->firstname = $people_data[$staff_id]["first_name"];
+		$person->lastname = $people_data[$staff_id]["last_name"];
+		
+	}
+	R::storeAll(array_values($persondbhash));
+}
+
+function module_import($module_data)
+{
+
+	$module_beans = array();
+
+	$moduledb = R::findAll("module");
+	$moduledbhash = array();
+	foreach($moduledb as $module)
+	{
+		$moduledbhash[$module->session][$module->code] = $module;
+	}
+
+	foreach( $module_data as $session => $modules)
+	{
+		foreach($modules as $module_code => $properties )
+		{
+			#$module = R::findOne("module", "session = ? AND code = ?", array( $session, $module_code ) );
+			$module = @$moduledbhash[$session][$module_code];
+			
+			if(!isset($module)){
+				$module = R::dispense('module');
+				$module->code = $module_code;
+				$module->session = $session;
+				$moduledbhash[$session][$module_code] = $module;
+			}
+
+			$module->title = $properties["title"];
+			$module->facultycode = $properties["facultycode"];
+			$module->facultyname = $properties["facultyname"];
+			$module->semestercode = $properties["semestercode"];
+			$module->semestername = $properties["semestername"];
+			$module->departmentcode = $properties["departmentcode"];
+			$module->departmentname = $properties["departmentname"];
+			$module->levelcode = $properties["levelcode"];
+			$module->credits = $properties["credits"];
+			$module->sharedPerson = array();
+			if( !empty($properties["people"]) )
+			{	
+				$people = array_keys($properties["people"]);
+				$people_beans = R::find('person', ' staffid IN ('.R::genSlots($people).') ', $people);
+				$module->sharedPerson = $people_beans;
+			}
+		}
+		
+	}
+
+
+	foreach($moduledbhash as $session => $module_code)
+	{
+		$module_beans = array_values($module_code);
+		R::storeAll($module_beans);
+	}
+}
+
+function program_import($program_data)
+{
+	$allprograms = R::findAll("program");
+	$programdbhash = array();
+
+	foreach($allprograms as $program)
+	{
+		$programdbhash[$program->session][$program->code] = $program;
+	}
+
+	$program_beans = array();
+	foreach( $program_data as $session=>$session_programs )
+	{
+		foreach($session_programs as $program_code => $program_properties)
+		{
+			#$program = R::findOne("program", "code = ? AND session = ?", array($program_code, $session ) );
+			$program = @$programdbhash[$session][$program_code];		
+
+
+			if(!isset($program))
 			{
-				if(isset($persondbhash[$person]))
+				$program = R::dispense('program');	
+				$program->code = $program_code;
+				$program->session = $session;
+				@$programdbhash[$session][$program_code] = $program;		
+			}
+		
+			$program->title = $program_properties["title"];
+		
+			#R::store($program);
+
+			$program_beans[$session][$program_code] = $program;
+		}
+	}
+
+	foreach($programdbhash as $session => $programs)
+	{
+		R::storeAll(array_values($programs));
+	}
+
+}
+
+function major_import($major_data)
+{
+
+	R::wipe( "modulemajorrelation" );
+
+	$majorsdb = R::findAll("major");
+
+	$majordbhash = array();
+
+	foreach($majorsdb as $major)
+	{
+		$majordbhash[$major->session][$major->code] = $major;
+	}
+	foreach( $major_data as $session=>$session_majors )
+	{
+		foreach( $session_majors as $major_code => $major_properties )
+		{
+			#$major = R::findOne("major", "code = ? AND session = ?", array($major_code,$session ) );
+			$major = @$majordbhash[$session][$major_code];	
+
+			if(!isset($major))
+			{
+				$major = R::dispense('major');
+				$major->code = $major_code;
+				$major->session = $session;
+				$majordbhash[$session][$major_code] = $major;	
+			}
+		
+			$major->title = $major_properties["title"];
+			$major->program = R::findOne("program", " session=? and code=? ", array( $session, $major_properties["programcode"] ));
+			 # $programdbhash[$session][ $major_properties["programcode"] ];
+
+			if( !empty($major_properties["modules"]) )
+			{
+				$relations = array();
+				foreach( $major_properties["modules"] as $module_code=>$rel_info )
 				{
-					$module->sharedPerson[] = @$persondbhash[$person]; #R::find('person', ' staffid IN ('.R::genSlots($people).') ', $people);
+					$relation = R::dispense('modulemajorrelation');
+					$relation->session = $session; # not strictly needed
+					$relation->yearofstudy = $rel_info["yearofstudy"];
+					$relation->type = $rel_info["type"];
+					$relation->module = R::findOne("module", " session=? and code=? ", array($session, $module_code));
+					$relation->major = $major;
+					$relations[] = $relation;
 				}
+				R::storeAll($relations);
+					
 			}
 		}
-		#R::store($module);
-
-		#$module_beans[$session][$module_code] = $module;
 	}
-	
-}
-tick("before storing modules");
-foreach($moduledbhash as $session => $module_code)
-{
-	R::storeAll(array_values($module_code));
-}
-tick("after storing all modules");
 
-$allprograms = R::findAll("program");
-$programdbhash = array();
 
-foreach($allprograms as $program)
-{
-	$programdbhash[$program->session][$program->code] = $program;
 }
 
-$program_beans = array();
-print "Programs import\n";
-foreach( $programs as $session=>$session_programs )
-{
-	foreach($session_programs as $program_code => $program_properties)
-	{
-		#$program = R::findOne("program", "code = ? AND session = ?", array($program_code, $session ) );
-		$program = @$programdbhash[$session][$program_code];		
-
-
-		if(!isset($program))
-		{
-			$program = R::dispense('program');	
-			$program->code = $program_code;
-			$program->session = $session;
-			@$programdbhash[$session][$program_code] = $program;		
-		}
-	
-		$program->title = $program_properties["title"];
-	
-		#R::store($program);
-
-		$program_beans[$session][$program_code] = $program;
-	}
-}
-tick("before writing programs");
-#foreach($programdbhash as $session => $program_code)
-#{
-#	R::storeAll(array_values($program_code));
-#}
-tick("after writing programs");
-		
-	
-
-
-
-R::wipe( "modulemajorrelation" );
-tick("after wiping majors");
-
-$majorsdb = R::findAll("major");
-
-$majordbhash = array();
-
-foreach($majorsdb as $major)
-{
-	$majordbhash[$major->session][$major->code] = $major;
-}
-$relations = array();
-print "Majors import\n";
-foreach( $majors as $session=>$session_majors )
-{
-	foreach( $session_majors as $major_code => $major_properties )
-	{
-		#$major = R::findOne("major", "code = ? AND session = ?", array($major_code,$session ) );
-		$major = @$majordbhash[$session][$major_code];	
-
-		if(!isset($major))
-		{
-			$major = R::dispense('major');
-			$major->code = $major_code;
-			$major->session = $session;
-			$majordbhash[$session][$major_code] = $major;	
-		}
-	
-		$major->title = $major_properties["title"];
-		$major->program = $programdbhash[$session][ $major_properties["programcode"] ];
-
-		#R::store($major);
-
-		if( !empty($major_properties["modules"]) )
-		{
-			foreach( $major_properties["modules"] as $module_code=>$rel_info )
-			{
-				$module = $moduledbhash[$session][$module_code];
-				$relation = R::dispense('modulemajorrelation');
-				$relation->session = $session; # not strictly needed
-				$relation->yearofstudy = $rel_info["yearofstudy"];
-				$relation->type = $rel_info["type"];
-				$relation->module = $module;
-				$relation->major = $major;
-				$relations[] = $relation;
-				#R::store( $relation );
-			}
-				
-		}
-	}
-}
-
-tick("befor storing modules");
-
-R::storeAll($relations);
-#foreach($majordbhash as $session => $major_code)
-#{
-#	R::storeAll(array_values($major_code));
-#}
-
-tick("after storing modules");

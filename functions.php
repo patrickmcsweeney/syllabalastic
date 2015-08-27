@@ -252,10 +252,11 @@ function tick($msg = "tick" )
 {
 	$f3 = Base::instance();
 	$mt = microtime(true);
-	print sprintf( "<p>%s: %0.3f since start. %0.3f since last tick.</p>\n",
+	print sprintf( "<p>%s: %0.3f since start. %0.3f since last tick. Memory used: %si MBi. </p>\n",
 		$msg,
 		$mt - $f3->get('page_load_start' ),
-		$mt - $f3->get('last_tick' ) );
+		$mt - $f3->get('last_tick' ),
+		memory_get_usage()/ 1000000 );
 	$f3->set('last_tick', $mt );
 }
 
@@ -297,7 +298,27 @@ function currentSession($offset_years = 0)
 function last_known_current_syllabus($module_code)
 {
 	$existing_module = R::findOne("module", " currentsyllabus_id is not null AND code = ? order by session desc ", array( $module_code ) );
+	if(!$existing_module)
+	{
+		return null;
+	}
 	return $existing_module->getCurrent();
+
+}
+
+function render_faculty_modules_for_session( $faculty_code, $session_code)
+{
+	global $f3;
+	$modules = R::find('module', "session = ? and facultycode = ? ORDER BY code", array($session_code, $faculty_code));
+	if(count($modules) == 0)
+	{
+		return "";
+	}
+	$faculties_by_code = listFaculties();
+	$f3->set("facultyname", $faculties_by_code[$faculty_code]);
+	$f3->set("facultycode", $faculty_code);
+	$f3->set("modules", $modules);
+        return Template::instance()->render("modules_by_faculty.htm");
 
 }
 ?>
