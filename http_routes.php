@@ -62,31 +62,19 @@ function modules_by_year($f3)
 
 	if($f3->exists("REQUEST.allmodules") || !isset($user->facultycode))
 	{
-		$modules = R::find('module', "session = ? ORDER BY code", array($f3->get('PARAMS.session')));
+		$faculty_codes = array_keys(listFaculties());
+		$f3->set("facultycodes", $faculty_codes);
 	}else{
 		$templates[] = "seeallmodules.htm";
-		$modules = R::find('module', "session = ? and facultycode = ? ORDER BY code", array($f3->get('PARAMS.session'), $user->facultycode));
+		$faculty_codes = array($user->facultycode);
+		$f3->set("facultycodes", $faculty_codes);
 	}
 	
-	$modules_by_faculty = array();
-	foreach($modules as $module)
-	{
-		if(!array_key_exists($module->facultycode, $modules_by_faculty))
-		{
-			$modules_by_faculty[$module->facultycode]['name'] = $module->facultyname;
-			$modules_by_faculty[$module->facultycode]['modules'] = array();
-		}
-		array_push($modules_by_faculty[$module->facultycode]['modules'], $module);
-	}
-
-	$f3->set('modules', $modules_by_faculty);
-
 	#we can't create modules in the past!
 	$current_year = dates_as_sessions();
 	if($f3->get("PARAMS.session") > key($current_year)){
 		array_push( $templates, 'createmodule.htm');
 	}
-
 	array_push( $templates, 'modulesearch.htm');
 	array_push( $templates, 'modulelist.htm');
 	$f3->set('templates', $templates);

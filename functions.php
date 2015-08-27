@@ -305,4 +305,20 @@ function last_known_current_syllabus($module_code)
 	return $existing_module->getCurrent();
 
 }
+
+function render_faculty_modules_for_session( $faculty_code, $session_code)
+{
+	global $f3;
+	$modules = R::find('module', "session = ? and facultycode = ? ORDER BY code", array($session_code, $faculty_code));
+	if(count($modules) == 0)
+	{
+		return "";
+	}
+	$faculties_by_code = listFaculties();
+	$f3->set("facultyname", $faculties_by_code[$faculty_code]);
+	$f3->set("facultycode", $faculty_code);
+	$f3->set("modules", $modules);
+        return Template::instance()->render("modules_by_faculty.htm");
+
+}
 ?>
