@@ -10,13 +10,10 @@
 <F3:repeat group="{{@modules}}" value="{{@module}}">
 	<li><span class="module-code">{{@module->code}}</span>: {{@module->title}}
 		<span class="syllabus-tools">-
-			<F3:check if="{{@module->getCurrent()}}">
+			<F3:check if="{{@last_known_current_syllabus(@module->code)}}">
 				<F3:true>
-					<a href="/view/syllabus/{{@module->getCurrent()->id}}">View current syllabus</a>
-				</F3:true>
-				<F3:false>
 					<a href="/view/syllabus/module/{{@module->code}}">View current syllabus</a>
-				</F3:false>
+				</F3:true>
 			</F3:check>
 			<F3:check if="{{@module->getProvisional()}}">
 				<F3:true>

@@ -315,6 +315,9 @@ function render_faculty_modules_for_session( $faculty_code, $session_code)
 		return "";
 	}
 	$faculties_by_code = listFaculties();
+	$f3->set("last_known_current_syllabus", function($module_code) {
+		last_known_current_syllabus($module_code);
+	});
 	$f3->set("facultyname", $faculties_by_code[$faculty_code]);
 	$f3->set("facultycode", $faculty_code);
 	$f3->set("modules", $modules);
