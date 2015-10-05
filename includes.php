@@ -321,6 +321,11 @@ $REVIEWERS = array(
 			'facultycode' => array("F8")
 		)
 	),
+        "rp1v12" => array(
+		'module' => array(
+			'facultycode' => array("F8")
+		)
+	),
         "trs1m13" => array(
 		'module' => array(
 			'facultycode' => array("F8")
