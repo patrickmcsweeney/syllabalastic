@@ -118,6 +118,56 @@ class Model_Module extends RedBean_SimpleModel
 			}
 
 		}
+		if($syllabus->costimplications || count($syllabus->ownSpecificcostimplications) > 0 || count($syllabus->generalcostimplications) > 0)
+		{
+			$additional_costs = $xml->createElement("AdditionalCosts");
+			$xml_module->appendChild($additional_costs);
+			if(count($syllabus->ownSpecificcostimplications) > 0)
+			{
+				$specific_costs = $xml->createElement("SpecificCosts");
+				$additional_costs->appendChild($specific_costs);
+				foreach($syllabus->ownSpecificcostimplications as $cost)
+				{	
+					$specific_cost = $xml->createElement("SpecificCost");
+					$specific_costs->appendChild($specific_cost);
+					$cost_type = $xml->createElement("CostType");
+					$cost_type->appendChild($xml->createTextNode($syllabus->getConstant($cost->costtype)));
+					$specific_cost->appendChild($cost_type);
+					$description = $xml->createElement("Description");
+					$description->appendChild($xml->createTextNode($cost->costdescription));
+					$specific_cost->appendChild($description);
+
+					$cost_price = $xml->createElement("CostPrice");
+					$cost_price->appendChild($xml->createTextNode($cost->costprice));
+					$specific_cost->appendChild($cost_price);
+				}				
+			}
+
+			if(count($syllabus->generalcostimplications) > 0)
+			{
+				$general_costs = $xml->createElement("GeneralCosts");
+				$addtional_costs->appendChild($general_costs);
+				foreach($syllabus->ownGeneralcostimplications as $cost)
+				{
+					$general_cost = $xml->createElement("GeneralCost");
+					$general_costs->appendChild($general_cost);
+					$cost_type = $xml->createElement("CostType")
+						->appendChild($xml->createTextNode($syllabus->getConstant($cost->costtype)));
+					$general_cost->appendChild($cost_type);
+					$description = $xml->createElement("Description")
+						->appendChild($xml->createTextNode($cost->costdescription));
+					$general_cost->appendChild($description);
+				}
+			}
+			
+			if($syllabus->costimplications)
+			{
+				$content = $xml->createElement("Content");
+				$additional_costs->appendChild($content);
+
+				$content->appendChild($xml->createTextNode($syllabus->costimplications));
+			}
+		}
 
                 return $xml;
         }

@@ -101,14 +101,7 @@
         </F3:true>
 </F3:check>
 
-<F3:check if="{{@syllabus->costimplications}}">
-        <F3:true>
-                <div class="cost-implications">
-                        <h4>Cost Implications</h4>
-                        {{ preg_replace( "/<\/?pre>/", "", @syllabus->costimplications ) }}
-                </div>
-        </F3:true>
-</F3:check>
+<include href="costimplications.htm" />
 
       <div style='clear:both'></div>
     </div>
