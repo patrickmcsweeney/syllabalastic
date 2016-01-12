@@ -92,6 +92,21 @@ class Model_Syllabus extends RedBean_SimpleModel {
 		"T3"=>"Term 3",
 		"S3"=>"Semester 3", 
 	);
+
+	private $COST_TYPES = array(
+		"books"=>"Books",
+		"conference-expenses"=>"Conference expenses",
+		"clothing"=>"Clothing",
+		"equipment"=>"Equipment",
+		"fieldwork"=>"Fieldwork",
+		"funding"=>"Funding",
+		"ID-and-certification"=>"ID and certification",
+		"other"=>"Other",
+		"placements"=>"Placements",
+		"printing-and-copying"=>"Printing and copying",
+		"travel"=>"Travel"
+	);
+
 	public $OUTCOME_TYPES = array(
 		""=>"",
 		"aim"=>"Aim",
@@ -245,7 +260,7 @@ class Model_Syllabus extends RedBean_SimpleModel {
 	}
 	
 	public function getData(){
-		$sub_objects = array("regularteaching", "resources", "exam", "continuousassessment", "itemisedlearningoutcomes" );
+		$sub_objects = array("regularteaching", "resources", "exam", "continuousassessment", "itemisedlearningoutcomes", "specificcostimplications", "generalcostimplications" );
 		$data = $this->unbox()->export();
 		foreach($sub_objects as $sub_object)
 		{
@@ -705,18 +720,58 @@ class Model_Syllabus extends RedBean_SimpleModel {
 
 
 		$s4 = $form->add( "SECTION", array(
-			"title" => "3. Additional Information",
+			"title" => "Additional Information",
 			));
 
 		$s4->add( "HTML", array( 
 			"id" => "costimplications",
-			"title" => "4.1 Cost Implications",
+			"title" => "Cost Implications",
 			"description" => "
 		Please list any cost implications to the student which are not covered by their tuition fees.
 	",
 			"layout" => "section",
 		));
-
+#		$costs_combo = $s4->add("LIST", array(
+#			"id"=>"generalcostimplications",
+#			"title"=>"General Cost Implications",
+#			"description"=> "
+#		Please list any cost implications to the student which are not covered by their tuition fees.
+#		"))->setListType("COMBO");
+#
+#		$costs_combo->add("CHOICE", array(
+#			"id"=>"costtype",
+#			"title"=>"Cost Type",
+#			"mode"=>"pull-down",
+#			"choices"=>$this->COST_TYPES
+#		));
+#
+#		$costs_combo->add("TEXT", array(
+#			"id"=>"costdescription",
+#			"title"=>"Cost Description"
+#		));
+#
+#		$costs_combo = $s4->add("LIST", array(
+#			"id"=>"specificcostimplications",
+#			"title"=>"Specific Cost Implications",
+#		))->setListType("COMBO");
+#
+#		$costs_combo->add("CHOICE", array(
+#			"id"=>"costtype",
+#			"title"=>"Cost Type",
+#			"mode"=>"pull-down",
+#			"choices"=>$this->COST_TYPES
+#		));
+#
+#		$costs_combo->add("TEXT", array(
+#			"id"=>"costdescription",
+#			"title"=>"Cost Description"
+#		));
+#
+#		$costs_combo->add("TEXT", array(
+#			"id"=>"costprice",
+#			"title"=>"Cost Price"
+#		));
+#
 		$s4->add( "HTML", array( 
 			"id" => "healthandsafety",
 			"title" => "Health and Safety",

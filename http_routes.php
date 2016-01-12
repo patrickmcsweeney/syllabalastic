@@ -399,6 +399,21 @@ function json_syllabus($f3)
 	echo json_encode($module);
 }
 
+function json_module($f3)
+{
+	$module_code = $f3->get("PARAMS.modulecode");
+	$syllabus = last_known_current_syllabus($module_code);
+	$module = R::findOne("module", " code = ? order by session desc ", array($module_code));
+
+	if(!$syllabus->id)
+	{
+		$f3->error( 404, "This module does not have an approved syllabus");
+		return;
+	}
+	$module_data = array("module"=>$module->export(), "syllabus"=>$syllabus->getData());
+	echo json_encode($module_data);
+}
+
 function pdf_syllabus($f3)
 {
 	$syllabus = R::load("syllabus", $f3->get('PARAMS["syllabus_id"]'));

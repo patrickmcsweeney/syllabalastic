@@ -286,13 +286,7 @@
 	</div>
 	</check>
 
-	<check if="{{@syllabus->costimplications}}">
-	<div class="cost-implications">
-		<h2>Cost Implications</h2>
-		{{@syllabus->costimplications}}
-
-	</div>
-	</check>
+	<include href="costimplications.htm" />
 
 	<check if="{{@module.facultycode!='F8'}}">
 		<p style="page-break-after:always;"><!-- this --></p>
