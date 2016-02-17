@@ -286,3 +286,7 @@ table.changelog td {
 .module-profile table.assessment th {
 	font-weight: bold;
 }
+
+#specificcostimplications_list .ff_textarea, #generalcostimplications_list .ff_textarea {
+	display: block;
+}
