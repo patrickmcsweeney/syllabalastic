@@ -357,6 +357,11 @@ $REVIEWERS = array(
 			'facultycode' => array("F8")
 		)
 	),
+		        "npm1v15" => array(
+		'module' => array(
+			'facultycode' => array("F8")
+		)
+	),
 );
 
 $EMAIL_ALERTS = array( "pm5c08", "cqafee", "cqafshs" );
