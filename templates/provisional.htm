@@ -16,5 +16,9 @@
 			
 		</false>
 	</F3:check>
-	<p><a href="/view/modules/{{ @module->session }}">&larr; Return to module list</a> or <a href="/edit/syllabus/{{@syllabus->id}}">continue editing this syllabus</a>.</p>
+	<p><a href="/view/modules/{{ @module->session }}">&larr; Return to module list</a> or <a href="/edit/syllabus/{{@syllabus->id}}">continue editing this syllabus in {{@module->session}}</a>.</p>
+
+	<check if="{{@module->session < @next_session}}">
+		<p>Alternative you may want to <a href="/create/syllabus/?modulecode={{@module->code}}&session={{@next_session}}">edit this syllabus for the next academic year ({{@next_session}})</a>.</p>
+	</check>
 </div>
