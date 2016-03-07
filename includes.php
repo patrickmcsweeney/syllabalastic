@@ -35,6 +35,9 @@ $db_host = $f3->get('db_host');
 
 R::setup("mysql:host=$db_host;dbname=$db_name",$db_user,$db_password);
 
+$f3->set('current_session', currentSession());
+$f3->set('next_session', currentSession(1));
+
 #Initialise API keys
 $API_KEYS = array();
 if($f3->get('api_key')) {
