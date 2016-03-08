@@ -12,7 +12,7 @@
 		<span class="syllabus-tools">-
 			<F3:check if="{{last_known_current_syllabus(@module->code) != null}}">
 				<F3:true>
-					<a href="/view/syllabus/module/{{@module->code}}">View current syllabus</a>
+					<a href="/view/syllabus/module/{{@module->code}}/{{@current_session}}">View current syllabus</a>
 				</F3:true>
 			</F3:check>
 			<F3:check if="{{@module->getProvisional()}}">
