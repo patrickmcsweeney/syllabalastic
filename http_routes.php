@@ -301,7 +301,14 @@ function create_syllabus($f3)
 function view_syllabus($f3)
 {
 	if( $f3->exists('PARAMS["modulecode"]')){
-		$module = R::findOne("module", " code = ? and currentsyllabus_id is not null order by session desc ", array( $f3->get('PARAMS["modulecode"]') ) );
+		$session = currentSession();
+
+		if($f3->exists('PARAMS.session'))
+		{
+			$session = $f3->get('PARAMS.session');
+		}
+
+		$module = R::findOne("module", " code = ? and session = ? and currentsyllabus_id is not null order by session desc ", array( $f3->get('PARAMS["modulecode"]', $session) ) );
 		$syllabus = $module->getCurrent();
 	}else{
 		$syllabus = R::load("syllabus", $f3->get('PARAMS["syllabus_id"]'));
