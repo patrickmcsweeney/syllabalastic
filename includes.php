@@ -110,6 +110,12 @@ $REVIEWERS = array(
 			'facultycode' => array("F7", "wf", "fp")
 		)
 	),
+        "wsb" => array(
+		'module' => array(
+			'departmentcode' => array("FP", "JF"),
+			'facultycode' => array("F7", "wf", "fp")
+		)
+	),
         "nmg" => array(
 		'module' => array(
 			'departmentcode' => array("FP", "JF"),
@@ -361,6 +367,11 @@ $REVIEWERS = array(
 		)
 	),
 		        "npm1v15" => array(
+		'module' => array(
+			'facultycode' => array("F8")
+		)
+	),
+	"npn1g15" => array(
 		'module' => array(
 			'facultycode' => array("F8")
 		)
