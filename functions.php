@@ -295,9 +295,10 @@ function currentSession($offset_years = 0)
 	return $academic_session;
 }
 
-function last_known_current_syllabus($module_code)
+#i hope this thing is retired by 2050...
+function last_known_current_syllabus($module_code, $session=205051)
 {
-	$existing_module = R::findOne("module", " currentsyllabus_id is not null AND code = ? order by session desc ", array( $module_code ) );
+	$existing_module = R::findOne("module", " currentsyllabus_id is not null AND code = ? and session <= ? order by session desc ", array( $module_code, $session ) );
 	if(!$existing_module)
 	{
 		return null;

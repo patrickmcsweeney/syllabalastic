@@ -1,22 +1,25 @@
-<F3:check if="{{@syllabus->costimplications}}">
-        <div class="cost-implications">
-                <h2>Cost Implications</h2>
-                {{@syllabus->costimplications}}
+<F3:check if="{{@syllabus->costimplications || count(@syllabus->ownSpecificcostimplications) > 0 || count(@syllabus->ownGeneralcostimplications) > 0}}">
+<div class="cost-implications">
+         <h2>Cost Implications</h2>
+	<F3:check if="{{@syllabus->costimplications}}">
+		<div class="cost-implications-free-text">
+			{{@syllabus->costimplications}}
 
-        </div>
+		</div>
+	</F3:check>
+	<F3:check if="{{count(@syllabus->ownSpecificcostimplications) > 0}}">
+		<ul class="specific-costs">
+			<repeat group="{{@syllabus->ownSpecificcostimplications}}" value="{{@cost}}">
+				<li>{{@cost->costdescription}} ({{@cost->costtype}}) - £{{@cost->costprice}}
+			</repeat>
+		</ul>
+	</F3:check>
+	<F3:check if="{{count(@syllabus->ownGeneralcostimplications) > 0}}">
+		<ul class="general-costs">
+			<repeat group="{{@syllabus->ownGeneralcostimplications}}" value="{{@cost}}">
+				<li>{{@cost->costdescription}} ({{@cost->costtype}})
+			</repeat>
+		</ul>
+	</F3:check>
+</div>
 </F3:check>
-<F3:check if="{{count(@syllabus->ownSpecificcostimplications) > 0}}">
-	<ul>
-		<repeat group="{{@syllabus->ownSpecificcostimplications}}" value="{{@cost}}">
-			<li>{{@cost->costdescription}} ({{@cost->costtype}}) - £{{@cost->costprice}}
-		</repeat>
-	</ul>
-</F3:check>
-<F3:check if="{{count(@syllabus->ownGeneralcostimplications) > 0}}">
-	<ul>
-		<repeat group="{{@syllabus->ownGeneralcostimplications}}" value="{{@cost}}">
-			<li>{{@cost->costdescription}} ({{@cost->costtype}})
-		</repeat>
-	</ul>
-</F3:check>
-

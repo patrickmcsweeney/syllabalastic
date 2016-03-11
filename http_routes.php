@@ -308,8 +308,7 @@ function view_syllabus($f3)
 			$session = $f3->get('PARAMS.session');
 		}
 
-		$module = R::findOne("module", " code = ? and session = ? and currentsyllabus_id is not null order by session desc ", array( $f3->get('PARAMS["modulecode"]'), $session ) );
-		$syllabus = $module->getCurrent();
+		$syllabus =  last_known_current_syllabus( $f3->get("PARAMS.modulecode"), $session );
 	}else{
 		$syllabus = R::load("syllabus", $f3->get('PARAMS["syllabus_id"]'));
 	}
