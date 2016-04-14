@@ -513,7 +513,7 @@ function site_publisher_list($f3)
 
 		if($f3->get("PARAMS.site") == "engineeringug")
 		{
-     			$modules = R::getCol( ' SELECT code FROM module where session=201516 and facultycode="F2" ' );
+     			$modules = R::getCol( ' SELECT code FROM module where session=201617 and facultycode="F2" ' );
 		}else{
 			$modules = @$site_modules[$f3->get("PARAMS.site")];
 		}
