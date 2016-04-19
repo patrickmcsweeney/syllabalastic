@@ -19,7 +19,7 @@ fgetcsv($file);
 while($line = fgetcsv($file))
 {
 	$code = $line[0];
-	$module = R::findOne("module", " session= ? and code = ? ", array("201415", $code));
+	$module = R::findOne("module", " session= ? and code = ? ", array("201617", $code));
 	if(!isset($module))
 	{
 		echo "module $code does not exist\n";
