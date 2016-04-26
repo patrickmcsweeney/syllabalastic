@@ -420,6 +420,31 @@ function json_module($f3)
 	echo json_encode($module_data);
 }
 
+function json_modules_department($f3)
+{
+	$department_code = $f3->get("PARAMS.departmentcode");
+
+	$modules = R::find("module", " departmentcode = ? and session = ? ", array($department_code, "201516"));
+
+	$modules_to_encode = array();
+	foreach( $modules as $module )
+	{
+		$module_code = $module->code;
+		$syllabus = last_known_current_syllabus($module_code);
+
+		if(!$syllabus or !$syllabus->id)
+		{
+			# This module does not have an approved syllabus
+			continue;
+		}
+		$modules_to_encode[] = array("module"=>$module->export(), "syllabus"=>$syllabus->getData());
+	
+	
+	}
+	
+	echo json_encode($modules_to_encode);
+}
+
 function pdf_syllabus($f3)
 {
 	$syllabus = R::load("syllabus", $f3->get('PARAMS["syllabus_id"]'));
