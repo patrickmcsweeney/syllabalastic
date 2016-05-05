@@ -269,6 +269,13 @@ class Model_Syllabus extends RedBean_SimpleModel {
 			$data[$sub_object] = R::exportAll($this->$property_name);
 		}
 		
+		if(count($data["itemisedlearningoutcomes"]))
+		{
+			$f3 = Base::instance();
+			$f3->set("syllabus", $this);
+			$data["learningoutcomes"] = Template::instance()->render("itemisedlearningoutcomes.htm");
+		}
+
 		$attributes = array();
 		foreach($this->ownGraduateattributes as $attribute)
 		{

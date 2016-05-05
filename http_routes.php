@@ -337,7 +337,7 @@ function view_syllabus($f3)
 	
 	$f3->set("kis_independant_hours", $syllabus->kisIndependantHours());
 	
-$templates[] = 'module_profile.htm';
+	$templates[] = 'module_profile.htm';
 	
 
 	$f3->set('templates', $templates);
@@ -402,6 +402,15 @@ function json_syllabus($f3)
 		return;
 	}
 	$module = array("module"=>$syllabus->module->export(), "syllabus"=>$syllabus->getData());
+
+	$people = $syllabus->module->sharedPerson;
+
+	if( count( $people ) )
+	{
+		$person = array_shift($people);
+		$module["person"] = $person->export();
+	}
+
 	echo json_encode($module);
 }
 
@@ -417,6 +426,15 @@ function json_module($f3)
 		return;
 	}
 	$module_data = array("module"=>$module->export(), "syllabus"=>$syllabus->getData());
+
+	$people = $module->sharedPerson;
+
+	if( count( $people ) )
+	{
+		$person = array_shift($people);
+		$module_data["person"] = $person->export();
+	}
+
 	echo json_encode($module_data);
 }
 
@@ -437,8 +455,15 @@ function json_modules_department($f3)
 			# This module does not have an approved syllabus
 			continue;
 		}
-		$modules_to_encode[] = array("module"=>$module->export(), "syllabus"=>$syllabus->getData());
-	
+		$module_to_encode = array("module"=>$module->export(), "syllabus"=>$syllabus->getData());
+		$people = $module_to_encode->sharedPerson;
+
+		if( count( $people ) )
+		{
+			$person = array_shift($people);
+			$module_to_encode["person"] = $person->export();
+		}
+		$modules_to_encode[] = $module_to_encode;
 	
 	}
 	
