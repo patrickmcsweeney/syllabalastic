@@ -271,6 +271,10 @@
 						<F3:check if="{{@resource->isbn}}">
 							<div class="isbn"><span class="label">ISBN:</span> {{@resource->isbn}}</div>
 						</F3:check>
+						
+						<F3:check if="{{@resource->title}}">
+							<span class="title">{{@resource->title}} {{@resource->version}}</span>
+						</F3:check>
 						<div class="details">{{@resource->details}}</div>
 						<br />
 					</div>
