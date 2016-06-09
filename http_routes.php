@@ -456,7 +456,7 @@ function json_modules_department($f3)
 			continue;
 		}
 		$module_to_encode = array("module"=>$module->export(), "syllabus"=>$syllabus->getData());
-		$people = $module_to_encode->sharedPerson;
+		$people = $module->sharedPerson;
 
 		if( count( $people ) )
 		{
