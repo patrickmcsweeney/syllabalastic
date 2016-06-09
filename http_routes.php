@@ -984,35 +984,57 @@ function report_usage($f3)
 	$syllabuses = R::convertToBeans('syllabus', R::getAll($sql,
 		array($report_start, $report_end, $faculty)));
 
-	if(!$f3->exists("REQUEST.csv"))
+	if($f3->exists("REQUEST.csv"))
 	{
-		$f3->set("title", "Usage report");
-		$f3->set("syllabuses", $syllabuses);
-		$f3->set("report_start", date("Y-m-d",$report_start));
-		$f3->set("report_end", date("Y-m-d",$report_end));
+		$headings = array("code", "title", "date updated", "module leader");
+		$data_to_csv = array();
+		foreach($syllabuses as $syllabus)
+		{
+			$module = $syllabus->module;
+			if(!$module) { continue; }
+			$row = array($module->code, $module->title, date("Y-m-d", $syllabus->timeapproved));
+			if(count($module->sharedPerson) > 0) 
+			{
+				$person = array_pop($module->sharedPerson);
+				$row[] = $person->firstname.' '.$person->lastname;
+			}
+			$data_to_csv[] = $row;
+			
+		}
+		$filename = "syllabus_updates_".date("Y-m-d", $report_start)."_".date("Y-m-d", $report_start).".csv";
+		output_csv( $data_to_csv, $headings, $filename );
+		exit;
+	}
 
-		$f3->set('templates', array('report_usage.htm'));
-		echo Template::instance()->render("main.htm");
+	if($f3->exists("REQUEST.pdf"))
+	{
+		$tmp_dir = sys_get_temp_dir()."/".time();
+		mkdir($tmp_dir);
+
+		$zip = new ZipArchive();
+		$zip->open($tmp_dir.'/module_profiles.zip', ZipArchive::CREATE | ZipArchive::OVERWRITE);
+		foreach($syllabuses as $syllabus)
+		{
+			$module = $syllabus->module;
+			$module_code = $module->code;
+			$module_url = "http://".$_SERVER['HTTP_HOST']."/pdf/moduleprofile/".$module_code;
+			$file_path = "$tmp_dir/$module_code.pdf";
+			file_put_contents($file_path, file_get_contents($module_url));
+			$zip->addFile($file_path, "module_profiles/$module_code.pdf");
+		}
+		$zip->close();
+
+		output_zip($tmp_dir."/module_profiles.zip");
 		exit;
 	}
 	
-	$headings = array("code", "title", "date updated", "module leader");
-	$data_to_csv = array();
-	foreach($syllabuses as $syllabus)
-	{
-		$module = $syllabus->module;
-		if(!$module) { continue; }
-		$row = array($module->code, $module->title, date("Y-m-d", $syllabus->timeapproved));
-		if(count($module->sharedPerson) > 0) 
-		{
-			$person = array_pop($module->sharedPerson);
-			$row[] = $person->firstname.' '.$person->lastname;
-		}
-		$data_to_csv[] = $row;
-		
-	}
-	$filename = "syllabus_updates_".date("Y-m-d", $report_start)."_".date("Y-m-d", $report_start).".csv";
-	output_csv( $data_to_csv, $headings, $filename );
+	$f3->set("title", "Recently edited syllabuses report");
+	$f3->set("syllabuses", $syllabuses);
+	$f3->set("report_start", date("Y-m-d",$report_start));
+	$f3->set("report_end", date("Y-m-d",$report_end));
+
+	$f3->set('templates', array('report_usage.htm'));
+	echo Template::instance()->render("main.htm");
 
 }
 

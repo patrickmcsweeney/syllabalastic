@@ -54,6 +54,20 @@ function output_pdf($f3, $url, $filename)
 
 }
 
+function output_zip($file_full_path)
+{
+	$filename = basename($file_full_path);
+        header("Pragma: ");
+        header("Cache-Control: ");
+        header('Content-Type: application/octet-stream');
+        header('Content-Transfer-Encoding: Binary');
+        header('Content-disposition: attachment; filename="'.$filename.'"');
+		
+	echo file_get_contents($file_full_path);
+	exit;
+
+}
+
 function authenticate($f3, $pass_through = null)
 {
 
