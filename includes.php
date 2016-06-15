@@ -366,6 +366,11 @@ $REVIEWERS = array(
 			'facultycode' => array("F8")
 		)
 	),
+		        "kc1y15" => array(
+		'module' => array(
+			'facultycode' => array("F8")
+		)
+	),
 		        "npm1v15" => array(
 		'module' => array(
 			'facultycode' => array("F8")
