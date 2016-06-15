@@ -378,7 +378,7 @@ $REVIEWERS = array(
 	),
 );
 
-$EMAIL_ALERTS = array( "pm5c08", "cqafee", "cqafshs" );
+$EMAIL_ALERTS = array( "cqafee", "cqafshs" );
 #$EMAIL_ALERTS = array( "pm5c08", "pm2" );
 
 $f3->set('getConstant',function($syllabus, $key){
