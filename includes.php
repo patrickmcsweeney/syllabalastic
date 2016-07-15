@@ -110,6 +110,12 @@ $REVIEWERS = array(
 			'facultycode' => array("F7", "wf", "fp")
 		)
 	),
+        "mrdp1x07" => array(
+		'module' => array(
+			'departmentcode' => array("FP", "JF"),
+			'facultycode' => array("F7", "wf", "fp")
+		)
+	),
         "mjw7" => array(
 		'module' => array(
 			'departmentcode' => array("FP", "JF"),
