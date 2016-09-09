@@ -624,7 +624,7 @@ function php_module($f3)
 		$syllabus = $existing_module->getProvisional();
 	}else
 	{
-		$syllabus = $existing_module->getCurrent();
+		$syllabus = last_known_current_syllabus($existing_module->code, $existing_module->session);
 	}
 
 	if(!$syllabus)
