@@ -632,7 +632,9 @@ function php_module($f3)
 		echo("This syllabus does not exist");
 		return;
 	}
-	$module = array("module"=>$existing_module->export(), "syllabus"=>$syllabus->getData());
+	
+	$module_leader = array_shift($existing_module->sharedPerson);
+	$module = array("module"=>$existing_module->export(), "module_leader"=>$module_leader->export(), "syllabus"=>$syllabus->getData());
 	echo serialize($module);
 }
 
