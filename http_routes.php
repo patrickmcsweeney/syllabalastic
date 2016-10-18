@@ -640,7 +640,7 @@ function php_module($f3)
 
 function edit_syllabus($f3)
 {
-	global $API_KEYS;
+	global $API_KEYS, $REVIEWERS;
 
 	authenticate($f3);
 
@@ -666,6 +666,14 @@ function edit_syllabus($f3)
 	R::store($syllabus);
 
 	$module = $syllabus->module;
+
+	$user = current_user($f3);
+
+	if($module->facultycode="F2" && !@$REVIEWERS[$user->username] )
+	{
+		$f3->error( 403, "Sorry this syllabus is no longer editable by users directly. Please contact your CQA office to update this module.");
+		return;
+	}
 
 	if(valid_api_key($f3->get("REQUEST.apikey")))
 	{
@@ -1040,6 +1048,67 @@ function report_usage($f3)
 
 }
 
+function report_assessment($f3)
+{
+	$f3->set("faculties", listFaculties());
+	$f3->set("sessions", listSessions());
+
+	$faculty = "fp"; //TODO get user's faculty...
+	if($f3->exists("PARAMS.faculty")){
+		$faculty = $f3->get("PARAMS.faculty");
+	} elseif($f3->exists("REQUEST.faculty")){
+		$faculty = $f3->get("REQUEST.faculty");
+	}
+	$f3->set('faculty', $faculty);
+
+	// Add 1 year as we're planning for next year
+	$academic_session = currentSession();
+	if($f3->exists("REQUEST.academic_session")){
+		$academic_session = $f3->get("REQUEST.academic_session");
+	}
+	$f3->set("academic_session", $academic_session);
+
+	$academic_session = "201516";
+	$modules = R::find("module", " facultycode = ? and session = ? order by code ", array($faculty, $academic_session)); 
+
+	$headings = array("code", "title", "Summary of Assessment and Feedback Methods", "Examination method", "Referral Policy", "Method of repeat year", "Assessment Notes", "Referral Notes");
+	$data_to_csv = array();
+	foreach($modules as $module)
+	{ 
+		$syllabus = last_known_current_syllabus( $module->code, $module->session );
+	
+		if(!$syllabus) { continue; }	
+		$f3->set("syllabus", $syllabus);
+
+		$assessment = "";
+
+		foreach($syllabus->ownContinuousassessment as $continuous_assessment)
+		{
+			$assessment .= "Title: " . $continuous_assessment->description . "\n";
+			$assessment .= "% contribution to final mark: " . $continuous_assessment->percent . "\n";
+			$assessment .= "Feedback: " . $continuous_assessment->feedback . "\n";
+			$assessment .= "\n";
+		}
+
+		$exams = "";
+		foreach($syllabus->ownExam as $exam)
+		{
+			$exams .= "Exam: ".$exam->percent."%, ".$exam->duration." hours\n\n"; 
+		}
+
+		$referral = $syllabus->getConstant($syllabus->referral);
+		$repeat_year = $syllabus->getConstant($syllabus->repeatyear);
+
+		$row = array($module->code, $module->title, $assessment, $exams, $referral, $repeat_year, strip_tags($syllabus->assessmentnotes), strip_tags($syllabus->referralnotes));
+
+		$data_to_csv[] = $row;
+		
+	}
+	$filename = "syllabus_assessment_".date("Y-m-d").".csv";
+	output_csv( $data_to_csv, $headings, $filename );
+	exit;
+}
+
 function report_current_syllabus_urls($f3)
 {
 	$session = key(dates_as_sessions());
@@ -1066,10 +1135,8 @@ function report_current_syllabus_urls($f3)
 		$url = "https://syllabus.soton.ac.uk/view/moduleprofile/$code";
 		$approval_date = strtoupper(date("d-M-Y", $module_with_syll->getCurrent()->timeapproved));
 		$data_to_csv[] = array($subject_code, $course_number, $url, $module_with_syll->title, $approval_date);
-		
-		
-
 	}
+
 	$headings = array("subject code", "course number", "URL", "module title", "creation date");
 	output_csv($data_to_csv, $headings, "syllabus_urls.csv");
 	
