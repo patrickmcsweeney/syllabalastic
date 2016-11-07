@@ -1,0 +1,48 @@
+<div class="diffoutput"> </div>
+<repeat group="{{@syllabuses}}" key="{{@syllabus_status}}" value="{{@syllabus}}">
+	<div class="{{@syllabus_status}}-syllabus review-syllabus" style="display:none;">
+		<include href="syllabus.htm" />
+	</div>
+</repeat>
+<style>
+.container {
+        width: 95%;
+}
+div.main-content {
+        width: 80%;
+}
+</style>
+<script type="text/javascript" src="/html_assets/js/diffview.js"></script>
+<link rel="stylesheet" type="text/css" href="/html_assets/diffview.css"/>
+<script type="text/javascript" src="/html_assets/js/difflib.js"></script>
+<script type="text/javascript">
+$(document).ready(function() {
+	var oldSyllabus = $(".historical-syllabus").text().replace(/ +/g, ' ').replace(/\t+/g, '').replace(/\n+/g, "\n");
+	var newSyllabus = $(".current-syllabus").text().replace(/ +/g, ' ').replace(/\t+/g, '').replace(/\n+/g, "\n");
+	oldSyllabus = difflib.stringAsLines(oldSyllabus);
+	newSyllabus = difflib.stringAsLines(newSyllabus);
+
+
+	// create a SequenceMatcher instance that diffs the two sets of lines
+	var sm = new difflib.SequenceMatcher(oldSyllabus, newSyllabus);
+
+	// get the opcodes from the SequenceMatcher instance
+	// opcodes is a list of 3-tuples describing what changes should be made to the base text
+	// in order to yield the new text
+	var opcodes = sm.get_opcodes();
+	var diffoutputdiv = $(".diffoutput").get(0);
+	while (diffoutputdiv.firstChild) diffoutputdiv.removeChild(diffoutputdiv.firstChild);
+
+	// build the diff view and add it to the current DOM
+	diffoutputdiv.appendChild(diffview.buildView({
+	    baseTextLines: oldSyllabus,
+	    newTextLines: newSyllabus,
+	    opcodes: opcodes,
+	    // set the display titles for each resource
+	    baseTextName: "Historical Syllabus",
+	    newTextName: "Current Syllabus",
+	    viewType: 0 
+	}));
+});
+
+</script>

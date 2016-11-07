@@ -1,0 +1,8 @@
+<form method="GET">
+	<select name="syllabusidtocompare">
+	<repeat group="{{@comparable_syllabuses}}" value="{{@comparable_syllabus}}">
+		<option value="{{@comparable_syllabus.id}}">Syllabus approved on {{date("Y-m-d",@comparable_syllabus.timeapproved)}}</option>
+	</repeat>
+	</select>
+	<input type="submit" value="Compare to current"/>
+</form>

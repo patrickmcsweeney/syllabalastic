@@ -1304,7 +1304,6 @@ function view_module_history($f3)
 function compare_syllabuses($f3)
 {
 	$module_code = $f3->get("PARAMS.modulecode");
-	$module_code = "COMP1202";
 	
 	$modules = R::find("module", " code = ? ", array($module_code));
 	
@@ -1323,7 +1322,7 @@ function compare_syllabuses($f3)
 	$most_recent_syllabus = last_known_current_syllabus($module_code);
 	$syllabus_to_compare = $comparable_syllabuses[0]; //by default compare the oldest
 
-	if($syllabusid_to_compare = $f3->get("GET.syllbusidtocompare"))	
+	if($syllabusid_to_compare = $f3->get("GET.syllabusidtocompare"))	
 	{
 		$syllabus_to_compare = R::load("syllabus",$syllabusid_to_compare);
 	}
