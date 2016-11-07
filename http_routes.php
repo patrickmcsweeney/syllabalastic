@@ -985,7 +985,6 @@ function report_usage($f3)
 	}
 	$f3->set("academic_session", $academic_session);
 
-	//$syllabuses = R::find('syllabus', " timeapproved > ? and timeapproved < ? and module.facultycode = ? ORDER BY timeapproved", array($report_start, $report_end, $faculty));
 	$sql = 'SELECT syllabus.* '.
 		'FROM syllabus INNER JOIN module ON syllabus.module_id = module.id '.
 		'WHERE timeapproved > ? and timeapproved < ? and module.facultycode = ? '.
@@ -1294,6 +1293,49 @@ function view_module_history($f3)
 		return;
 	}
 	$f3->set('modules', $modules );
+	echo Template::instance()->render("main.htm");
+}
+
+function compare_syllabuses($f3)
+{
+	$module_code = $f3->get("PARAMS.modulecode");
+	$module_code = "COMP1202";
+	
+	$modules = R::find("module", " code = ? ", array($module_code));
+	
+	$comparable_syllabuses = array(); 
+	foreach($modules as $module)
+	{
+		foreach($module->ownSyllabus as $syllabus)
+		{
+			if($syllabus->timeapproved){
+				$comparable_syllabuses[] = $syllabus;
+			}
+		}
+	}
+
+	$f3->set("comparable_syllabuses", $comparable_syllabuses);
+	$most_recent_syllabus = last_known_current_syllabus($module_code);
+	$syllabus_to_compare = $comparable_syllabuses[0]; //by default compare the oldest
+
+	if($syllabusid_to_compare = $f3->get("GET.syllbusidtocompare"))	
+	{
+		$syllabus_to_compare = R::load("syllabus",$syllabusid_to_compare);
+	}
+
+	$f3->set("title", "Reviewing ".$module->code.": ".$module->title." (".$module->session.") ");
+	$f3->set("module", reset($modules));
+
+	$f3->set("syllabus", $most_recent_syllabus);
+
+	$templates = array("choose_syllabus.htm");
+
+	$f3->set("syllabuses", array( 'historical'=>$syllabus_to_compare, 'current'=>$most_recent_syllabus ));
+	$templates[] = "comparesyllabuses2.htm";
+
+
+	$templates[] = 'reviewtools.htm';
+	$f3->set('templates', $templates);
 	echo Template::instance()->render("main.htm");
 }
 
