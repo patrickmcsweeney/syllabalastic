@@ -3,7 +3,7 @@
 	
 	<p>You can <a href="/pdf/moduleprofile/{{@module->code}}">download the module profile pdf</a>.</p>
 	<F3:check if="{{ ! @syllabus->module->isprovisional }}">
-		<p><a href='/history/module/{{ @syllabus->module->code }}'>View module history</a></p>
+		<p><a href='/history/module/{{ @syllabus->module->code }}'>View module history</a> or <a href='/compare/module/{{ @syllabus->module->code }}'>Compare syllabuses for this module</a>.</p>
 	</F3:check>
 
 

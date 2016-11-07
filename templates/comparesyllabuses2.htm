@@ -1,7 +1,9 @@
 <div class="diffoutput"> </div>
 <repeat group="{{@syllabuses}}" key="{{@syllabus_status}}" value="{{@syllabus}}">
 	<div class="{{@syllabus_status}}-syllabus review-syllabus" style="display:none;">
+		<div>
 		<include href="syllabus.htm" />
+		</div>
 	</div>
 </repeat>
 <style>
@@ -12,6 +14,7 @@ div.main-content {
         width: 80%;
 }
 </style>
+
 <script type="text/javascript" src="/html_assets/js/diffview.js"></script>
 <link rel="stylesheet" type="text/css" href="/html_assets/diffview.css"/>
 <script type="text/javascript" src="/html_assets/js/difflib.js"></script>

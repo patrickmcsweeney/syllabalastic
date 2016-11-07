@@ -52,7 +52,7 @@
 					<tr>
 						<td style='text-align:right'>{{ @relation->type }} on</td>	
 						<td>{{ @relation->major->title }}
-						<F3:check "{{ @relation->yearofstudy <=5 }}"><F3:true>
+						<F3:check if="{{ @relation->yearofstudy <=5 }}"><F3:true>
 							(year {{ @relation->yearofstudy }})
 						</F3:true></F3:check>
 						</td>	

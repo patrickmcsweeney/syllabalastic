@@ -1318,6 +1318,11 @@ function compare_syllabuses($f3)
 		}
 	}
 
+	if(count($comparable_syllabuses) == 0)
+	{
+		$f3->error("400", "This module has no past approve syllabuses");
+	}
+
 	$f3->set("comparable_syllabuses", $comparable_syllabuses);
 	$most_recent_syllabus = last_known_current_syllabus($module_code);
 	$syllabus_to_compare = $comparable_syllabuses[0]; //by default compare the oldest
