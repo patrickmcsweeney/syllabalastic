@@ -1092,7 +1092,7 @@ function report_assessment($f3)
 		$exams = "";
 		foreach($syllabus->ownExam as $exam)
 		{
-			$exams .= "Exam: ".$exam->percent."%, ".$exam->duration." hours\n\n"; 
+			$exams .= "Exam: ".$exam->percent."%, ".$exam->examduration." hours\n\n"; 
 		}
 
 		$referral = $syllabus->getConstant($syllabus->referral);
