@@ -669,7 +669,7 @@ function edit_syllabus($f3)
 
 	$user = current_user($f3);
 
-	if($module->facultycode="F2" && !@$REVIEWERS[$user->username] )
+	if( in_array($module->facultycode, array("F2", "F8")) && !@$REVIEWERS[$user->username] )
 	{
 		$f3->error( 403, "Sorry this syllabus is no longer editable by users directly. Please contact your CQA office to update this module.");
 		return;
@@ -1067,7 +1067,6 @@ function report_assessment($f3)
 	}
 	$f3->set("academic_session", $academic_session);
 
-	$academic_session = "201516";
 	$modules = R::find("module", " facultycode = ? and session = ? order by code ", array($faculty, $academic_session)); 
 
 	$headings = array("code", "title", "Summary of Assessment and Feedback Methods", "Examination method", "Referral Policy", "Method of repeat year", "Assessment Notes", "Referral Notes");
@@ -1075,7 +1074,7 @@ function report_assessment($f3)
 	foreach($modules as $module)
 	{ 
 		$syllabus = last_known_current_syllabus( $module->code, $module->session );
-	
+
 		if(!$syllabus) { continue; }	
 		$f3->set("syllabus", $syllabus);
 
@@ -1096,13 +1095,19 @@ function report_assessment($f3)
 		}
 
 		$referral = $syllabus->getConstant($syllabus->referral);
-		$repeat_year = $syllabus->getConstant($syllabus->repeatyear);
+		$repeat_year = "";
+		
+		foreach($syllabus->ownRepeatyear as $method_of_repeat)
+		{
+				$repeat_year .= $method_of_repeat->repeatyear." ";
+		}
 
 		$row = array($module->code, $module->title, $assessment, $exams, $referral, $repeat_year, strip_tags($syllabus->assessmentnotes), strip_tags($syllabus->referralnotes));
 
 		$data_to_csv[] = $row;
 		
 	}
+	
 	$filename = "syllabus_assessment_".date("Y-m-d").".csv";
 	output_csv( $data_to_csv, $headings, $filename );
 	exit;

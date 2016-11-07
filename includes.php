@@ -74,6 +74,12 @@ $REVIEWERS = array(
 			'facultycode' => array("F7", "wf", "fp")
 		)
 	),
+	"pr3" => array(
+		'module' => array(
+			'departmentcode' => array("FP", "JF"),
+			'facultycode' => array("F7", "wf", "fp")
+		)
+	),
        "lm4e09" => array(
 		'module' => array(
 			'departmentcode' => array("FP", "JF"),
@@ -279,6 +285,11 @@ $REVIEWERS = array(
 		)
 	),
         "cdb1a13" => array(
+		'module' => array(
+			'facultycode' => array("F2")
+		)
+	),
+	    "am2d15" => array(
 		'module' => array(
 			'facultycode' => array("F2")
 		)
