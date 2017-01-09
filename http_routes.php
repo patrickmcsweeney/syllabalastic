@@ -194,6 +194,8 @@ function create_module($f3)
 	$new_module->session = $input["session"];
 	$new_module->title = $input["moduleprefix"].$input["modulepart"]." - ".$input["moduletitle"];
 	$new_module->provisionaltitle = $input["moduleprefix"].$input["modulepart"]." - ".$input["moduletitle"];
+	$new_module->facultycode = "F7"; 
+	$new_module->facultyname = "Physical Sciences & Eng";
 	$new_module->departmentcode = $department_code;
 	$new_module->departmentname = $user->departmentname;
 	$new_module->isprovisional = true;
