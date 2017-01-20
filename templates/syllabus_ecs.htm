@@ -85,17 +85,17 @@
       </ul>
 
       <p><strong>Referral policy:</strong> {{@getConstant(@syllabus, @syllabus->referral)}} </p>
-
-	<h4>Method of Repeat Year</h4>
-        <repeat group="{{@syllabus.ownRepeatyear}}" value="{{@year}}">
-                <p>{{@getConstant(@syllabus, @year->repeatyear)}}</p>
-        </repeat>
 	
 <check if="{{@syllabus->referralnotes}}">
 	<div>
 		{{@syllabus->referralnotes}}
 	</div>
 </check>
+
+	<h4>Method of Repeat Year</h4>
+        <repeat group="{{@syllabus.ownRepeatyear}}" value="{{@year}}">
+                <p>{{@getConstant(@syllabus, @year->repeatyear)}}</p>
+        </repeat>
 
 <F3:check if="{{@syllabus->assessmentnotes}}">
         <F3:true>

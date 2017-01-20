@@ -68,7 +68,7 @@ $REVIEWERS = array(
 			'facultycode' => array("F7", "wf", "fp", "jf")
 		)
 	),
-       "bjc1f08" => array(
+       "ejd1c16" => array(
 		'module' => array(
 			'departmentcode' => array("FP", "JF"),
 			'facultycode' => array("F7", "wf", "fp")
